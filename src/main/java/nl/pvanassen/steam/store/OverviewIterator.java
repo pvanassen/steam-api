@@ -24,9 +24,10 @@ class OverviewIterator implements Iterator<OverviewItem>, Iterable<OverviewItem>
         private final Logger logger = LoggerFactory.getLogger( getClass() );
         private final int start;
         private final ObjectMapper om;
+        private final Http http;
 
-        GetCurrentItemsTask( int start, ObjectMapper om ) {
-            super();
+        GetCurrentItemsTask( Http http, int start, ObjectMapper om ) {
+            this.http = http;
             this.start = start;
             this.om = om;
         }
@@ -35,7 +36,7 @@ class OverviewIterator implements Iterator<OverviewItem>, Iterable<OverviewItem>
         public String call() throws Exception {
             JsonHandle handle = new JsonHandle( om );
             try {
-                Http.getInstance().get( "http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" + start + "&count=" + 100, handle );
+                http.get( "http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" + start + "&count=" + 100, handle );
             }
             catch ( IOException e ) {
                 logger.error( "Error getting data", e );
@@ -92,7 +93,7 @@ class OverviewIterator implements Iterator<OverviewItem>, Iterable<OverviewItem>
 
     private final Queue<Future<String>> futurePages;
 
-    OverviewIterator(ExecutorService executorService) {
+    OverviewIterator(Http http, ExecutorService executorService) {
         XPathFactory xPathfactory = XPathFactory.newInstance();
         XPath xpath = xPathfactory.newXPath();
         try {
@@ -104,7 +105,7 @@ class OverviewIterator implements Iterator<OverviewItem>, Iterable<OverviewItem>
         JsonHandle handle = new JsonHandle( om );
         // Get first page to find max of pages
         try {
-            Http.getInstance().get( "http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" + start + "&count=" + MAX_PAGE_SIZE, handle );
+            http.get( "http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" + start + "&count=" + MAX_PAGE_SIZE, handle );
         }
         catch ( IOException e ) {
             logger.error( "Error getting first page", e );
@@ -115,7 +116,7 @@ class OverviewIterator implements Iterator<OverviewItem>, Iterable<OverviewItem>
         // Create pool and start fetching
         futurePages = new LinkedBlockingQueue<Future<String>>();
         for ( int start = 0; start < totalCount; start += MAX_PAGE_SIZE ) {
-            GetCurrentItemsTask task = new GetCurrentItemsTask( start, om );
+            GetCurrentItemsTask task = new GetCurrentItemsTask( http, start, om );
             futurePages.offer( executorService.submit( task ) );
         }
     }

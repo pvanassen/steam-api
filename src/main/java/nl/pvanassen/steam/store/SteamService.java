@@ -1,11 +1,7 @@
 package nl.pvanassen.steam.store;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 
 import nl.pvanassen.steam.http.DefaultHandle;
@@ -29,6 +25,21 @@ public class SteamService implements StoreService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private static final int[] APP_IDS = new int[] { 440, 570, 730, 753 };
+    
+    private final Http http;
+    
+    /**
+     * Factory method for instantiating the steam service
+     * @param cookies Cookies string to use for http requests
+     * @return Steam service
+     */
+    public static SteamService getSteamService(String cookies) {
+       return new SteamService(cookies);
+    }
+
+    private SteamService(String cookies) {
+        http = Http.getInstance(cookies);
+    }
 
     @Override
     public BuyResult buy( String listingId, int fee, int subTotal ) {
@@ -39,7 +50,7 @@ public class SteamService implements StoreService {
         params.put( "total", Integer.toString( fee + subTotal ) );
         try {
             BuyHandle handle = new BuyHandle();
-            Http.getInstance().post( "https://steamcommunity.com/market/buylisting/" + listingId, params, handle );
+            http.post( "https://steamcommunity.com/market/buylisting/" + listingId, params, handle );
             return new BuyResult( !handle.isError(), handle.getWallet() );
         }
         catch ( IOException e ) {
@@ -55,7 +66,7 @@ public class SteamService implements StoreService {
      */
     @Override
     public void getAllItems( ExecutorService executorService, GenericHandle<OverviewItem> handle ) {
-        for ( OverviewItem overviewItem : new OverviewIterator(executorService) ) {
+        for ( OverviewItem overviewItem : new OverviewIterator(http, executorService) ) {
             try {
                 handle.handle( overviewItem );
             }
@@ -75,7 +86,7 @@ public class SteamService implements StoreService {
             }
             InventoryHandle handle = new InventoryHandle( objectMapper, contextId, inventoryItems );
             try {
-                Http.getInstance().get( "http://steamcommunity.com/id/mantorch/inventory/json/" + appId + "/" + contextId + "/", handle );
+                http.get( "http://steamcommunity.com/id/mantorch/inventory/json/" + appId + "/" + contextId + "/", handle );
             }
             catch ( IOException e ) {
                 logger.error( "Error fetching inventory data", e );
@@ -90,7 +101,7 @@ public class SteamService implements StoreService {
 
         ListingPageScriptHandle handle = new ListingPageScriptHandle( objectMapper );
         try {
-            Http.getInstance().get( "http://steamcommunity.com/market/listings/" + appId + "/" + urlName, handle );
+            http.get( "http://steamcommunity.com/market/listings/" + appId + "/" + urlName, handle );
         }
         catch ( IOException e ) {
             logger.error( "Error fetching listing page data", e );
@@ -112,7 +123,7 @@ public class SteamService implements StoreService {
     public List<Listing> getNewlyListed() {
         try {
             ListingHandle handle = new ListingHandle( objectMapper );
-            Http.getInstance().get( "http://steamcommunity.com/market/recent", handle );
+            http.get( "http://steamcommunity.com/market/recent", handle );
             return handle.getListings();
         }
         catch ( IOException e ) {
@@ -125,7 +136,7 @@ public class SteamService implements StoreService {
     public int getWallet() {
         WalletHandle handle = new WalletHandle();
         try {
-            Http.getInstance().get( "http://steamcommunity.com/market/", handle );
+            http.get( "http://steamcommunity.com/market/", handle );
         }
         catch ( IOException e ) {
             logger.error( "Error getting wallet", e );
@@ -143,7 +154,7 @@ public class SteamService implements StoreService {
             params.put( "contextid", Integer.toString( contextId ) );
             params.put( "price", Integer.toString( price ) );
             logger.info( params.toString() );
-            Http.getInstance().post( "https://steamcommunity.com/market/sellitem/", params, new DefaultHandle() );
+            http.post( "https://steamcommunity.com/market/sellitem/", params, new DefaultHandle() );
             return true;
         }
         catch ( IOException | RuntimeException e ) {
@@ -156,7 +167,7 @@ public class SteamService implements StoreService {
     public List<MarketHistory> getPurchasedItemsFromHistory() {
         MarketHistoryHandle handle = new MarketHistoryHandle(true);
         try {
-            Http.getInstance().get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=100", handle);
+            http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=100", handle);
         }
         catch ( IOException | RuntimeException e ) {
             logger.error( "Error getting data", e );
@@ -168,7 +179,7 @@ public class SteamService implements StoreService {
     public List<MarketHistory> getSoldItemsFromHistory() {
         MarketHistoryHandle handle = new MarketHistoryHandle(false);
         try {
-            Http.getInstance().get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=100", handle);
+            http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=100", handle);
         }
         catch ( IOException | RuntimeException e ) {
             logger.error( "Error getting data", e );
