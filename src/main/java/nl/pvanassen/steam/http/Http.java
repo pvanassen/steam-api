@@ -52,6 +52,7 @@ public class Http {
             if ("Steam_Language".equals(parts[0])) {
                 continue;
             }
+            cookieStore.addCookie(getCookie(parts[0], parts[1]));
         }
         cookieStore.addCookie(getCookie("Steam_Language", "english"));
     }
