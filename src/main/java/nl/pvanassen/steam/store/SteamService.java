@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableList;
  * 
  * @author Paul van Assen
  */
-public class SteamService implements StoreService {
+class SteamService implements StoreService {
 
     private final Logger logger = LoggerFactory.getLogger( getClass() );
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -27,17 +27,8 @@ public class SteamService implements StoreService {
     private static final int[] APP_IDS = new int[] { 440, 570, 730, 753 };
     
     private final Http http;
-    
-    /**
-     * Factory method for instantiating the steam service
-     * @param cookies Cookies string to use for http requests
-     * @return Steam service
-     */
-    public static SteamService getSteamService(String cookies) {
-       return new SteamService(cookies);
-    }
 
-    private SteamService(String cookies) {
+    SteamService(String cookies) {
         http = Http.getInstance(cookies);
     }
 
