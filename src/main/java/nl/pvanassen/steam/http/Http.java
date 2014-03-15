@@ -49,8 +49,11 @@ public class Http {
         context.setCookieStore(cookieStore);
         for (String cookie : cookies.split("; ")) {
             String parts[] = cookie.split("=");
-            cookieStore.addCookie(getCookie(parts[0], parts[1]));
+            if ("Steam_Language".equals(parts[0])) {
+                continue;
+            }
         }
+        cookieStore.addCookie(getCookie("Steam_Language", "english"));
     }
 
     /**
@@ -133,9 +136,6 @@ public class Http {
         httpget.addHeader("User-Agent",
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:25.0) Gecko/20100101 Firefox/25.0");
         httpget.addHeader("Referer", "  http://steamcommunity.com/id/mantorch/inventory/");
-        // httpget.addHeader( "Cookie",
-        // "timezoneOffset=3600,0; steamMachineAuth76561197997047916=957FE57BD7190A29EC64566E4F59F53D266DD9AA; Steam_Language=english; __utma=268881843.198519209.1391434770.1391867572.1391871063.8; __utmz=268881843.1391434770.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); steamRememberLogin=76561197997047916; strInventoryLastContext=753_0; sessionid=MTU3NjI0NzkyNQ%3D%3D; steamLogin=76561197997047916%7C%7CFF0585AF0E7C8B1BCFFCC92FF3339FA61B3E70AF; webTradeEligibility=%7B%22allowed%22%3A1%2C%22allowed_at_time%22%3A0%2C%22steamguard_required_days%22%3A15%2C%22sales_this_year%22%3A49%2C%22max_sales_per_year%22%3A200%2C%22forms_requested%22%3A0%2C%22new_device_cooldown_days%22%3A7%7D; __utmc=268881843; __utmb=268881843.0.10.1391871063; steamCC_83_163_61_163=NL"
-        // );
         String sessionid = "";
         for (Cookie cookie : context.getCookieStore().getCookies()) {
             if (cookie.getName().equals("sessionid")) {
