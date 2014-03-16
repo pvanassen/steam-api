@@ -170,7 +170,7 @@ class SteamService implements StoreService {
     public List<MarketHistory> getSoldItemsFromHistory() {
         MarketHistoryHandle handle = new MarketHistoryHandle(false);
         try {
-            http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=100", handle);
+            http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=1000", handle);
         }
         catch ( IOException | RuntimeException e ) {
             logger.error( "Error getting data", e );
