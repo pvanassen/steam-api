@@ -24,7 +24,7 @@ class SteamService implements StoreService {
     private final Logger logger = LoggerFactory.getLogger( getClass() );
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private static final int[] APP_IDS = new int[] { 440, 570, 730, 753 };
+    private static final int[] APP_IDS = new int[] { 440, 570, 730, 753, 238960, 230410 };
     
     private final Http http;
 
