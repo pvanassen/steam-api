@@ -6,6 +6,7 @@ package nl.pvanassen.steam.store;
  *
  */
 public class MarketHistory {
+    public enum Status { BOUGHT, CREATED, SOLD };
     private final int appId;
     private final int contextId;
     private final String id;
@@ -13,9 +14,9 @@ public class MarketHistory {
     private final String instanceid;
     private final String urlName;
     private final int amount;
-    private final int status;
+    private final Status status; 
 
-    MarketHistory( int appId, int contextId, String id, String classId, String instanceid, String urlName, int amount, int status ) {
+    MarketHistory( int appId, int contextId, String id, String classId, String instanceid, String urlName, int amount, Status status ) {
         super();
         this.appId = appId;
         this.contextId = contextId;
@@ -72,7 +73,7 @@ public class MarketHistory {
     /**
      * @return the status
      */
-    public int getStatus() {
+    public Status getStatus() {
         return status;
     }
 

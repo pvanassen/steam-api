@@ -8,7 +8,7 @@ import java.util.List;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 
-import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

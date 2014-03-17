@@ -14,11 +14,9 @@ import nl.pvanassen.steam.http.DefaultHandle;
 
 class MarketHistoryHandle extends DefaultHandle {
     private final List<MarketHistory> marketHistory = new LinkedList<>();
-    private final boolean sold;
     
-    
-    MarketHistoryHandle(boolean sold) {
-        this.sold = sold;
+    MarketHistoryHandle() {
+        super();
     }
     
     @Override
@@ -30,18 +28,7 @@ class MarketHistoryHandle extends DefaultHandle {
             for (JsonNode contextId : appId) {
                 for (JsonNode item : contextId) {
                     String urlName = URLEncoder.encode( item.get( "market_hash_name" ).asText(), "UTF-8" ).replace( "+", "%20" );
-                    if ("0".equals(item.get("instanceid").asText())) {
-                        // Sold
-                        if (sold) {
-                            marketHistory.add(new MarketHistory(item.get("appid").asInt(), item.get("contextid").asInt(), item.get("id").asText(), item.get("classid").asText(), item.get("instanceid").asText(), urlName, item.get("amount").asInt(), item.get("status").asInt())); 
-                        }
-                    }
-                    else {
-                        // bought
-                        if (!sold) {
-                            marketHistory.add(new MarketHistory(item.get("appid").asInt(), item.get("contextid").asInt(), item.get("id").asText(), item.get("classid").asText(), item.get("instanceid").asText(), urlName, item.get("amount").asInt(), item.get("status").asInt())); 
-                        }
-                    }
+                    marketHistory.add(new MarketHistory(item.get("appid").asInt(), item.get("contextid").asInt(), item.get("id").asText(), item.get("classid").asText(), item.get("instanceid").asText(), urlName, item.get("amount").asInt(), null)); 
                 }
             }
         }

@@ -156,7 +156,7 @@ class SteamService implements StoreService {
     
     @Override
     public List<MarketHistory> getPurchasedItemsFromHistory() {
-        MarketHistoryHandle handle = new MarketHistoryHandle(true);
+        MarketHistoryHandle handle = new MarketHistoryHandle();
         try {
             http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=100", handle);
         }
@@ -168,7 +168,7 @@ class SteamService implements StoreService {
     
     @Override
     public List<MarketHistory> getSoldItemsFromHistory() {
-        MarketHistoryHandle handle = new MarketHistoryHandle(false);
+        MarketHistoryHandle handle = new MarketHistoryHandle();
         try {
             http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=1000", handle);
         }
