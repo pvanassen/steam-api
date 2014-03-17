@@ -27,6 +27,10 @@ class InventoryHandle extends DefaultHandle {
 
         Map<String, String[]> descriptionMap = new HashMap<>();
         JsonNode descriptions = node.get( "rgDescriptions" );
+        // Avoid NPE's on empty inventories
+        if (descriptions == null) {
+            return;
+        }
         for ( JsonNode item : descriptions ) {
             String urlName = URLEncoder.encode(item.get( "market_hash_name" ).asText(), "UTF-8").replace("+", "%20");
             descriptionMap.put(item.get( "classid" ).asText() + "-" + item.get( "instanceid" ).asText(), new String[]{item.get( "appid" ).asText(), urlName});
