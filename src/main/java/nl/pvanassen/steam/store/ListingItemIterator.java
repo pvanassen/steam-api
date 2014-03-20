@@ -41,7 +41,7 @@ public class ListingItemIterator implements Iterator<Listing>, Iterable<Listing>
         }
         JsonNode item = listingNode.get( fields.next() );
         try {
-            if (item.get("price").asInt() == 0) {
+            if (item.get("price").asInt() == 0 || item.get("converted_fee") == null) {
                 return getNextItem();
             }
             String listingId = item.get( "listingid" ).asText();
