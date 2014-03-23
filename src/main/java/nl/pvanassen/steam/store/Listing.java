@@ -1,5 +1,7 @@
 package nl.pvanassen.steam.store;
 
+import java.util.Date;
+
 
 /**
  * Listing item 
@@ -27,6 +29,8 @@ public class Listing {
     private final int publisherFeeApp;
 
     private final double publisherFeePercent;
+    
+    private final Date listingDate = new Date();
 
     Listing( int appId, String urlName, String listingId, String steamIdLister, int subTotal, int fee, int steamFee, int publisherFee, int publisherFeeApp, double publisherFeePercent ) {
         super();
@@ -120,5 +124,9 @@ public class Listing {
     @Override
     public String toString() {
         return "Listing [appId=" + appId + ", urlName=" + urlName + ", listingId=" + listingId + ", steamIdLister=" + steamIdLister + ", subTotal=" + subTotal + ", fee=" + fee + ", steamFee=" + steamFee + ", publisherFee=" + publisherFee + ", publisherFeeApp=" + publisherFeeApp + ", publisherFeePercent=" + publisherFeePercent + "]";
+    }
+    
+    public Date getListingDate() {
+        return listingDate;
     }
 }
