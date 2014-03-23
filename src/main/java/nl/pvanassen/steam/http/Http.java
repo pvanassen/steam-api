@@ -41,11 +41,25 @@ public class Http {
     private final RequestConfig globalConfig;
 
     private final HttpClientContext context;
+    
+    private final String cookies;
 
     private Http(String cookies) {
-        globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BEST_MATCH).build();
-        CookieStore cookieStore = new BasicCookieStore();
+        this.cookies = cookies;
+        globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
         context = HttpClientContext.create();
+        init();
+    }
+    
+    /**
+     * Reset cookies
+     */
+    public void reset() {
+        init();
+    }
+    
+    private final void init() {
+        CookieStore cookieStore = new BasicCookieStore();
         context.setCookieStore(cookieStore);
         for (String cookie : cookies.split("; ")) {
             String parts[] = cookie.split("=");

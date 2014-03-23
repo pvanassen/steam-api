@@ -132,6 +132,10 @@ class SteamService implements StoreService {
         catch ( IOException e ) {
             logger.error( "Error getting wallet", e );
         }
+        // If the wallet is empty, re-init all cookies
+        if (handle.getWallet() == 0) {
+            http.reset();
+        }
         return handle.getWallet();
     }
 
