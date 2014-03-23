@@ -46,7 +46,7 @@ public class Http {
 
     private Http(String cookies) {
         this.cookies = cookies;
-        globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
+        globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BEST_MATCH).build();
         context = HttpClientContext.create();
         init();
     }
