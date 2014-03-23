@@ -46,7 +46,7 @@ public class Http {
 
     private Http(String cookies) {
         this.cookies = cookies;
-        globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
+        globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BEST_MATCH).build();
         context = HttpClientContext.create();
         init();
     }
@@ -128,7 +128,7 @@ public class Http {
 
     private final Cookie getCookie(String name, String value) {
         Calendar expiresCalendar = Calendar.getInstance();
-        expiresCalendar.add(Calendar.YEAR, 10);
+        expiresCalendar.add(Calendar.YEAR, 1000);
         Date expires = expiresCalendar.getTime();
         BasicClientCookie cookie = new BasicClientCookie(name, value);
         cookie.setDomain("steamcommunity.com");
