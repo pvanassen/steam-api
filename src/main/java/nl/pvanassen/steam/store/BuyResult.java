@@ -9,11 +9,13 @@ public class BuyResult {
 
     private final boolean success;
     private final int wallet;
+    private final String message;
 
-    BuyResult( boolean success, int wallet ) {
+    BuyResult( boolean success, int wallet, String message ) {
         super();
         this.success = success;
         this.wallet = wallet;
+        this.message = message;
     }
 
     /**
@@ -28,6 +30,13 @@ public class BuyResult {
      */
     public boolean isSuccess() {
         return success;
+    }
+    
+    /**
+     * @return The error message
+     */
+    public String getMessage() {
+        return message;
     }
 
     /**

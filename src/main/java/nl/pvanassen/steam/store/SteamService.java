@@ -42,11 +42,11 @@ class SteamService implements StoreService {
         try {
             BuyHandle handle = new BuyHandle();
             http.post( "https://steamcommunity.com/market/buylisting/" + listingId, params, handle );
-            return new BuyResult( !handle.isError(), handle.getWallet() );
+            return new BuyResult( !handle.isError(), handle.getWallet(), handle.getMessage() );
         }
         catch ( IOException e ) {
             logger.error( "Error posting data", e );
-            return new BuyResult( false, 0 );
+            return new BuyResult( false, 0, "" );
         }
     }
 

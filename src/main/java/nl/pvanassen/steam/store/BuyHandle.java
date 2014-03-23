@@ -12,7 +12,8 @@ class BuyHandle extends DefaultHandle {
 
     private int wallet;
     private boolean error = false;
-
+    private String message;
+    
     int getWallet() {
         return wallet;
     }
@@ -28,10 +29,16 @@ class BuyHandle extends DefaultHandle {
     @Override
     public void handleError( InputStream stream ) throws IOException {
         error = true;
-        super.handle( stream );
+        ObjectMapper om = new ObjectMapper();
+        JsonNode node = om.readTree( stream );
+        message = node.get( "message" ).asText();
     }
 
     boolean isError() {
         return error;
+    }
+    
+    String getMessage() {
+        return message;
     }
 }
