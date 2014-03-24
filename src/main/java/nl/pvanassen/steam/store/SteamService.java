@@ -27,8 +27,10 @@ class SteamService implements StoreService {
     private static final int[] APP_IDS = new int[] { 440, 570, 730, 753, 238960, 230410 };
     
     private final Http http;
+    private final String cookies;
 
     SteamService(String cookies) {
+        this.cookies = cookies;
         http = Http.getInstance(cookies);
     }
 
