@@ -66,12 +66,6 @@ public interface StoreService {
     boolean sell( String assetId, int appId, String urlName, int contextId, int price );
 
     /**
-     * Get purchased items currently offered
-     * @return a list of market history items
-     */
-    List<MarketHistory> getPurchasedItemsFromHistory();
-
-    /**
      * Get sold items currently offered
      * @return a list of market history items
      */

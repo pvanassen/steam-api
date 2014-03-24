@@ -39,21 +39,17 @@ class SteamService implements StoreService {
     	String listingId = listing.getListingId();
     	int fee = listing.getFee();
     	int subTotal = listing.getSubTotal();
-    	int appId = listing.getAppId();
-    	String urlName = listing.getUrlName();
         Map<String, String> params = new HashMap<>();
         params.put( "currency", "3" );
         params.put( "fee", Integer.toString( fee ) );
         params.put( "subtotal", Integer.toString( subTotal ) );
         params.put( "total", Integer.toString( fee + subTotal ) );
         try {
-        	// Get new instance
-//        	Http http = Http.getInstance(cookies);
-        	// Make one call fixing cookies
-//        	http.get("http://steamcommunity.com/market/listings/" + appId + "/" + urlName, new DefaultHandle() );
-        	// Make the purchase
             BuyHandle handle = new BuyHandle();
             http.post( "https://steamcommunity.com/market/buylisting/" + listingId, params, handle );
+            if (handle.getMessage() != null && handle.getMessage().contains("temporary")) {
+            	return buy(listing);
+            }
             return new BuyResult( !handle.isError(), handle.getWallet(), handle.getMessage() );
         }
         catch ( IOException e ) {
@@ -171,24 +167,12 @@ class SteamService implements StoreService {
             return false;
         }
     }
-    
-    @Override
-    public List<MarketHistory> getPurchasedItemsFromHistory() {
-        MarketHistoryHandle handle = new MarketHistoryHandle();
-        try {
-            http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=100", handle);
-        }
-        catch ( IOException | RuntimeException e ) {
-            logger.error( "Error getting data", e );
-        }
-        return handle.getMarketHistory();
-    }
-    
+
     @Override
     public List<MarketHistory> getSoldItemsFromHistory() {
         MarketHistoryHandle handle = new MarketHistoryHandle();
         try {
-            http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=1000", handle);
+            http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=10&count=1000", handle);
         }
         catch ( IOException | RuntimeException e ) {
             logger.error( "Error getting data", e );

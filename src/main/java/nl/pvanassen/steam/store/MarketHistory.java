@@ -1,86 +1,60 @@
 package nl.pvanassen.steam.store;
 
+import java.util.Date;
+
 /**
  * Items in the market
+ * 
  * @author Paul van Assen
- *
+ * 
  */
 public class MarketHistory {
-    public enum Status { BOUGHT, CREATED, SOLD };
-    private final int appId;
-    private final int contextId;
-    private final String id;
-    private final String classId;
-    private final String instanceid;
-    private final String urlName;
-    private final int amount;
-    private final Status status; 
+	private final int appId;
+	private final int contextId;
+	private final String urlName;
+	private final Date listed;
+	private final Date acted;
+	private final int price;
+	private final String buyer;
 
-    MarketHistory( int appId, int contextId, String id, String classId, String instanceid, String urlName, int amount, Status status ) {
-        super();
-        this.appId = appId;
-        this.contextId = contextId;
-        this.id = id;
-        this.classId = classId;
-        this.instanceid = instanceid;
-        this.urlName = urlName;
-        this.amount = amount;
-        this.status = status;
-    }
+	MarketHistory(int appId, int contextId, String urlName, Date listed,
+			Date acted, int price, String buyer) {
+		super();
+		this.appId = appId;
+		this.contextId = contextId;
+		this.urlName = urlName;
+		this.listed = listed;
+		this.acted = acted;
+		this.price = price;
+		this.buyer = buyer;
+	}
 
-    /**
-     * @return the appId
-     */
-    public int getAppId() {
-        return appId;
-    }
+	public int getAppId() {
+		return appId;
+	}
 
-    /**
-     * @return the contextId
-     */
-    public int getContextId() {
-        return contextId;
-    }
+	public int getContextId() {
+		return contextId;
+	}
 
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
+	public String getUrlName() {
+		return urlName;
+	}
 
-    /**
-     * @return the classId
-     */
-    public String getClassId() {
-        return classId;
-    }
+	public Date getListed() {
+		return listed;
+	}
 
-    /**
-     * @return the instanceid
-     */
-    public String getInstanceid() {
-        return instanceid;
-    }
+	public Date getActed() {
+		return acted;
+	}
 
-    /**
-     * @return the amount
-     */
-    public int getAmount() {
-        return amount;
-    }
+	public int getPrice() {
+		return price;
+	}
 
-    /**
-     * @return the status
-     */
-    public Status getStatus() {
-        return status;
-    }
+	public String getBuyer() {
+		return buyer;
+	}
 
-    /**
-     * @return URL name
-     */
-    public String getUrlName() {
-        return urlName;
-    }
 }
