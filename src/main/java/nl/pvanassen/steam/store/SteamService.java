@@ -35,13 +35,23 @@ class SteamService implements StoreService {
     }
 
     @Override
-    public BuyResult buy( String listingId, int fee, int subTotal ) {
+    public BuyResult buy( Listing listing ) {
+    	String listingId = listing.getListingId();
+    	int fee = listing.getFee();
+    	int subTotal = listing.getSubTotal();
+    	int appId = listing.getAppId();
+    	String urlName = listing.getUrlName();
         Map<String, String> params = new HashMap<>();
         params.put( "currency", "3" );
         params.put( "fee", Integer.toString( fee ) );
         params.put( "subtotal", Integer.toString( subTotal ) );
         params.put( "total", Integer.toString( fee + subTotal ) );
         try {
+        	// Get new instance
+//        	Http http = Http.getInstance(cookies);
+        	// Make one call fixing cookies
+//        	http.get("http://steamcommunity.com/market/listings/" + appId + "/" + urlName, new DefaultHandle() );
+        	// Make the purchase
             BuyHandle handle = new BuyHandle();
             http.post( "https://steamcommunity.com/market/buylisting/" + listingId, params, handle );
             return new BuyResult( !handle.isError(), handle.getWallet(), handle.getMessage() );
@@ -142,8 +152,10 @@ class SteamService implements StoreService {
     }
 
     @Override
-    public boolean sell( String assetId, int appId, int contextId, int price ) {
+    public boolean sell( String assetId, int appId, String urlName, int contextId, int price ) {
         try {
+//        	Http http = Http.getInstance(cookies);
+//        	http.get("http://steamcommunity.com/market/pricehistory/?appid=" + appId + "&market_hash_name=" + urlName, new DefaultHandle());
             Map<String, String> params = new HashMap<>();
             params.put( "amount", "1" );
             params.put( "appid", Integer.toString( appId ) );

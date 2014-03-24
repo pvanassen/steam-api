@@ -17,7 +17,7 @@ public interface StoreService {
      * @param subTotal Subtotal
      * @return The results of a purchase
      */
-    BuyResult buy( String listingId, int fee, int subTotal );
+    BuyResult buy( Listing listing );
 
     /**
      * @param executorService Executor service for multi-threading fetch
@@ -63,7 +63,7 @@ public interface StoreService {
      * @param price
      * @return True if successful, false if not
      */
-    boolean sell( String assetId, int appId, int contextId, int price );
+    boolean sell( String assetId, int appId, String urlName, int contextId, int price );
 
     /**
      * Get purchased items currently offered
