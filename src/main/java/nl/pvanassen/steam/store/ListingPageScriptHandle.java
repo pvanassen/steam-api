@@ -51,6 +51,9 @@ public class ListingPageScriptHandle extends DefaultHandle {
                 int salesStart = line.indexOf( "line1" );
                 if ( salesStart > -1 ) {
                     int objectStart = line.indexOf( '[', salesStart );
+                    if (objectStart <= -1) {
+                    	continue;
+                    }
                     priceHistoryInfo = om.readTree( line.substring( objectStart, line.length() - 1 ) );
                     salesFound = true;
                 }

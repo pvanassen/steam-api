@@ -32,6 +32,13 @@ class InventoryHandle extends DefaultHandle {
             return;
         }
         for ( JsonNode item : descriptions ) {
+        	// Fix for steam sending crap
+        	if (!item.has("market_hash_name")) {
+        		continue;
+        	}
+        	if (!item.get("marketable").asBoolean()) {
+        		continue;
+        	}
             String urlName = URLEncoder.encode(item.get( "market_hash_name" ).asText(), "UTF-8").replace("+", "%20");
             descriptionMap.put(item.get( "classid" ).asText() + "-" + item.get( "instanceid" ).asText(), new String[]{item.get( "appid" ).asText(), urlName});
         }
@@ -39,6 +46,9 @@ class InventoryHandle extends DefaultHandle {
         JsonNode inventory = node.get( "rgInventory" );
         for ( JsonNode item : inventory ) {
             String[] obj = descriptionMap.get( item.get( "classid" ).asText() + "-" + item.get( "instanceid" ).asText());
+            if (obj == null) {
+            	continue;
+            }
             inventoryItemList.add(new InventoryItem(item.get( "id" ).asText(), contextId, item.get( "instanceid" ).asText(), Integer.parseInt(obj[0]), obj[1]));
         }
     }
