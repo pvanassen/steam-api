@@ -80,6 +80,10 @@ class MarketHistoryHandle extends DefaultHandle {
         ObjectMapper om = new ObjectMapper();
         JsonNode node = om.readTree( stream );
         String resultHtml = node.get( "results_html" ).asText();
+        if (resultHtml.contains("market_listing_table_message")) {
+        	logger.error("There was an error: " + resultHtml);
+        	return;
+        }
         Map<String, HistoryInfo> htmlMap = new HashMap<>();
 
         DOMFragmentParser parser = new DOMFragmentParser();
@@ -136,7 +140,7 @@ class MarketHistoryHandle extends DefaultHandle {
                         Date listed = formatter.parse( historyInfo.listedStr );
                         // 0,10&#8364;
                         int price = Integer.parseInt( historyInfo.price.replace( ",", "" ).replace( "€", "" ).trim() );
-                        marketHistory.add( new MarketHistory( historyRowId, appId.asInt(), contextId.asInt(), urlName, listed, acted, price, historyInfo.buyer ) );
+                        marketHistory.add( new MarketHistory( historyRowId, item.get("appid").asInt(), item.get("contextid").asInt(), urlName, listed, acted, price, historyInfo.buyer ) );
                     }
                     catch ( ParseException e ) {
                         logger.error( "Error parsing date", e );
