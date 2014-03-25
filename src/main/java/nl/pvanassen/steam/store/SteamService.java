@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 
-import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.http.Http;
 
 import org.codehaus.jackson.JsonNode;
@@ -27,10 +26,10 @@ class SteamService implements StoreService {
     private static final int[] APP_IDS = new int[] { 440, 570, 730, 753, 238960, 230410 };
     
     private final Http http;
-    private final String cookies;
+//    private final String cookies;
 
     SteamService(String cookies) {
-        this.cookies = cookies;
+//        this.cookies = cookies;
         http = Http.getInstance(cookies);
     }
 
@@ -159,8 +158,9 @@ class SteamService implements StoreService {
             params.put( "contextid", Integer.toString( contextId ) );
             params.put( "price", Integer.toString( price ) );
             logger.info( params.toString() );
-            http.post( "https://steamcommunity.com/market/sellitem/", params, new DefaultHandle() );
-            return true;
+            SellHandle sellHandle = new SellHandle();
+            http.post( "https://steamcommunity.com/market/sellitem/", params, sellHandle );
+            return !sellHandle.isError();
         }
         catch ( IOException | RuntimeException e ) {
             logger.error( "Error posting data", e );
