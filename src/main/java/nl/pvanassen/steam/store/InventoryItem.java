@@ -12,14 +12,16 @@ public class InventoryItem {
     private final String instanceId;
     private final int appId;
     private final String urlName;
+    private final boolean marketable;
 
-    InventoryItem( String assetId, int contextId, String instanceId, int appId, String urlName ) {
+    InventoryItem( String assetId, int contextId, String instanceId, int appId, String urlName, boolean marketable ) {
         super();
         this.assetId = assetId;
         this.contextId = contextId;
         this.instanceId = instanceId;
         this.appId = appId;
         this.urlName = urlName;
+        this.marketable = marketable;
     }
 
     /**
@@ -57,6 +59,10 @@ public class InventoryItem {
     public String getInstanceId() {
         return instanceId;
     }
+    
+    public boolean isMarketable() {
+		return marketable;
+	}
 
     @Override
     public String toString() {
