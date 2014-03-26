@@ -8,11 +8,7 @@ import java.util.Date;
  * 
  * @author Paul van Assen
  */
-public class Listing {
-
-    private final int appId;
-
-    private final String urlName;
+public class Listing extends Item {
 
     private final String listingId;
 
@@ -30,12 +26,10 @@ public class Listing {
 
     private final double publisherFeePercent;
     
-    private final Date listingDate = new Date();
+    private final Date createdDate = new Date();
 
     Listing( int appId, String urlName, String listingId, String steamIdLister, int subTotal, int fee, int steamFee, int publisherFee, int publisherFeeApp, double publisherFeePercent ) {
-        super();
-        this.appId = appId;
-        this.urlName = urlName;
+        super(appId, urlName);
         this.listingId = listingId;
         this.steamIdLister = steamIdLister;
         this.subTotal = subTotal;
@@ -44,13 +38,6 @@ public class Listing {
         this.publisherFee = publisherFee;
         this.publisherFeeApp = publisherFeeApp;
         this.publisherFeePercent = publisherFeePercent;
-    }
-
-    /**
-     * @return App ID
-     */
-    public int getAppId() {
-        return appId;
     }
 
     /**
@@ -110,23 +97,19 @@ public class Listing {
     }
 
     /**
-     * @return Url name
-     */
-    public String getUrlName() {
-        return urlName;
-    }
-
-    /**
      * {@inheritDoc}
      * 
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        return "Listing [appId=" + appId + ", urlName=" + urlName + ", listingId=" + listingId + ", steamIdLister=" + steamIdLister + ", subTotal=" + subTotal + ", fee=" + fee + ", steamFee=" + steamFee + ", publisherFee=" + publisherFee + ", publisherFeeApp=" + publisherFeeApp + ", publisherFeePercent=" + publisherFeePercent + "]";
+        return "Listing [appId=" + getAppId() + ", urlName=" + getUrlName() + ", listingId=" + listingId + ", steamIdLister=" + steamIdLister + ", subTotal=" + subTotal + ", fee=" + fee + ", steamFee=" + steamFee + ", publisherFee=" + publisherFee + ", publisherFeeApp=" + publisherFeeApp + ", publisherFeePercent=" + publisherFeePercent + "]";
     }
     
-    public Date getListingDate() {
-        return listingDate;
+    /**
+     * @return Date when this item was created
+     */
+    public Date getCreatedDate() {
+        return createdDate;
     }
 }

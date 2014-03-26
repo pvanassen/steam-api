@@ -5,30 +5,19 @@ package nl.pvanassen.steam.store;
  * 
  * @author Paul van Assen
  */
-public class InventoryItem {
+public class InventoryItem extends Item {
 
     private final String assetId;
     private final int contextId;
     private final String instanceId;
-    private final int appId;
-    private final String urlName;
     private final boolean marketable;
 
     InventoryItem( String assetId, int contextId, String instanceId, int appId, String urlName, boolean marketable ) {
-        super();
+        super(appId, urlName);
         this.assetId = assetId;
         this.contextId = contextId;
         this.instanceId = instanceId;
-        this.appId = appId;
-        this.urlName = urlName;
         this.marketable = marketable;
-    }
-
-    /**
-     * @return the appId
-     */
-    public int getAppId() {
-        return appId;
     }
 
     /**
@@ -46,13 +35,6 @@ public class InventoryItem {
     }
 
     /**
-     * @return the urlName
-     */
-    public String getUrlName() {
-        return urlName;
-    }
-
-    /**
      * Steam instance id of an item
      * @return Instance id
      */
@@ -60,6 +42,9 @@ public class InventoryItem {
         return instanceId;
     }
     
+    /**
+     * @return Is marketable
+     */
     public boolean isMarketable() {
 		return marketable;
 	}
@@ -67,6 +52,6 @@ public class InventoryItem {
     @Override
     public String toString() {
         return "InventoryItem [assetId=" + assetId + ", contextId=" + contextId + ", instanceId=" + instanceId
-                + ", appId=" + appId + ", urlName=" + urlName + "]";
+                + ", appId=" + getAppId() + ", urlName=" + getUrlName() + "]";
     }
 }

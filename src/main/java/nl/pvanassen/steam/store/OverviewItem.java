@@ -6,32 +6,21 @@ package nl.pvanassen.steam.store;
  * 
  * @author Paul van Assen
  */
-public class OverviewItem {
+public class OverviewItem extends Item {
 
-    private final int appId;
     private final String itemName;
-    private final String urlName;
     private final int currentOffers;
     private final int currentPrice;
     private final String gameName;
     private final String steamId;
 
     OverviewItem( int appId, String itemName, String urlName, int currentOffers, int currentPrice, String gameName, String steamId ) {
-        super();
-        this.appId = appId;
+        super(appId, urlName);
         this.itemName = itemName;
-        this.urlName = urlName;
         this.currentOffers = currentOffers;
         this.currentPrice = currentPrice;
         this.gameName = gameName;
         this.steamId = steamId;
-    }
-
-    /**
-     * @return the appId
-     */
-    public int getAppId() {
-        return appId;
     }
 
     /**
@@ -68,20 +57,4 @@ public class OverviewItem {
     public String getSteamId() {
         return steamId;
     }
-
-    /**
-     * @return A url for debugging
-     */
-    public String getUrl() {
-        return "http://steamcommunity.com/market/listings/" + appId + "/" + urlName;
-    }
-
-    /**
-     * @return the urlName
-     */
-    public String getUrlName() {
-        return urlName;
-    }
-
-
 }

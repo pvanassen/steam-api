@@ -7,38 +7,26 @@ import java.util.Date;
  * 
  * @author Paul van Assen
  */
-public class MarketHistory {
+public class MarketHistory extends Item {
     private final String steamId;
-    private final int appId;
     private final int contextId;
-    private final String urlName;
     private final Date listed;
     private final Date acted;
     private final int price;
     private final String buyer;
 
     MarketHistory( String steamId, int appId, int contextId, String urlName, Date listed, Date acted, int price, String buyer ) {
-        super();
+        super(appId, urlName);
         this.steamId = steamId;
-        this.appId = appId;
         this.contextId = contextId;
-        this.urlName = urlName;
         this.listed = listed;
         this.acted = acted;
         this.price = price;
         this.buyer = buyer;
     }
 
-    public int getAppId() {
-        return appId;
-    }
-
     public int getContextId() {
         return contextId;
-    }
-
-    public String getUrlName() {
-        return urlName;
     }
 
     public Date getListed() {
