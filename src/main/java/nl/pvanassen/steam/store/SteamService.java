@@ -123,9 +123,26 @@ class SteamService implements StoreService {
             return handle.getListings();
         }
         catch ( IOException e ) {
-            logger.error( "Error posting data", e );
+            logger.error( "Error getting inventory", e );
         }
         return Collections.emptyList();
+    }
+    
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getAsyncInventory(java.util.Queue)
+     */
+    @Override
+    public void getAsyncInventory( Queue<Listing> queue ) {
+        try {
+            AsyncListingHandle handle = new AsyncListingHandle( objectMapper, queue );
+            http.get( "http://steamcommunity.com/market/recent", handle );
+        }
+        catch ( IOException e ) {
+            logger.error( "Error getting inventory", e );
+        }
+        
     }
 
     @Override

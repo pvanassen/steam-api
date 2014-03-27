@@ -25,28 +25,46 @@ public class MarketHistory extends Item {
         this.buyer = buyer;
     }
 
+    /**
+     * @return the steamId
+     */
+    public String getSteamId() {
+        return steamId;
+    }
+
+    /**
+     * @return the contextId
+     */
     public int getContextId() {
         return contextId;
     }
 
+    /**
+     * @return the listed
+     */
     public Date getListed() {
         return listed;
     }
 
+    /**
+     * @return the acted
+     */
     public Date getActed() {
         return acted;
     }
 
+    /**
+     * @return the price
+     */
     public int getPrice() {
         return price;
     }
 
+    /**
+     * @return the buyer
+     */
     public String getBuyer() {
         return buyer;
-    }
-    
-    public String getSteamId() {
-        return steamId;
     }
 
     /**

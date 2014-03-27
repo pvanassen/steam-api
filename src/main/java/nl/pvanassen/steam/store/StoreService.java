@@ -1,6 +1,7 @@
 package nl.pvanassen.steam.store;
 
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -12,9 +13,7 @@ public interface StoreService {
     /**
      * Buy a listed item
      * 
-     * @param listingId Listing id
-     * @param fee Fee to pay
-     * @param subTotal Subtotal
+     * @param listing Listing to buy
      * @return The results of a purchase
      */
     BuyResult buy( Listing listing );
@@ -31,6 +30,13 @@ public interface StoreService {
      * @return List of items in the inventory
      */
     List<InventoryItem> getInventory();
+
+    /**
+     * Retrieve all that is in the inventory
+     * 
+     * @param queue Queue to add the items to
+     */
+    void getAsyncInventory( Queue<Listing> queue );
 
     /**
      * The datapoints will always be called first. Once they are done the listings handle is called
@@ -57,16 +63,18 @@ public interface StoreService {
     /**
      * Sell an item in the inventory
      * 
-     * @param assetId
-     * @param appId
-     * @param contextId
-     * @param price
+     * @param assetId Asset id to sell
+     * @param appId App id to sell
+     * @param urlName Url name to sell
+     * @param contextId Context id to sell
+     * @param price Price to use
      * @return True if successful, false if not
      */
     boolean sell( String assetId, int appId, String urlName, int contextId, int price );
 
     /**
      * Get sold items currently offered
+     * 
      * @return a list of market history items
      */
     List<MarketHistory> getSoldItemsFromHistory();
