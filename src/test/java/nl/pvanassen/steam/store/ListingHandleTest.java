@@ -18,11 +18,11 @@ public class ListingHandleTest {
 
     @Test
     public void testPerformance() throws IOException {
-        for ( int i = 0; i != 10000; i++ ) {
+        for ( int i = 0; i != 5000; i++ ) {
             handle.handle( getClass().getResourceAsStream( "/listing.json" ) );
         }
         long start = System.currentTimeMillis();
-        for ( int i = 0; i != 100000; i++ ) {
+        for ( int i = 0; i != 10000; i++ ) {
             handle.handle( getClass().getResourceAsStream( "/listing.json" ) );
         }
         long time = System.currentTimeMillis() - start;
