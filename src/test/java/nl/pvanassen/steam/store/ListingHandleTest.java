@@ -21,6 +21,12 @@ public class ListingHandleTest {
         for ( int i = 0; i != 10000; i++ ) {
             handle.handle( getClass().getResourceAsStream( "/listing.json" ) );
         }
+        long start = System.currentTimeMillis();
+        for ( int i = 0; i != 100000; i++ ) {
+            handle.handle( getClass().getResourceAsStream( "/listing.json" ) );
+        }
+        long time = System.currentTimeMillis() - start;
+        System.out.println("Took: " + time);
     }
 
     @Test
