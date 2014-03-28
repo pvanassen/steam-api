@@ -1,8 +1,10 @@
 package nl.pvanassen.steam.store;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -10,10 +12,11 @@ import org.junit.Test;
 
 public class ListingHandleTest {
     private ListingHandle handle;
-
+    private final Queue<Listing> listingQueue = new LinkedBlockingQueue<>();
+    
     @Before
     public void setUp() {
-        handle = new ListingHandle( new ObjectMapper() );
+        handle = new ListingHandle( new ObjectMapper(), listingQueue );
     }
 
     @Test
@@ -31,8 +34,9 @@ public class ListingHandleTest {
 
     @Test
     public void testHandle() throws IOException {
+        listingQueue.clear();
         handle.handle( getClass().getResourceAsStream( "/listing.json" ) );
-        List<Listing> listings = handle.getListings();
+        List<Listing> listings = new ArrayList<>(listingQueue);
         assertEquals( 10, listings.size() );
         assertEquals( 730, listings.get( 0 ).getAppId() );
         assertEquals( "eSports%20Case", listings.get( 0 ).getUrlName() );

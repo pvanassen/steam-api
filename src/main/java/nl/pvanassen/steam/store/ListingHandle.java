@@ -9,20 +9,15 @@ import nl.pvanassen.steam.http.DefaultHandle;
 
 import org.codehaus.jackson.*;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class ListingHandle extends DefaultHandle {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+//    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ObjectMapper objectMapper;
-    private final List<Listing> listings = new LinkedList<Listing>();
+    private final Queue<Listing> listingQueue;
 
-    ListingHandle( ObjectMapper objectMapper ) {
+    ListingHandle( ObjectMapper objectMapper, Queue<Listing> listingQueue ) {
         this.objectMapper = objectMapper;
-    }
-
-    List<Listing> getListings() {
-        return listings;
+        this.listingQueue = listingQueue;
     }
 
     @Override
@@ -64,7 +59,7 @@ class ListingHandle extends DefaultHandle {
             if ( listing.getFee() == 0 ) {
                 continue;
             }
-            listings.add( listing );
+            listingQueue.offer( listing );
         }
     }
 

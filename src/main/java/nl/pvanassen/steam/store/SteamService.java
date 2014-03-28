@@ -118,9 +118,10 @@ class SteamService implements StoreService {
     @Override
     public List<Listing> getNewlyListed() {
         try {
-            ListingHandle handle = new ListingHandle( objectMapper );
+            LinkedList<Listing> listing = new LinkedList<>();
+            ListingHandle handle = new ListingHandle( objectMapper, listing );
             http.get( "http://steamcommunity.com/market/recent", handle );
-            return handle.getListings();
+            return listing;
         }
         catch ( IOException e ) {
             logger.error( "Error getting inventory", e );
@@ -136,7 +137,7 @@ class SteamService implements StoreService {
     @Override
     public void getAsyncInventory( Queue<Listing> queue ) {
         try {
-            AsyncListingHandle handle = new AsyncListingHandle( objectMapper, queue );
+            ListingHandle handle = new ListingHandle( objectMapper, queue );
             http.get( "http://steamcommunity.com/market/recent", handle );
         }
         catch ( IOException e ) {
