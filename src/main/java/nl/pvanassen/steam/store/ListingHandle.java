@@ -42,11 +42,8 @@ class ListingHandle extends DefaultHandle {
             else if ( incompleteListingsMap != null && assetsMap != null ) {
                 break;
             }
-            else if ( jParser.getCurrentToken() == JsonToken.START_ARRAY ) {
-                walkArray( jParser );
-            }
-            else if ( jParser.getCurrentToken() == JsonToken.START_OBJECT ) {
-                walkObject( jParser );
+            else if ( jParser.getCurrentToken() == JsonToken.START_ARRAY || jParser.getCurrentToken() == JsonToken.START_OBJECT ) {
+                jParser.skipChildren();
             }
         }
         for ( Map.Entry<String, IncompleteListing> entry : incompleteListingsMap.entrySet() ) {
@@ -60,30 +57,6 @@ class ListingHandle extends DefaultHandle {
                 continue;
             }
             listingQueue.offer( listing );
-        }
-    }
-
-    private void walkArray( JsonParser jParser ) throws JsonParseException, IOException {
-        while ( jParser.nextToken() != JsonToken.END_ARRAY ) {
-            jParser.nextToken();
-            if ( jParser.getCurrentToken() == JsonToken.START_OBJECT ) {
-                walkObject( jParser );
-            }
-            else if ( jParser.getCurrentToken() == JsonToken.START_ARRAY ) {
-                walkArray( jParser );
-            }
-        }
-    }
-
-    private void walkObject( JsonParser jParser ) throws JsonParseException, IOException {
-        while ( jParser.nextToken() != JsonToken.END_OBJECT ) {
-            jParser.nextToken();
-            if ( jParser.getCurrentToken() == JsonToken.START_OBJECT ) {
-                walkObject( jParser );
-            }
-            else if ( jParser.getCurrentToken() == JsonToken.START_ARRAY ) {
-                walkArray( jParser );
-            }
         }
     }
 
@@ -107,13 +80,10 @@ class ListingHandle extends DefaultHandle {
                             asset.tradable = jParser.getIntValue() == 1;
                         }
                         else if ( "market_hash_name".equals( fieldname ) ) {
-                            asset.urlName = URLEncoder.encode( jParser.getText(), "UTF-8" ).replace( "+", "%20" );
+                            asset.urlName = jParser.getText().replace( " ", "%20" );
                         }
-                        else if ( jParser.getCurrentToken() == JsonToken.START_ARRAY ) {
-                            while ( jParser.nextToken() != JsonToken.END_ARRAY ) {
-                                jParser.nextToken();
-                                // Loop
-                            }
+                        else if ( jParser.getCurrentToken() == JsonToken.START_ARRAY || jParser.getCurrentToken() == JsonToken.START_OBJECT ) {
+                            jParser.skipChildren();
                         }
                     }
                     map.put( asset.id, asset );
@@ -145,15 +115,8 @@ class ListingHandle extends DefaultHandle {
                         else if ( "contextid".equals( fieldname ) ) {
                             listing.contextId = Integer.valueOf( jParser.getText() );
                         }
-                        else if ( jParser.getCurrentToken() == JsonToken.START_ARRAY ) {
-                            while ( jParser.nextToken() != JsonToken.END_ARRAY ) {
-                                jParser.nextToken();
-                            }
-                        }
-                        else if ( jParser.getCurrentToken() == JsonToken.START_OBJECT ) {
-                            while ( jParser.nextToken() != JsonToken.END_OBJECT ) {
-                                jParser.nextToken();
-                            }
+                        else if ( jParser.getCurrentToken() == JsonToken.START_ARRAY || jParser.getCurrentToken() == JsonToken.START_OBJECT ) {
+                            jParser.skipChildren();
                         }
                     }
                 }
@@ -186,10 +149,8 @@ class ListingHandle extends DefaultHandle {
                         jParser.nextToken();
                     }
                 }
-                else if ( jParser.getCurrentToken() == JsonToken.START_OBJECT ) {
-                    while ( jParser.nextToken() != JsonToken.END_OBJECT ) {
-                        jParser.nextToken();
-                    }
+                else if ( jParser.getCurrentToken() == JsonToken.START_ARRAY || jParser.getCurrentToken() == JsonToken.START_OBJECT ) {
+                    jParser.skipChildren();
                 }
             }
             map.put( listing.id, listing );
