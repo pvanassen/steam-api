@@ -2,16 +2,17 @@ package nl.pvanassen.steam.store;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLEncoder;
 import java.util.*;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 
 import org.codehaus.jackson.*;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class ListingHandle extends DefaultHandle {
-//    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ObjectMapper objectMapper;
     private final Queue<Listing> listingQueue;
 
@@ -22,6 +23,7 @@ class ListingHandle extends DefaultHandle {
 
     @Override
     public void handle( InputStream stream ) throws IOException {
+        try {
         Map<String, IncompleteListing> incompleteListingsMap = null;
         Map<String, Asset> assetsMap = null;
         JsonParser jParser = objectMapper.getJsonFactory().createJsonParser( stream );
@@ -57,6 +59,10 @@ class ListingHandle extends DefaultHandle {
                 continue;
             }
             listingQueue.offer( listing );
+        }
+        }
+        catch (RuntimeException e) {
+            logger.error("Error getting listing", e);
         }
     }
 
