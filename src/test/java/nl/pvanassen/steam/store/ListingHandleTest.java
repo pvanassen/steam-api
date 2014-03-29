@@ -37,15 +37,15 @@ public class ListingHandleTest {
         handle.handle( getClass().getResourceAsStream( "/listing.json" ) );
         List<Listing> listings = new ArrayList<>(listingQueue);
         assertEquals( 10, listings.size() );
-        assertEquals( 730, listings.get( 0 ).getAppId() );
-        assertEquals( "eSports%20Case", listings.get( 0 ).getUrlName() );
-        assertEquals( 2, listings.get( 0 ).getFee() );
-        assertEquals( 1, listings.get( 0 ).getPublisherFee() );
-        assertEquals( 730, listings.get( 0 ).getPublisherFeeApp() );
-        assertEquals( "2854460461479367720", listings.get( 0 ).getListingId() );
-        assertEquals( 1, listings.get( 0 ).getSteamFee() );
-        assertEquals( "76561197971150314", listings.get( 0 ).getSteamIdLister() );
-        assertEquals( 16, listings.get( 0 ).getSubTotal() );
+        assertEquals( 730, listings.get( 9 ).getAppId() );
+        assertEquals( "eSports%20Case", listings.get( 9 ).getUrlName() );
+        assertEquals( 2, listings.get( 9 ).getFee() );
+        assertEquals( 1, listings.get( 9 ).getPublisherFee() );
+        assertEquals( 730, listings.get( 9 ).getPublisherFeeApp() );
+        assertEquals( "2854460461479367720", listings.get( 9 ).getListingId() );
+        assertEquals( 1, listings.get( 9 ).getSteamFee() );
+        assertEquals( "76561197971150314", listings.get( 9 ).getSteamIdLister() );
+        assertEquals( 16, listings.get( 9 ).getSubTotal() );
     }
 
 }
