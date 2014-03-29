@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -12,7 +11,7 @@ import org.junit.Test;
 
 public class ListingHandleTest {
     private ListingHandle handle;
-    private final Queue<Listing> listingQueue = new LinkedBlockingQueue<>();
+    private final Deque<Listing> listingQueue = new LinkedList<>();
     
     @Before
     public void setUp() {

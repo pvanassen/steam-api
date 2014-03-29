@@ -3,7 +3,7 @@ package nl.pvanassen.steam.store;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.Queue;
+import java.util.Deque;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 
@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
 class ListingHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ObjectMapper objectMapper;
-    private final Queue<Listing> listings;
+    private final Deque<Listing> listings;
 
-    ListingHandle( ObjectMapper objectMapper, Queue<Listing> listings ) {
+    ListingHandle( ObjectMapper objectMapper, Deque<Listing> listings ) {
         this.objectMapper = objectMapper;
         this.listings = listings;
     }
@@ -32,7 +32,7 @@ class ListingHandle extends DefaultHandle {
             String id = listing.get( "asset" ).get( "id" ).asText();
             String urlName = URLEncoder.encode( assets.get( Integer.toString( appId ) ).get( contextId ).get( id ).get( "market_hash_name" ).asText(), "UTF-8" ).replace( "+", "%20" );
             try {
-                listings.add( new Listing( appId, urlName, listing.get( "listingid" ).asText(), listing.get( "steamid_lister" ).asText(), listing.get( "converted_price" ).asInt(), listing.get( "converted_fee" ).asInt(), listing.get( "converted_steam_fee" ).asInt(), listing.get( "converted_publisher_fee" ).asInt(), listing.get( "publisher_fee_app" ).asInt(), listing.get( "publisher_fee_percent" ).asDouble() ) );
+                listings.offerFirst( new Listing( appId, urlName, listing.get( "listingid" ).asText(), listing.get( "steamid_lister" ).asText(), listing.get( "converted_price" ).asInt(), listing.get( "converted_fee" ).asInt(), listing.get( "converted_steam_fee" ).asInt(), listing.get( "converted_publisher_fee" ).asInt(), listing.get( "publisher_fee_app" ).asInt(), listing.get( "publisher_fee_percent" ).asDouble() ) );
             }
             catch (NullPointerException e) {
                 logger.error("Error fetching " + listing);

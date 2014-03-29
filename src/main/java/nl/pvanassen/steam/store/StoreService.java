@@ -1,7 +1,7 @@
 package nl.pvanassen.steam.store;
 
+import java.util.Deque;
 import java.util.List;
-import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -36,7 +36,7 @@ public interface StoreService {
      * 
      * @param queue Queue to add the items to
      */
-    void getAsyncInventory( Queue<Listing> queue );
+    void getAsyncInventory( Deque<Listing> queue );
 
     /**
      * The datapoints will always be called first. Once they are done the listings handle is called
