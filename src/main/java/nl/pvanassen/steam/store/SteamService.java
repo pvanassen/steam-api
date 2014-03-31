@@ -155,10 +155,6 @@ class SteamService implements StoreService {
         catch ( IOException e ) {
             logger.error( "Error getting wallet", e );
         }
-        // If the wallet is empty, re-init all cookies
-        if (handle.getWallet() == 0) {
-            http.reset();
-        }
         return handle.getWallet();
     }
 
@@ -196,5 +192,17 @@ class SteamService implements StoreService {
             logger.error( "Error getting data", e );
         }
         return handle.getMarketHistory();
+    }
+    
+    @Override
+    public Outstandings getOutstandings() {
+        OutstandingsHandle handle = new OutstandingsHandle();
+        try {
+            http.get( "http://steamcommunity.com/market/", handle );
+        }
+        catch ( IOException e ) {
+            logger.error( "Error getting wallet", e );
+        }
+        return handle.getOutstandings();
     }
 }

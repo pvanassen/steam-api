@@ -78,4 +78,11 @@ public interface StoreService {
      * @return a list of market history items
      */
     List<MarketHistory> getSoldItemsFromHistory();
+
+    /**
+     * Get outstanding items
+     * 
+     * @return Outstanding items
+     */
+    Outstandings getOutstandings();
 }
