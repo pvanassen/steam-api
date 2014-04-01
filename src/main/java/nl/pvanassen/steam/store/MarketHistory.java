@@ -14,8 +14,9 @@ public class MarketHistory extends Item {
     private final Date acted;
     private final int price;
     private final String buyer;
+    private final MarketHistoryStatus status;
 
-    MarketHistory( String steamId, int appId, int contextId, String urlName, Date listed, Date acted, int price, String buyer ) {
+    MarketHistory( String steamId, int appId, int contextId, String urlName, Date listed, Date acted, int price, String buyer, MarketHistoryStatus status ) {
         super(appId, urlName);
         this.steamId = steamId;
         this.contextId = contextId;
@@ -23,6 +24,7 @@ public class MarketHistory extends Item {
         this.acted = acted;
         this.price = price;
         this.buyer = buyer;
+        this.status = status;
     }
 
     /**
@@ -65,6 +67,13 @@ public class MarketHistory extends Item {
      */
     public String getBuyer() {
         return buyer;
+    }
+    
+    /**
+     * @return Status of the item
+     */
+    public MarketHistoryStatus getStatus() {
+        return status;
     }
 
     /**

@@ -140,7 +140,7 @@ class MarketHistoryHandle extends DefaultHandle {
                         Date listed = formatter.parse( historyInfo.listedStr );
                         // 0,10&#8364;
                         int price = Integer.parseInt( historyInfo.price.replace( ",", "" ).replace( "€", "" ).replace( "--", "00" ).trim() );
-                        marketHistory.add( new MarketHistory( historyRowId, item.get("appid").asInt(), item.get("contextid").asInt(), urlName, listed, acted, price, historyInfo.buyer ) );
+                        marketHistory.add( new MarketHistory( historyRowId, item.get("appid").asInt(), item.get("contextid").asInt(), urlName, listed, acted, price, historyInfo.buyer, null ) );
                     }
                     catch ( ParseException e ) {
                         logger.error( "Error parsing date", e );
