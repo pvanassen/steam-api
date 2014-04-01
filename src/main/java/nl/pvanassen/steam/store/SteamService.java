@@ -205,4 +205,17 @@ class SteamService implements StoreService {
         }
         return handle.getOutstandings();
     }
+    
+    @Override
+    public String login( String user, String password ) throws VerificationError {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public String verification( String code ) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
 }

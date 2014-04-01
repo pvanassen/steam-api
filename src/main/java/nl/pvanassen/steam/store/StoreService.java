@@ -85,4 +85,22 @@ public interface StoreService {
      * @return Outstanding items
      */
     Outstandings getOutstandings();
+
+    /**
+     * Do an login attempt. If a code is requested a VerificationError is thrown
+     * 
+     * @param user Username
+     * @param password Password
+     * @return String cookies
+     * @throws VerificationError In case a code is requested
+     */
+    String login( String user, String password ) throws VerificationError;
+
+    /**
+     * Verification based on a code
+     * 
+     * @param code The requested code
+     * @return String cookies
+     */
+    String verification( String code );
 }
