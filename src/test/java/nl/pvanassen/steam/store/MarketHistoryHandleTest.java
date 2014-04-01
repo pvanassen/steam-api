@@ -1,9 +1,9 @@
 package nl.pvanassen.steam.store;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
+import java.util.List;
 
+import static  org.junit.Assert.*;
 import org.junit.Test;
 
 public class MarketHistoryHandleTest {
@@ -12,6 +12,8 @@ public class MarketHistoryHandleTest {
     public void testHandle() throws IOException {
         MarketHistoryHandle handle = new MarketHistoryHandle( );
         handle.handle(getClass().getResourceAsStream("/markethistory.json"));
+        List<MarketHistory> history = handle.getMarketHistory();
+        assertEquals(1000, history.size());
     }
 
 }

@@ -1,12 +1,23 @@
 package nl.pvanassen.steam.store;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
-import javax.xml.xpath.*;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 
@@ -16,7 +27,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.cyberneko.html.parsers.DOMFragmentParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.*;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.html.HTMLDocument;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -31,6 +44,7 @@ class MarketHistoryHandle extends DefaultHandle {
     private static final XPathExpression DATE_XPATH;
     private static final XPathExpression PRICE_XPATH;
     private static final XPathExpression BUYER_XPATH;
+    private static final XPathExpression ACTED_XPATH;
 
     static {
         XPathExpression historyRowXpath = null;
@@ -38,12 +52,14 @@ class MarketHistoryHandle extends DefaultHandle {
         XPathExpression dateXpath = null;
         XPathExpression priceXpath = null;
         XPathExpression buyerXpath = null;
+        XPathExpression actedXpath = null;
         try {
             historyRowXpath = XPATH.compile( "//DIV[@class='market_listing_row market_recent_listing_row']" );
             gainLossXpath = XPATH.compile( ".//DIV[@class='market_listing_left_cell market_listing_gainorloss']" );
             dateXpath = XPATH.compile( ".//DIV[@class='market_listing_right_cell market_listing_listed_date']" );
             priceXpath = XPATH.compile( ".//SPAN[@class='market_listing_price']" );
             buyerXpath = XPATH.compile( ".//DIV[@class='market_listing_whoactedwith_name_block']" );
+            actedXpath = XPATH.compile( ".//DIV[@class='market_listing_right_cell market_listing_whoactedwith']" );
         }
         catch ( XPathExpressionException e ) {
             LoggerFactory.getLogger( MarketHistory.class ).error( "Error instantiating XPATH", e );
@@ -53,28 +69,23 @@ class MarketHistoryHandle extends DefaultHandle {
         DATE_XPATH = dateXpath;
         PRICE_XPATH = priceXpath;
         BUYER_XPATH = buyerXpath;
+        ACTED_XPATH = actedXpath;
     }
 
     MarketHistoryHandle() {
         super();
     }
 
-    private final class HistoryInfo {
-        private final String listedStr;
-        private final String actedStr;
-        private final String price;
-        private final String buyer;
-
-        HistoryInfo( String listedStr, String actedStr, String price, String buyer ) {
-            super();
-            this.listedStr = listedStr;
-            this.actedStr = actedStr;
-            this.price = price;
-            this.buyer = buyer;
-        }
-
+    private static class Asset {
+    	private final int appId;
+    	private final int contextId;
+    	private final String urlName;
+    	Asset(int appId, int contextId, String urlName) {
+			this.appId = appId;
+			this.contextId = contextId;
+			this.urlName = urlName;
+		}
     }
-
     @Override
     public void handle( InputStream stream ) throws IOException {
         ObjectMapper om = new ObjectMapper();
@@ -84,69 +95,90 @@ class MarketHistoryHandle extends DefaultHandle {
         	logger.error("There was an error: " + resultHtml);
         	return;
         }
-        Map<String, HistoryInfo> htmlMap = new HashMap<>();
 
         DOMFragmentParser parser = new DOMFragmentParser();
         HTMLDocument document = new HTMLDocumentImpl();
         try {
+        	Map<String,Asset> assetMap = new HashMap<>();
+            SimpleDateFormat formatter = new SimpleDateFormat( "d MMM", Locale.US );
+            JsonNode assets = node.get( "assets" );
+            for ( JsonNode appId : assets ) {
+                for ( JsonNode contextId : appId ) {
+                    for ( JsonNode item : contextId ) {
+                        String urlName = URLEncoder.encode( item.get( "market_hash_name" ).asText(), "UTF-8" ).replace( "+", "%20" );
+                    	assetMap.put( item.get( "id" ).asText(), new Asset(item.get("appid").asInt(), item.get("contextid").asInt(), urlName));
+                    }
+                }
+            }
+            
+            Map<String, String> hoverMap = new HashMap<>();
+            String hovers = node.get( "hovers" ).asText();
+            for ( String hoverStr : hovers.split( ";" ) ) {
+                String hover = hoverStr.trim();
+                if ( hover.startsWith( "CreateItemHoverFromContainer" ) && !hover.contains( "_image" ) ) {
+                    // CreateItemHoverFromContainer( g_rgAssets, 'history_row_2853334817499652196_2853334817499652205_name', 753, '6', '619156810', 0 );
+                    String[] items = hover.replaceAll( "'", "" ).split( "," );
+                    hoverMap.put( items[ 1 ].trim().replace( "_name", "" ), items[ 4 ].trim() );
+                }
+            }
+
+
             DocumentFragment fragment = document.createDocumentFragment();
             parser.parse( new InputSource( new StringReader( resultHtml ) ), fragment );
+            
 
             NodeList nodeSet = ( NodeList ) HISTORY_ROW_XPATH.evaluate( fragment, XPathConstants.NODESET );
             for ( int i = 0; i < nodeSet.getLength(); i++ ) {
                 Node historyRow = nodeSet.item( i );
                 String rowName = historyRow.getAttributes().getNamedItem( "id" ).getTextContent();
                 Node gainLoss = ( Node ) GAIN_LOSS_XPATH.evaluate( historyRow, XPathConstants.NODE );
-                if ( !"-".equals( gainLoss.getTextContent().trim() ) ) {
-                    // No sale
-                    continue;
+                String gainLossText = gainLoss.getTextContent().trim();
+                MarketHistoryStatus status = null;
+                if ("-".equals(gainLossText)) {
+                	status = MarketHistoryStatus.SOLD;
+                }
+                else if ("+".equals(gainLossText)) {
+                    status = MarketHistoryStatus.BOUGHT;
+                }
+                else {
+                	Node actedNode = (Node)ACTED_XPATH.evaluate(historyRow, XPathConstants.NODE);
+                	String acted = actedNode.getTextContent().trim();
+                	if ("Listing created".equals(acted)) {
+                		status = MarketHistoryStatus.CREATED;
+                	}
+                	else if ("Listing canceled".equals(acted)) {
+                		status = MarketHistoryStatus.REMOVED;
+                	}
                 }
                 NodeList dates = ( NodeList ) DATE_XPATH.evaluate( historyRow, XPathConstants.NODESET );
                 String listedStr = dates.item( 0 ).getTextContent().trim();
                 String actedStr = dates.item( 0 ).getTextContent().trim();
-                String price = ( ( Node ) PRICE_XPATH.evaluate( historyRow, XPathConstants.NODE ) ).getTextContent().trim();
-                String buyer = ( ( Node ) BUYER_XPATH.evaluate( historyRow, XPathConstants.NODE ) ).getTextContent().replace( "Buyer:", "" ).trim();
-                htmlMap.put( rowName, new HistoryInfo( listedStr, actedStr, price, buyer ) );
+                String priceStr = ( ( Node ) PRICE_XPATH.evaluate( historyRow, XPathConstants.NODE ) ).getTextContent().trim();
+                String buyer = "";
+                if (status == MarketHistoryStatus.BOUGHT || status == MarketHistoryStatus.SOLD) {
+                	buyer = ( ( Node ) BUYER_XPATH.evaluate( historyRow, XPathConstants.NODE ) ).getTextContent().replace( "Buyer:", "" ).trim();
+                }
+                Asset asset = assetMap.get(hoverMap.get(rowName));
+                if (asset == null) {
+                	continue;
+                }
+                try {
+                    Date acted = formatter.parse( actedStr );
+                    Date listed = formatter.parse( listedStr );
+                    // 0,10&#8364;
+                    int price = 0;
+                    if (!"".equals(priceStr)) {
+                    	price = Integer.parseInt( priceStr.replace( ",", "" ).replace( "€", "" ).replace( "--", "00" ).trim() );
+                    }
+                    marketHistory.add( new MarketHistory( rowName, asset.appId, asset.contextId, asset.urlName, listed, acted, price, buyer, status ) );
+                }
+                catch ( ParseException e ) {
+                    logger.error( "Error parsing date", e );
+                }
             }
         }
         catch ( SAXException | XPathExpressionException e ) {
             logger.error( "Error parsing html", e );
-        }
-        Map<String, String> hoverMap = new HashMap<>();
-        String hovers = node.get( "hovers" ).asText();
-        for ( String hoverStr : hovers.split( ";" ) ) {
-            String hover = hoverStr.trim();
-            if ( hover.startsWith( "CreateItemHoverFromContainer" ) && !hover.contains( "_image" ) ) {
-                // CreateItemHoverFromContainer( g_rgAssets, 'history_row_2853334817499652196_2853334817499652205_name', 753, '6', '619156810', 0 );
-                String[] items = hover.replaceAll( "'", "" ).split( "," );
-                hoverMap.put( items[ 4 ].trim(), items[ 1 ].trim().replace( "_name", "" ) );
-            }
-        }
-        SimpleDateFormat formatter = new SimpleDateFormat( "d MMM", Locale.US );
-        JsonNode assets = node.get( "assets" );
-        for ( JsonNode appId : assets ) {
-            for ( JsonNode contextId : appId ) {
-                for ( JsonNode item : contextId ) {
-                    String historyRowId = hoverMap.get( item.get( "id" ).asText() );
-                    HistoryInfo historyInfo = htmlMap.get( historyRowId );
-                    if ( historyInfo == null ) {
-                        // Not a sale
-                        continue;
-                    }
-                    String urlName = URLEncoder.encode( item.get( "market_hash_name" ).asText(), "UTF-8" ).replace( "+", "%20" );
-                    // 17 Mar
-                    try {
-                        Date acted = formatter.parse( historyInfo.actedStr );
-                        Date listed = formatter.parse( historyInfo.listedStr );
-                        // 0,10&#8364;
-                        int price = Integer.parseInt( historyInfo.price.replace( ",", "" ).replace( "€", "" ).replace( "--", "00" ).trim() );
-                        marketHistory.add( new MarketHistory( historyRowId, item.get("appid").asInt(), item.get("contextid").asInt(), urlName, listed, acted, price, historyInfo.buyer, null ) );
-                    }
-                    catch ( ParseException e ) {
-                        logger.error( "Error parsing date", e );
-                    }
-                }
-            }
         }
     }
 
