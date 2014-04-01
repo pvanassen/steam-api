@@ -48,6 +48,9 @@ class OutstandingsHandle extends DefaultHandle {
             Node node = ( Node ) ITEMS_DIV_XPATH.evaluate( document, XPathConstants.NODE );
             for ( int i = 0; i < node.getChildNodes().getLength(); i++ ) {
                 Node outstandingRow = node.getChildNodes().item( i );
+                if (outstandingRow.getAttributes() == null) {
+                	continue;
+                }
                 String clz = outstandingRow.getAttributes().getNamedItem( "class" ).getTextContent();
                 if (!clz.contains( "market_recent_listing_row" )) {
                     continue;
