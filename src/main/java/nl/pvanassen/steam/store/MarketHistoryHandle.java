@@ -1,8 +1,6 @@
 package nl.pvanassen.steam.store;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -99,33 +97,13 @@ class MarketHistoryHandle extends DefaultHandle {
         DOMFragmentParser parser = new DOMFragmentParser();
         HTMLDocument document = new HTMLDocumentImpl();
         try {
-        	Map<String,Asset> assetMap = new HashMap<>();
             SimpleDateFormat formatter = new SimpleDateFormat( "d MMM", Locale.US );
-            JsonNode assets = node.get( "assets" );
-            for ( JsonNode appId : assets ) {
-                for ( JsonNode contextId : appId ) {
-                    for ( JsonNode item : contextId ) {
-                        String urlName = URLEncoder.encode( item.get( "market_hash_name" ).asText(), "UTF-8" ).replace( "+", "%20" );
-                    	assetMap.put( item.get( "id" ).asText(), new Asset(item.get("appid").asInt(), item.get("contextid").asInt(), urlName));
-                    }
-                }
-            }
-            
-            Map<String, String> hoverMap = new HashMap<>();
-            String hovers = node.get( "hovers" ).asText();
-            for ( String hoverStr : hovers.split( ";" ) ) {
-                String hover = hoverStr.trim();
-                if ( hover.startsWith( "CreateItemHoverFromContainer" ) && !hover.contains( "_image" ) ) {
-                    // CreateItemHoverFromContainer( g_rgAssets, 'history_row_2853334817499652196_2853334817499652205_name', 753, '6', '619156810', 0 );
-                    String[] items = hover.replaceAll( "'", "" ).split( "," );
-                    hoverMap.put( items[ 1 ].trim().replace( "_name", "" ), items[ 4 ].trim() );
-                }
-            }
 
+            Map<String, Asset> assetMap = getAssetMap( node );
+            Map<String, String> hoverMap = getHovers( node );
 
             DocumentFragment fragment = document.createDocumentFragment();
             parser.parse( new InputSource( new StringReader( resultHtml ) ), fragment );
-            
 
             NodeList nodeSet = ( NodeList ) HISTORY_ROW_XPATH.evaluate( fragment, XPathConstants.NODESET );
             for ( int i = 0; i < nodeSet.getLength(); i++ ) {
@@ -158,6 +136,10 @@ class MarketHistoryHandle extends DefaultHandle {
                 if (status == MarketHistoryStatus.BOUGHT || status == MarketHistoryStatus.SOLD) {
                 	buyer = ( ( Node ) BUYER_XPATH.evaluate( historyRow, XPathConstants.NODE ) ).getTextContent().replace( "Buyer:", "" ).trim();
                 }
+                int eventIdx = rowName.indexOf( "_event" );
+                if (eventIdx > -1) {
+                    rowName = rowName.substring( 0, eventIdx );
+                }
                 Asset asset = assetMap.get(hoverMap.get(rowName));
                 if (asset == null) {
                 	continue;
@@ -180,6 +162,38 @@ class MarketHistoryHandle extends DefaultHandle {
         catch ( SAXException | XPathExpressionException e ) {
             logger.error( "Error parsing html", e );
         }
+    }
+
+    private Map<String, Asset> getAssetMap( JsonNode node ) throws UnsupportedEncodingException {
+        Map<String,Asset> assetMap = new HashMap<>();
+        JsonNode assets = node.get( "assets" );
+        for ( JsonNode appId : assets ) {
+            for ( JsonNode contextId : appId ) {
+                for ( JsonNode item : contextId ) {
+                    String urlName = URLEncoder.encode( item.get( "market_hash_name" ).asText(), "UTF-8" ).replace( "+", "%20" );
+                	assetMap.put( item.get( "id" ).asText(), new Asset(item.get("appid").asInt(), item.get("contextid").asInt(), urlName));
+                }
+            }
+        }
+        return assetMap;
+    }
+
+    private Map<String, String> getHovers( JsonNode node) {
+        Map<String, String> hoverMap = new HashMap<>();
+        String hovers = node.get( "hovers" ).asText();
+        for ( String hoverStr : hovers.split( ";" ) ) {
+            String hover = hoverStr.trim();
+            if ( hover.startsWith( "CreateItemHoverFromContainer" ) ) {
+                // CreateItemHoverFromContainer( g_rgAssets, 'history_row_2853334817499652196_2853334817499652205_name', 753, '6', '619156810', 0 );
+                String[] items = hover.replaceAll( "'", "" ).split( "," );
+                String id = items[ 4 ].trim();
+                String rowName = items[1].trim();
+                hoverMap.put( rowName, id );
+                int cutoffIdx = rowName.indexOf( '_',  40);
+                hoverMap.put( rowName.substring( 0, cutoffIdx ), id );
+            }
+        }
+        return hoverMap;
     }
 
     List<MarketHistory> getMarketHistory() {
