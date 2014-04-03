@@ -28,7 +28,7 @@ class OutstandingsHandle extends DefaultHandle {
         XPathExpression priceXpath = null;
         try {
             itemsDivXpath = XPATH.compile( "//DIV[@class='market_content_block my_listing_section market_home_listing_table']" );
-            priceXpath = XPATH.compile( "//SPAN[@class='market_listing_price']" );
+            priceXpath = XPATH.compile( ".//SPAN[@class='market_listing_price']" );
         }
         catch ( XPathExpressionException e ) {
             LoggerFactory.getLogger( MarketHistory.class ).error( "Error instantiating XPATH", e );

@@ -17,4 +17,14 @@ public class OutstandingsHandleTest extends OutstandingsHandle {
 		assertEquals("Expected 0", 0, handle.getOutstandings().getItems());
 	}
 
+
+	@Test
+	public void testLoadedHandle() throws IOException {
+		OutstandingsHandle handle = new OutstandingsHandle();
+		handle.handle(getClass().getResourceAsStream("/loaded-marketpage.html"));
+		assertNotNull("Expected object", handle.getOutstandings());
+		assertEquals("Expected 6380", 6380, handle.getOutstandings().getAmount());
+		assertEquals("Expected 87", 87, handle.getOutstandings().getItems());
+	}
+
 }
