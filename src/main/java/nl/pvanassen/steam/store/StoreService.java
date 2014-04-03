@@ -2,7 +2,6 @@ package nl.pvanassen.steam.store;
 
 import java.util.Deque;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Interface defining a connecion to the steam store
@@ -19,10 +18,9 @@ public interface StoreService {
     BuyResult buy( Listing listing );
 
     /**
-     * @param executorService Executor service for multi-threading fetch
      * @param handle Handle overview item
      */
-    void getAllItems( ExecutorService executorService, GenericHandle<OverviewItem> handle );
+    void getAllItems( GenericHandle<OverviewItem> handle );
 
     /**
      * Retrieve all that is in the inventory
