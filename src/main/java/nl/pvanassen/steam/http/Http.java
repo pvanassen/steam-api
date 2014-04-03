@@ -71,13 +71,15 @@ public class Http {
     private final void init() {
         CookieStore cookieStore = new BasicCookieStore();
         context.setCookieStore(cookieStore);
-        for (String cookie : cookies.split("; ")) {
-        	int split = cookie.indexOf('=');
-            String parts[] = new String[]{cookie.substring(0, split), cookie.substring(split+1)};
-            if ("Steam_Language".equals(parts[0])) {
-                continue;
-            }
-            cookieStore.addCookie(getCookie(parts[0], parts[1]));
+        if (!"".equals(cookies)) {
+	        for (String cookie : cookies.split("; ")) {
+	        	int split = cookie.indexOf('=');
+	            String parts[] = new String[]{cookie.substring(0, split), cookie.substring(split+1)};
+	            if ("Steam_Language".equals(parts[0])) {
+	                continue;
+	            }
+	            cookieStore.addCookie(getCookie(parts[0], parts[1]));
+	        }
         }
         cookieStore.addCookie(getCookie("Steam_Language", "english"));
     }

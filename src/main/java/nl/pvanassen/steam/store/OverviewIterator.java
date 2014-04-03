@@ -12,6 +12,7 @@ import nl.pvanassen.steam.http.Http;
 import org.apache.commons.io.output.NullOutputStream;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
@@ -36,7 +37,10 @@ class OverviewIterator implements Iterator<OverviewItem>, Iterable<OverviewItem>
         public String call() throws Exception {
             JsonHandle handle = new JsonHandle( om );
             try {
-                http.get( "http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" + start + "&count=" + 100, handle );
+            	while (handle.isError()) {
+            		http.get( "http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" + start + "&count=" + 100, handle );
+            		Thread.sleep(500);
+                }
             }
             catch ( IOException e ) {
                 logger.error( "Error getting data", e );
@@ -52,6 +56,8 @@ class OverviewIterator implements Iterator<OverviewItem>, Iterable<OverviewItem>
         private String html;
 
         private int totalCount;
+        
+        private boolean error = true;
 
         JsonHandle( ObjectMapper om ) {
             this.om = om;
@@ -70,7 +76,14 @@ class OverviewIterator implements Iterator<OverviewItem>, Iterable<OverviewItem>
             JsonNode node = om.readTree( stream );
             html = node.get( "results_html" ).asText();
             totalCount = node.get( "total_count" ).asInt();
+            if (!html.contains("Please try again later")) {
+            	error = false;
+            }
         }
+        
+        boolean isError() {
+			return error;
+		}
     }
 
     private final Logger logger = LoggerFactory.getLogger( getClass() );
@@ -137,7 +150,7 @@ class OverviewIterator implements Iterator<OverviewItem>, Iterable<OverviewItem>
                 return null;
             }
             html = futurePages.poll().get();
-            if ( html.contains( "market_listing_table_message" ) ) {
+            if ( html.contains( "There were no items matching your search. Try again with different keywords" ) ) {
                 logger.info( "Last page hit" );
                 // Done
                 return null;

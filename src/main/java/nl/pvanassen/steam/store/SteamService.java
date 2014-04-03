@@ -61,15 +61,25 @@ class SteamService implements StoreService {
      * @see nl.pvanassen.steam.store.StoreService#getAllItems(java.util.concurrent.ExecutorService, nl.pvanassen.steam.store.GenericHandle)
      */
     @Override
-    public void getAllItems( ExecutorService executorService, GenericHandle<OverviewItem> handle ) {
-        for ( OverviewItem overviewItem : new OverviewIterator(http, executorService) ) {
-            try {
-                handle.handle( overviewItem );
-            }
-            catch ( RuntimeException e ) {
-                logger.error( "Error handling item", e );
-            }
-        }
+    public void getAllItems( ExecutorService executorService, GenericHandle<OverviewItem> genericHandle ) {
+    	try {
+    		OverviewHandle handle = new OverviewHandle(genericHandle, objectMapper);
+    		// Initial high, will be corrected on first run
+    		int totalCount = 5000;
+    		for ( int start = 0; start < totalCount; start += 100 ) {
+        		while (handle.isError()) {
+        			http.get( "http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" + start + "&count=100", handle );
+        			totalCount = handle.getTotalCount();
+        			// Stop on overrun
+        			if (handle.isLastPage()) {
+        				return;
+        			}
+        		}
+    		}
+    	}
+    	catch (IOException e) {
+            logger.error( "Error handling item", e );
+    	}
     }
 
     @Override
