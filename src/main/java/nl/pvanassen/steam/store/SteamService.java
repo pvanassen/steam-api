@@ -2,7 +2,6 @@ package nl.pvanassen.steam.store;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 
 import nl.pvanassen.steam.http.Http;
 
@@ -46,6 +45,10 @@ class SteamService implements StoreService {
             http.post( "https://steamcommunity.com/market/buylisting/" + listingId, params, handle );
             if (handle.getMessage() != null && handle.getMessage().contains("temporary")) {
             	return buy(listing);
+            }
+            if (handle.getMessage() != null && handle.getMessage().contains("Cookies")) {
+                http.reset();
+                return buy(listing);
             }
             return new BuyResult( !handle.isError(), handle.getWallet(), handle.getMessage() );
         }
@@ -161,6 +164,10 @@ class SteamService implements StoreService {
         WalletHandle handle = new WalletHandle();
         try {
             http.get( "http://steamcommunity.com/market/", handle );
+            if (handle.getWallet() == 0) {
+                http.reset();
+                return getWallet();
+            }
         }
         catch ( IOException e ) {
             logger.error( "Error getting wallet", e );
