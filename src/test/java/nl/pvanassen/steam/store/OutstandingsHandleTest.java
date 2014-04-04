@@ -15,6 +15,7 @@ public class OutstandingsHandleTest extends OutstandingsHandle {
 		assertNotNull("Expected object", handle.getOutstandings());
 		assertEquals("Expected 0", 0, handle.getOutstandings().getAmount());
 		assertEquals("Expected 0", 0, handle.getOutstandings().getItems());
+		assertNotNull(handle.getItems());
 	}
 
 
@@ -25,6 +26,8 @@ public class OutstandingsHandleTest extends OutstandingsHandle {
 		assertNotNull("Expected object", handle.getOutstandings());
 		assertEquals("Expected 6380", 6380, handle.getOutstandings().getAmount());
 		assertEquals("Expected 87", 87, handle.getOutstandings().getItems());
+        assertNotNull(handle.getItems());
+        assertEquals(87, handle.getItems().size());
 	}
 
 }
