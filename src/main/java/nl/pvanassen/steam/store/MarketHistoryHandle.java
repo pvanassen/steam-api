@@ -43,6 +43,7 @@ class MarketHistoryHandle extends DefaultHandle {
     private static final XPathExpression PRICE_XPATH;
     private static final XPathExpression BUYER_XPATH;
     private static final XPathExpression ACTED_XPATH;
+    private int totalCount;
 
     static {
         XPathExpression historyRowXpath = null;
@@ -88,6 +89,7 @@ class MarketHistoryHandle extends DefaultHandle {
     public void handle( InputStream stream ) throws IOException {
         ObjectMapper om = new ObjectMapper();
         JsonNode node = om.readTree( stream );
+        totalCount = node.get("total_count").asInt();
         String resultHtml = node.get( "results_html" ).asText();
         if (resultHtml.contains("market_listing_table_message")) {
         	logger.error("There was an error: " + resultHtml);
@@ -198,5 +200,9 @@ class MarketHistoryHandle extends DefaultHandle {
 
     List<MarketHistory> getMarketHistory() {
         return marketHistory;
+    }
+    
+    int getTotalCount() {
+        return totalCount;
     }
 }
