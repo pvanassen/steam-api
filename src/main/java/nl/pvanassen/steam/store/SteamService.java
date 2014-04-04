@@ -206,12 +206,13 @@ class SteamService implements StoreService {
             int totalCount = handle.getTotalCount();
             for (int start = 1000; start < totalCount; start += 1000) {
                 do {
+                    Thread.sleep(500);
                     http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count=1000&start=" + start, handle);
                 }
                 while (handle.isError());
             }
         }
-        catch ( IOException | RuntimeException e ) {
+        catch ( IOException | RuntimeException | InterruptedException e ) {
             logger.error( "Error getting data", e );
         }
         return handle.getMarketHistory();
