@@ -83,7 +83,7 @@ class OutstandingsHandle extends DefaultHandle {
                 amount += price;
                 items++;
             }
-            outstandings = new Outstandings( items, amount );
+            outstandings = new Outstandings( items, amount, this.items );
         }
         catch (RuntimeException e) {
             logger.error("Error getting outstanding items", e);

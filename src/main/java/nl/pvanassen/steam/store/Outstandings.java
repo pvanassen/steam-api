@@ -1,5 +1,9 @@
 package nl.pvanassen.steam.store;
 
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
+
 /**
  * Outstanding items
  * 
@@ -9,10 +13,12 @@ package nl.pvanassen.steam.store;
 public class Outstandings {
     private final int items;
     private final int amount;
+    private final List<OutstandingItem> itemList;
     
-    Outstandings(int items, int amount) {
+    Outstandings(int items, int amount, List<OutstandingItem> itemList) {
         this.items = items;
         this.amount = amount;
+        this.itemList = ImmutableList.copyOf(itemList);
     }
    
     /**
@@ -28,4 +34,12 @@ public class Outstandings {
     public int getItems() {
         return items;
     }
+    
+    /**
+     * @return Item list
+     */
+    public List<OutstandingItem> getItemList() {
+        return itemList;
+    }
+    
 }
