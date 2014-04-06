@@ -25,7 +25,7 @@ import org.w3c.dom.html.HTMLDocument;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class OverviewHandle extends DefaultHandle {
+class OverviewHandle extends DefaultHandle {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private static final XPathFactory XPATH_FACTORY = XPathFactory
 			.newInstance();
