@@ -9,6 +9,11 @@ public abstract class Item {
     private final int appId;
     private final String urlName;
 
+    /**
+     * Constructor
+     * @param appId App id of the item
+     * @param urlName Url name of the item
+     */
     protected Item( int appId, String urlName ) {
         this.appId = appId;
         this.urlName = urlName;
