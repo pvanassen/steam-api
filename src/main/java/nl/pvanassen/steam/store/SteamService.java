@@ -2,17 +2,12 @@ package nl.pvanassen.steam.store;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
 
 import nl.pvanassen.steam.http.Http;
 
@@ -41,6 +36,13 @@ class SteamService implements StoreService {
 
     SteamService(String cookies) {
         http = Http.getInstance(cookies);
+    }
+
+    /**
+     * @param http For mocking
+     */
+    SteamService(Http http) {
+        this.http = http;
     }
 
     @Override
@@ -84,8 +86,7 @@ class SteamService implements StoreService {
             int totalCount = 5000;
             for (int start = 0; start < totalCount; start += 100) {
                 do {
-                    http.get("http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start="
-                            + start + "&count=100", handle);
+                    http.get("http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" + start + "&count=100", handle);
                     totalCount = handle.getTotalCount();
                     // Stop on overrun
                     if (handle.isLastPage()) {
@@ -110,8 +111,7 @@ class SteamService implements StoreService {
             }
             InventoryHandle handle = new InventoryHandle(objectMapper, contextId, inventoryItems);
             try {
-                http.get("http://steamcommunity.com/id/mantorch/inventory/json/" + appId + "/" + contextId + "/",
-                        handle);
+                http.get("http://steamcommunity.com/id/mantorch/inventory/json/" + appId + "/" + contextId + "/", handle);
             }
             catch (IOException e) {
                 logger.error("Error fetching inventory data", e);
@@ -122,8 +122,7 @@ class SteamService implements StoreService {
     }
 
     @Override
-    public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle,
-            GenericHandle<Listing> listingHandle) {
+    public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle) {
 
         ListingPageScriptHandle handle = new ListingPageScriptHandle(objectMapper);
         try {
@@ -217,8 +216,7 @@ class SteamService implements StoreService {
         MarketHistoryHandle handle = new MarketHistoryHandle();
         try {
             int stepSize = 100;
-            http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count="
-                    + stepSize, handle);
+            http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=" + stepSize, handle);
             if (handle.isError()) {
                 return getSoldItemsFromHistory();
             }
@@ -226,8 +224,7 @@ class SteamService implements StoreService {
             for (int start = stepSize; start < totalCount; start += stepSize) {
                 do {
                     Thread.sleep(500);
-                    http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count="
-                            + stepSize + "&start=" + start, handle);
+                    http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count=" + stepSize + "&start=" + start, handle);
                 }
                 while (handle.isError());
             }
@@ -238,8 +235,7 @@ class SteamService implements StoreService {
         return handle.getMarketHistory();
     }
 
-    @Override            
-
+    @Override
     public Outstandings getOutstandings() {
         OutstandingsHandle handle = new OutstandingsHandle();
         try {
@@ -263,27 +259,22 @@ class SteamService implements StoreService {
                 throw new VerificationException("Invalid username");
             }
             BigInteger pubKeyMod = new BigInteger(rsaHandle.getPublicKeyMod(), 16);
-            BigInteger pubKeyExp = new BigInteger(rsaHandle.getPublicKeyExp(), 16);
-            RSACrypto crypto = new RSACrypto(pubKeyMod,pubKeyExp , false);
-            
+            BigInteger pubKeyExp = new BigInteger(rsaHandle.getPublicKeyExp(), 10);
+            RSACrypto crypto = new RSACrypto(pubKeyMod, pubKeyExp, false);
+
             byte[] encrypted = crypto.encrypt(password.getBytes());
-            byte[] bytes = {-1, 0, 1, 2, 3 };
-            StringBuilder sb = new StringBuilder();
-            for (byte b : bytes) {
-                sb.append(String.format("%02X ", b));
-            }
-            String encryptedPasswordBase64 = Base64.encodeBase64String(sb.toString().getBytes());
-            
+            String encryptedPasswordBase64 = Base64.encodeBase64String(encrypted);
+
             params.put("captcha_text", "");
             params.put("captchagid", "");
             params.put("emailauth", "");
             params.put("emailsteamid", "");
             params.put("loginfriendlyname", "");
-            
+
             params.put("password", encryptedPasswordBase64);
             params.put("remember_login", "true");
             params.put("rsatimestamp", Long.toString(rsaHandle.getTimestamp()));
-            http.post("https://store.steampowered.com/login/getrsakey/", params, doLoginHandle);
+            http.post("https://steamcommunity.com/login/dologin/", params, doLoginHandle);
             if (doLoginHandle.isSuccess()) {
                 // logged in
                 return;
