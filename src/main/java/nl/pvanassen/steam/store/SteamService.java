@@ -1,10 +1,22 @@
 package nl.pvanassen.steam.store;
 
 import java.io.IOException;
-import java.util.*;
+import java.math.BigInteger;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 
 import nl.pvanassen.steam.http.Http;
 
+import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -226,7 +238,8 @@ class SteamService implements StoreService {
         return handle.getMarketHistory();
     }
 
-    @Override
+    @Override            
+
     public Outstandings getOutstandings() {
         OutstandingsHandle handle = new OutstandingsHandle();
         try {
@@ -249,12 +262,25 @@ class SteamService implements StoreService {
             if (!rsaHandle.isSuccess()) {
                 throw new VerificationException("Invalid username");
             }
+            BigInteger pubKeyMod = new BigInteger(rsaHandle.getPublicKeyMod(), 16);
+            BigInteger pubKeyExp = new BigInteger(rsaHandle.getPublicKeyExp(), 16);
+            RSACrypto crypto = new RSACrypto(pubKeyMod,pubKeyExp , false);
+            
+            byte[] encrypted = crypto.encrypt(password.getBytes());
+            byte[] bytes = {-1, 0, 1, 2, 3 };
+            StringBuilder sb = new StringBuilder();
+            for (byte b : bytes) {
+                sb.append(String.format("%02X ", b));
+            }
+            String encryptedPasswordBase64 = Base64.encodeBase64String(sb.toString().getBytes());
+            
             params.put("captcha_text", "");
             params.put("captchagid", "");
             params.put("emailauth", "");
             params.put("emailsteamid", "");
             params.put("loginfriendlyname", "");
-            params.put("password", "YEei4tEpD5lv5n5PgGXYo2cYtxUDCgg8jRHzbXnSyCKMTV6ggf03ZZjao+woTJXFoAhPx0Fg97C3/S93tY1Dwu1f49vMPFuGty/lUKB4yqkCFTdQPOnBZR6SwTdonRe4ixZ6ItY8QbcbNcBqG6QtYtPvzpEeqSvJceped56sWzD7qad3OgJTRaWhcxtCSUx+RxMO+nrQdtiCLMOzQBObLX3+NpFna6Mea4R8ejbnXy/ejUps5SIYokBumHK/owH7hh2Pw++d9rVhBWQSGoVZITmcz69/HLdIxmx2gIazSJoZ8qgs88vG/G7HmUinkJARPVJScjVDm5ir8i5nac8Yfw==");
+            
+            params.put("password", encryptedPasswordBase64);
             params.put("remember_login", "true");
             params.put("rsatimestamp", Long.toString(rsaHandle.getTimestamp()));
             http.post("https://store.steampowered.com/login/getrsakey/", params, doLoginHandle);
