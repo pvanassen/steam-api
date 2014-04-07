@@ -35,6 +35,7 @@ import org.xml.sax.SAXException;
 class MarketHistoryHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger( getClass() );
     private final List<MarketHistory> marketHistory = new LinkedList<>();
+    private final List<MarketHistoryPart> marketHistoryParts = new LinkedList<>();
     private static final XPathFactory XPATH_FACTORY = XPathFactory.newInstance();
     private static final XPath XPATH = XPATH_FACTORY.newXPath();
     private static final XPathExpression HISTORY_ROW_XPATH;
@@ -146,9 +147,6 @@ class MarketHistoryHandle extends DefaultHandle {
                     rowName = rowName.substring( 0, eventIdx );
                 }
                 Asset asset = assetMap.get(hoverMap.get(rowName));
-                if (asset == null) {
-                	continue;
-                }
                 try {
                     Date acted = formatter.parse( actedStr );
                     Date listed = formatter.parse( listedStr );
@@ -157,7 +155,13 @@ class MarketHistoryHandle extends DefaultHandle {
                     if (!"".equals(priceStr)) {
                     	price = Integer.parseInt( priceStr.replace( ",", "" ).replace( "€", "" ).replace( "--", "00" ).trim() );
                     }
-                    marketHistory.add( new MarketHistory( rowName, asset.appId, asset.contextId, asset.urlName, listed, acted, price, buyer, status ) );
+                    if (asset == null) {
+                        // Listing created or sold
+                        continue;
+                    }
+                    else {
+                        marketHistory.add( new MarketHistory( rowName, asset.appId, asset.contextId, asset.urlName, listed, acted, price, buyer, status ) );
+                    }
                 }
                 catch ( ParseException e ) {
                     logger.error( "Error parsing date", e );
