@@ -102,7 +102,7 @@ class SteamService implements StoreService {
     }
 
     @Override
-    public List<InventoryItem> getInventory() {
+    public List<InventoryItem> getInventory(String username) {
         List<InventoryItem> inventoryItems = new LinkedList<>();
         for (int appId : APP_IDS) {
             int contextId = 2;
@@ -111,7 +111,7 @@ class SteamService implements StoreService {
             }
             InventoryHandle handle = new InventoryHandle(objectMapper, contextId, inventoryItems);
             try {
-                http.get("http://steamcommunity.com/id/mantorch/inventory/json/" + appId + "/" + contextId + "/", handle);
+                http.get("http://steamcommunity.com/id/" + username + "/inventory/json/" + appId + "/" + contextId + "/", handle);
             }
             catch (IOException e) {
                 logger.error("Error fetching inventory data", e);
@@ -144,6 +144,11 @@ class SteamService implements StoreService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getNewlyListed()
+     */
     @Override
     public List<Listing> getNewlyListed() {
         try {

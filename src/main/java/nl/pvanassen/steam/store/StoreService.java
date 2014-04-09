@@ -15,26 +15,27 @@ public interface StoreService {
      * @param listing Listing to buy
      * @return The results of a purchase
      */
-    BuyResult buy( Listing listing );
+    BuyResult buy(Listing listing);
 
     /**
      * @param handle Handle overview item
      */
-    void getAllItems( GenericHandle<OverviewItem> handle );
+    void getAllItems(GenericHandle<OverviewItem> handle);
 
     /**
      * Retrieve all that is in the inventory
      * 
+     * @param username The username to use
      * @return List of items in the inventory
      */
-    List<InventoryItem> getInventory();
+    List<InventoryItem> getInventory(String username);
 
     /**
      * Retrieve all that is in the inventory
      * 
      * @param queue Queue to add the items to
      */
-    void getAsyncInventory( Deque<Listing> queue );
+    void getAsyncInventory(Deque<Listing> queue);
 
     /**
      * The datapoints will always be called first. Once they are done the listings handle is called
@@ -42,9 +43,11 @@ public interface StoreService {
      * @param appId Appid of the item to get
      * @param urlName url name of the item to get
      * @param dataPointHandle If a datapoint is found this handle is called
-     * @param listingHandle If all datapoints have been processed, the listings are handled through this call
+     * @param listingHandle If all datapoints have been processed, the listings are handled through
+     *        this call
      */
-    void getItem( int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle );
+    void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle,
+            GenericHandle<Listing> listingHandle);
 
     /**
      * Retrieve the newly listed
@@ -68,7 +71,7 @@ public interface StoreService {
      * @param price Price to use
      * @return True if successful, false if not
      */
-    boolean sell( String assetId, int appId, String urlName, int contextId, int price );
+    boolean sell(String assetId, int appId, String urlName, int contextId, int price);
 
     /**
      * Get sold items currently offered
@@ -91,7 +94,7 @@ public interface StoreService {
      * @param password Password
      * @throws VerificationException In case a code is requested
      */
-    void login( String user, String password ) throws VerificationException, SteamGuardException;
+    void login(String user, String password) throws VerificationException, SteamGuardException;
 
     /**
      * Verification based on a code
@@ -99,5 +102,5 @@ public interface StoreService {
      * @param code The requested code
      * @return String cookies
      */
-    void verification( String code );
+    void verification(String code);
 }
