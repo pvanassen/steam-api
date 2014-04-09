@@ -11,30 +11,38 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
+			<version>4.11</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.12</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
+			<version>1.7.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
+			<version>4.3.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
+			<version>16.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
@@ -86,10 +94,12 @@
 		</plugins>
 	</build>
 	<parent>
-		<groupId>nl.pvanassen.steam</groupId>
-		<artifactId>steam-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<groupId>nl.pvanassen</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.2</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>store</artifactId>
+	<groupId>nl.pvanassen.steam</groupId>
+	<version>0.0.1-SNAPSHOT</version>
 </project>
