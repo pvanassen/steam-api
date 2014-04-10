@@ -99,7 +99,7 @@
 		<version>0.2</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>store</artifactId>
+	<artifactId>steam-api</artifactId>
 	<groupId>nl.pvanassen.steam</groupId>
 	<version>0.0.1-SNAPSHOT</version>
 </project>
