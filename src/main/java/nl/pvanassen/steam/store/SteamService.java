@@ -166,10 +166,10 @@ class SteamService implements StoreService {
     /**
      * {@inheritDoc}
      * 
-     * @see nl.pvanassen.steam.store.StoreService#getAsyncInventory(java.util.Deque)
+     * @see nl.pvanassen.steam.store.StoreService#getAsyncNewlyListed(java.util.Deque)
      */
     @Override
-    public void getAsyncInventory(Deque<Listing> queue) {
+    public void getAsyncNewlyListed(Deque<Listing> queue) {
         try {
             ListingHandle handle = new ListingHandle(objectMapper, queue);
             http.get("http://steamcommunity.com/market/recent", handle);

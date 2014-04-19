@@ -31,11 +31,11 @@ public interface StoreService {
     List<InventoryItem> getInventory(String username);
 
     /**
-     * Retrieve all that is in the inventory
+     * Retrieve all newly listed
      * 
      * @param queue Queue to add the items to
      */
-    void getAsyncInventory(Deque<Listing> queue);
+    void getAsyncNewlyListed(Deque<Listing> queue);
 
     /**
      * The datapoints will always be called first. Once they are done the listings handle is called
