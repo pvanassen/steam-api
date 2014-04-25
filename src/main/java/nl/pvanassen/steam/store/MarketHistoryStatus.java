@@ -2,22 +2,22 @@ package nl.pvanassen.steam.store;
 
 /**
  * Market history status per item
+ * 
  * @author Paul van Assen
- *
  */
 public enum MarketHistoryStatus {
     /**
      * Purchase of an item
      */
-    BOUGHT, 
+    BOUGHT,
     /**
      * Listing created
      */
-    CREATED, 
+    CREATED,
     /**
      * Listing removed
      */
-    REMOVED, 
+    REMOVED,
     /**
      * Item sold
      */

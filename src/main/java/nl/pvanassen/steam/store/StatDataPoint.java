@@ -14,7 +14,7 @@ public class StatDataPoint {
 
     private final double average;
 
-    StatDataPoint( Date date, int sales, double average ) {
+    StatDataPoint(Date date, int sales, double average) {
         super();
         this.date = date;
         this.sales = sales;

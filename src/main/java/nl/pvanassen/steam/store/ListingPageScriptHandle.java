@@ -1,6 +1,9 @@
 package nl.pvanassen.steam.store;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 
@@ -18,7 +21,7 @@ public class ListingPageScriptHandle extends DefaultHandle {
     private JsonNode listingInfo;
     private JsonNode priceHistoryInfo;
 
-    ListingPageScriptHandle( ObjectMapper om ) {
+    ListingPageScriptHandle(ObjectMapper om) {
         this.om = om;
     }
 
@@ -31,30 +34,30 @@ public class ListingPageScriptHandle extends DefaultHandle {
     }
 
     @Override
-    public void handle( InputStream stream ) throws IOException {
-        BufferedReader reader = new BufferedReader( new InputStreamReader( stream ) );
+    public void handle(InputStream stream) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         boolean listingFound = false;
         boolean salesFound = false;
         String line;
-        while ( ( line = reader.readLine() ) != null ) {
-            if ( !listingFound ) {
-                int listingStart = line.indexOf( "g_rgListingInfo" );
-                if ( listingStart > -1 ) {
-                    int objectStart = line.indexOf( '{', listingStart );
-                    if ( objectStart > -1 ) {
-                        listingInfo = om.readTree( line.substring( objectStart, line.length() - 1 ) );
+        while ((line = reader.readLine()) != null) {
+            if (!listingFound) {
+                int listingStart = line.indexOf("g_rgListingInfo");
+                if (listingStart > -1) {
+                    int objectStart = line.indexOf('{', listingStart);
+                    if (objectStart > -1) {
+                        listingInfo = om.readTree(line.substring(objectStart, line.length() - 1));
                         listingFound = true;
                     }
                 }
             }
-            if ( !salesFound ) {
-                int salesStart = line.indexOf( "line1" );
-                if ( salesStart > -1 ) {
-                    int objectStart = line.indexOf( '[', salesStart );
+            if (!salesFound) {
+                int salesStart = line.indexOf("line1");
+                if (salesStart > -1) {
+                    int objectStart = line.indexOf('[', salesStart);
                     if (objectStart <= -1) {
-                    	continue;
+                        continue;
                     }
-                    priceHistoryInfo = om.readTree( line.substring( objectStart, line.length() - 1 ) );
+                    priceHistoryInfo = om.readTree(line.substring(objectStart, line.length() - 1));
                     salesFound = true;
                 }
             }

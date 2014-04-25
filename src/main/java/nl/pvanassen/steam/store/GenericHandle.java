@@ -10,5 +10,5 @@ public interface GenericHandle<T> {
     /**
      * @param item Item to handle
      */
-    void handle( T item );
+    void handle(T item);
 }

@@ -13,18 +13,18 @@ import org.slf4j.LoggerFactory;
  * @author Paul van Assen
  */
 public class ListingItemIterator implements Iterator<Listing>, Iterable<Listing> {
-    private final Logger logger = LoggerFactory.getLogger( getClass() );
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final int appId;
     private final String urlName;
     private final JsonNode listingNode;
     private Listing nextItem;
     private final Iterator<String> fields;
 
-    ListingItemIterator( int appId, String urlName, JsonNode listingNode ) {
+    ListingItemIterator(int appId, String urlName, JsonNode listingNode) {
         this.appId = appId;
         this.urlName = urlName;
         this.listingNode = listingNode;
-        if ( listingNode == null ) {
+        if (listingNode == null) {
             fields = null;
         }
         else {
@@ -33,29 +33,30 @@ public class ListingItemIterator implements Iterator<Listing>, Iterable<Listing>
     }
 
     private synchronized Listing getNextItem() {
-        if ( ( listingNode == null ) || ( fields == null ) ) {
+        if ((listingNode == null) || (fields == null)) {
             return null;
         }
-        if ( !fields.hasNext() ) {
+        if (!fields.hasNext()) {
             return null;
         }
-        JsonNode item = listingNode.get( fields.next() );
+        JsonNode item = listingNode.get(fields.next());
         try {
-            if (item.get("price").asInt() == 0 || item.get("converted_fee") == null) {
+            if ((item.get("price").asInt() == 0) || (item.get("converted_fee") == null)) {
                 return getNextItem();
             }
-            String listingId = item.get( "listingid" ).asText();
-            String steamIdListing = item.get( "steamid_lister" ).asText();
-            int convertedPrice = item.get( "converted_price" ).asInt();
-            int convertedFee = item.get( "converted_fee" ).asInt();
-            int convertedSteamFee = item.get( "converted_steam_fee" ).asInt();
-            int convertedPublisherFee = item.get( "converted_publisher_fee" ).asInt();
-            int publisherFeeApp = item.get( "publisher_fee_app" ).asInt();
-            double publisherFeePercent = item.get( "publisher_fee_percent" ).asDouble();
-            return new Listing( appId, urlName, listingId, steamIdListing, convertedPrice, convertedFee, convertedSteamFee, convertedPublisherFee, publisherFeeApp, publisherFeePercent );
+            String listingId = item.get("listingid").asText();
+            String steamIdListing = item.get("steamid_lister").asText();
+            int convertedPrice = item.get("converted_price").asInt();
+            int convertedFee = item.get("converted_fee").asInt();
+            int convertedSteamFee = item.get("converted_steam_fee").asInt();
+            int convertedPublisherFee = item.get("converted_publisher_fee").asInt();
+            int publisherFeeApp = item.get("publisher_fee_app").asInt();
+            double publisherFeePercent = item.get("publisher_fee_percent").asDouble();
+            return new Listing(appId, urlName, listingId, steamIdListing, convertedPrice, convertedFee,
+                    convertedSteamFee, convertedPublisherFee, publisherFeeApp, publisherFeePercent);
         }
-        catch ( RuntimeException e ) {
-            logger.info( "Error getting item " + item, e );
+        catch (RuntimeException e) {
+            logger.info("Error getting item " + item, e);
             return getNextItem();
         }
     }
@@ -67,7 +68,7 @@ public class ListingItemIterator implements Iterator<Listing>, Iterable<Listing>
      */
     @Override
     public boolean hasNext() {
-        if ( nextItem != null ) {
+        if (nextItem != null) {
             return true;
         }
         nextItem = getNextItem();
@@ -92,7 +93,7 @@ public class ListingItemIterator implements Iterator<Listing>, Iterable<Listing>
     @Override
     public Listing next() {
         Listing item;
-        if ( hasNext() ) {
+        if (hasNext()) {
             item = nextItem;
             nextItem = null;
             return item;
@@ -107,7 +108,7 @@ public class ListingItemIterator implements Iterator<Listing>, Iterable<Listing>
      */
     @Override
     public void remove() {
-        throw new UnsupportedOperationException( "Cannot remove" );
+        throw new UnsupportedOperationException("Cannot remove");
     }
 
 }

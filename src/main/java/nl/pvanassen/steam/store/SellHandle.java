@@ -14,26 +14,26 @@ class SellHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private boolean error = false;
     private String message;
-    
+
     @Override
-    public void handle( InputStream stream ) throws IOException {
+    public void handle(InputStream stream) throws IOException {
         super.handle(stream);
         return;
     }
 
     @Override
-    public void handleError( InputStream stream ) throws IOException {
+    public void handleError(InputStream stream) throws IOException {
         error = true;
         ObjectMapper om = new ObjectMapper();
-        JsonNode node = om.readTree( stream );
-        message = node.get( "message" ).asText();
+        JsonNode node = om.readTree(stream);
+        message = node.get("message").asText();
         logger.error("Error could not sell item: " + message);
     }
 
     boolean isError() {
         return error;
     }
-    
+
     String getMessage() {
         return message;
     }

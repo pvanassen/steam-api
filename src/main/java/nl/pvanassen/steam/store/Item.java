@@ -11,10 +11,11 @@ public abstract class Item {
 
     /**
      * Constructor
+     * 
      * @param appId App id of the item
      * @param urlName Url name of the item
      */
-    protected Item( int appId, String urlName ) {
+    protected Item(int appId, String urlName) {
         this.appId = appId;
         this.urlName = urlName;
     }
@@ -42,8 +43,8 @@ public abstract class Item {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + appId;
-        result = prime * result + ( ( urlName == null ) ? 0 : urlName.hashCode() );
+        result = (prime * result) + appId;
+        result = (prime * result) + ((urlName == null) ? 0 : urlName.hashCode());
         return result;
     }
 
@@ -53,26 +54,26 @@ public abstract class Item {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals( Object obj ) {
-        if ( this == obj ) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if ( obj == null ) {
+        if (obj == null) {
             return false;
         }
-        if ( !( obj instanceof Item ) ) {
+        if (!(obj instanceof Item)) {
             return false;
         }
-        Item other = ( Item ) obj;
-        if ( appId != other.appId ) {
+        Item other = (Item) obj;
+        if (appId != other.appId) {
             return false;
         }
-        if ( urlName == null ) {
-            if ( other.urlName != null ) {
+        if (urlName == null) {
+            if (other.urlName != null) {
                 return false;
             }
         }
-        else if ( !urlName.equals( other.urlName ) ) {
+        else if (!urlName.equals(other.urlName)) {
             return false;
         }
         return true;

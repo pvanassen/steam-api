@@ -2,16 +2,19 @@ package nl.pvanassen.steam.store;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.NoSuchElementException;
 
 import org.codehaus.jackson.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class ListingStatDataPointIterator implements Iterator<StatDataPoint>, Iterable<StatDataPoint> {
-    private final Logger logger = LoggerFactory.getLogger( getClass() );
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss Z", Locale.US );
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
 
     private StatDataPoint nextItem;
 
@@ -19,31 +22,31 @@ class ListingStatDataPointIterator implements Iterator<StatDataPoint>, Iterable<
 
     private int nodePos = 0;
 
-    ListingStatDataPointIterator( JsonNode priceHistory ) {
+    ListingStatDataPointIterator(JsonNode priceHistory) {
         this.priceHistory = priceHistory;
     }
 
     private synchronized StatDataPoint getNextItem() {
-        if ( priceHistory == null ) {
+        if (priceHistory == null) {
             return null;
         }
-        if ( nodePos >= priceHistory.size() ) {
+        if (nodePos >= priceHistory.size()) {
             return null;
         }
-        JsonNode item = priceHistory.get( nodePos++ );
-        String dateStr = item.get( 0 ).asText();
-        double average = item.get( 1 ).asDouble() * 100;
-        String soldHour = item.get( 2 ).asText();
-        int sales = Integer.valueOf( soldHour.substring( 0, soldHour.length() - 5 ) );
+        JsonNode item = priceHistory.get(nodePos++);
+        String dateStr = item.get(0).asText();
+        double average = item.get(1).asDouble() * 100;
+        String soldHour = item.get(2).asText();
+        int sales = Integer.valueOf(soldHour.substring(0, soldHour.length() - 5));
         Date date;
         try {
-            date = dateFormat.parse( dateStr );
+            date = dateFormat.parse(dateStr);
         }
-        catch ( ParseException e ) {
-            logger.error( "Error parsing steam", e );
+        catch (ParseException e) {
+            logger.error("Error parsing steam", e);
             return getNextItem();
         }
-        return new StatDataPoint( date, sales, average );
+        return new StatDataPoint(date, sales, average);
     }
 
     /**
@@ -53,7 +56,7 @@ class ListingStatDataPointIterator implements Iterator<StatDataPoint>, Iterable<
      */
     @Override
     public boolean hasNext() {
-        if ( nextItem != null ) {
+        if (nextItem != null) {
             return true;
         }
         nextItem = getNextItem();
@@ -78,7 +81,7 @@ class ListingStatDataPointIterator implements Iterator<StatDataPoint>, Iterable<
     @Override
     public StatDataPoint next() {
         StatDataPoint item;
-        if ( hasNext() ) {
+        if (hasNext()) {
             item = nextItem;
             nextItem = null;
             return item;
@@ -93,6 +96,6 @@ class ListingStatDataPointIterator implements Iterator<StatDataPoint>, Iterable<
      */
     @Override
     public void remove() {
-        throw new UnsupportedOperationException( "Cannot remove" );
+        throw new UnsupportedOperationException("Cannot remove");
     }
 }

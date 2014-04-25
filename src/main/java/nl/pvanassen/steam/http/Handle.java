@@ -15,7 +15,7 @@ public interface Handle {
      * @param stream Stream to handle
      * @throws IOException IOException is allowed while handling stream
      */
-    void handle( InputStream stream ) throws IOException;
+    void handle(InputStream stream) throws IOException;
 
     /**
      * Error handle
@@ -23,5 +23,5 @@ public interface Handle {
      * @param stream Stream to handle
      * @throws IOException IOException is allowed while handling stream
      */
-    void handleError( InputStream stream ) throws IOException;
+    void handleError(InputStream stream) throws IOException;
 }

@@ -6,14 +6,15 @@ import java.util.Map;
 
 /**
  * Store factory for getting an instance
+ * 
  * @author Paul van Assen
- *
  */
 public class StoreFactory {
     private static final Map<WeakReference<String>, WeakReference<SteamService>> CACHE_MAP = new HashMap<>();
 
     /**
      * Factory method for getting a store instance
+     * 
      * @param cookies Cookies to use
      * @return Instance of the store service
      */
@@ -21,8 +22,7 @@ public class StoreFactory {
         synchronized (CACHE_MAP) {
             WeakReference<String> key = new WeakReference<>(cookies);
             WeakReference<SteamService> service = CACHE_MAP.get(key);
-            if (service != null && service.get() != null)
-            {
+            if ((service != null) && (service.get() != null)) {
                 return service.get();
             }
             service = new WeakReference<SteamService>(new SteamService(cookies));

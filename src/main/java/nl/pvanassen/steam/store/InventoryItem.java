@@ -12,7 +12,7 @@ public class InventoryItem extends Item {
     private final String instanceId;
     private final boolean marketable;
 
-    InventoryItem( String assetId, int contextId, String instanceId, int appId, String urlName, boolean marketable ) {
+    InventoryItem(String assetId, int contextId, String instanceId, int appId, String urlName, boolean marketable) {
         super(appId, urlName);
         this.assetId = assetId;
         this.contextId = contextId;
@@ -36,22 +36,23 @@ public class InventoryItem extends Item {
 
     /**
      * Steam instance id of an item
+     * 
      * @return Instance id
      */
     public String getInstanceId() {
         return instanceId;
     }
-    
+
     /**
      * @return Is marketable
      */
     public boolean isMarketable() {
-		return marketable;
-	}
+        return marketable;
+    }
 
     @Override
     public String toString() {
-        return "InventoryItem [assetId=" + assetId + ", contextId=" + contextId + ", instanceId=" + instanceId
-                + ", appId=" + getAppId() + ", urlName=" + getUrlName() + "]";
+        return "InventoryItem [assetId=" + assetId + ", contextId=" + contextId + ", instanceId=" + instanceId +
+               ", appId=" + getAppId() + ", urlName=" + getUrlName() + "]";
     }
 }

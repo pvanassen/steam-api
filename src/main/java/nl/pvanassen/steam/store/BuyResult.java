@@ -11,7 +11,7 @@ public class BuyResult {
     private final int wallet;
     private final String message;
 
-    BuyResult( boolean success, int wallet, String message ) {
+    BuyResult(boolean success, int wallet, String message) {
         super();
         this.success = success;
         this.wallet = wallet;
@@ -31,7 +31,7 @@ public class BuyResult {
     public boolean isSuccess() {
         return success;
     }
-    
+
     /**
      * @return The error message
      */
@@ -41,7 +41,7 @@ public class BuyResult {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see java.lang.Object#toString()
      */
     @Override

@@ -16,7 +16,8 @@ public class MarketHistoryPart {
     private final int price;
     private final MarketHistoryStatus status;
 
-    MarketHistoryPart( String steamId, String name, String gameName, Date listed, Date acted, int price, MarketHistoryStatus status ) {
+    MarketHistoryPart(String steamId, String name, String gameName, Date listed, Date acted, int price,
+            MarketHistoryStatus status) {
         super();
         this.steamId = steamId;
         this.name = name;

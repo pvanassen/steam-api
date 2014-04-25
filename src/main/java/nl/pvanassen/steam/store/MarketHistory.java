@@ -16,7 +16,8 @@ public class MarketHistory extends Item {
     private final String buyer;
     private final MarketHistoryStatus status;
 
-    MarketHistory( String steamId, int appId, int contextId, String urlName, Date listed, Date acted, int price, String buyer, MarketHistoryStatus status ) {
+    MarketHistory(String steamId, int appId, int contextId, String urlName, Date listed, Date acted, int price,
+            String buyer, MarketHistoryStatus status) {
         super(appId, urlName);
         this.steamId = steamId;
         this.contextId = contextId;
@@ -68,7 +69,7 @@ public class MarketHistory extends Item {
     public String getBuyer() {
         return buyer;
     }
-    
+
     /**
      * @return Status of the item
      */
@@ -78,40 +79,40 @@ public class MarketHistory extends Item {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ( ( steamId == null ) ? 0 : steamId.hashCode() );
+        result = (prime * result) + ((steamId == null) ? 0 : steamId.hashCode());
         return result;
     }
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals( Object obj ) {
-        if ( this == obj ) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if ( obj == null ) {
+        if (obj == null) {
             return false;
         }
-        if ( !( obj instanceof MarketHistory ) ) {
+        if (!(obj instanceof MarketHistory)) {
             return false;
         }
-        MarketHistory other = ( MarketHistory ) obj;
-        if ( steamId == null ) {
-            if ( other.steamId != null ) {
+        MarketHistory other = (MarketHistory) obj;
+        if (steamId == null) {
+            if (other.steamId != null) {
                 return false;
             }
         }
-        else if ( !steamId.equals( other.steamId ) ) {
+        else if (!steamId.equals(other.steamId)) {
             return false;
         }
         return true;

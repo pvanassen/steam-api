@@ -1,6 +1,5 @@
 package nl.pvanassen.steam.store;
 
-
 /**
  * Object containing all information for a line on the market page
  * 
@@ -14,7 +13,8 @@ public class OverviewItem extends Item {
     private final String gameName;
     private final String steamId;
 
-    OverviewItem( int appId, String itemName, String urlName, int currentOffers, int currentPrice, String gameName, String steamId ) {
+    OverviewItem(int appId, String itemName, String urlName, int currentOffers, int currentPrice, String gameName,
+            String steamId) {
         super(appId, urlName);
         this.itemName = itemName;
         this.currentOffers = currentOffers;

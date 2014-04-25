@@ -3,7 +3,9 @@ package nl.pvanassen.steam.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -11,13 +13,17 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.*;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.AbstractHttpMessage;
 import org.slf4j.Logger;
@@ -31,8 +37,9 @@ import org.slf4j.LoggerFactory;
 public class Http {
 
     /**
-     * @param cookies Cookies to use for the request. This is just a simple string send out to the server in the most
-     *            unsafe way possible
+     * @param cookies Cookies to use for the request. This is just a simple string send out to the
+     *        server in the most
+     *        unsafe way possible
      * @return Returns an instance of the helper
      */
     public static Http getInstance(String cookies) {
@@ -44,36 +51,37 @@ public class Http {
     private final RequestConfig globalConfig;
 
     private final HttpClientContext context;
-    
+
     private final String cookies;
-    
+
     private Http(String cookies) {
         this.cookies = cookies;
-        globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BEST_MATCH).setSocketTimeout( 10000 ).build();
+        globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BEST_MATCH).setSocketTimeout(10000)
+                .build();
         context = HttpClientContext.create();
         init();
     }
-    
+
     /**
      * Reset cookies
      */
     public void reset() {
-        logger.warn( "Resetting http" );
+        logger.warn("Resetting http");
         init();
     }
-    
+
     private final void init() {
         CookieStore cookieStore = new BasicCookieStore();
         context.setCookieStore(cookieStore);
         if (!"".equals(cookies)) {
-	        for (String cookie : cookies.split("; ")) {
-	        	int split = cookie.indexOf('=');
-	            String parts[] = new String[]{cookie.substring(0, split), cookie.substring(split+1)};
-	            if ("Steam_Language".equals(parts[0])) {
-	                continue;
-	            }
-	            cookieStore.addCookie(getCookie(parts[0], parts[1]));
-	        }
+            for (String cookie : cookies.split("; ")) {
+                int split = cookie.indexOf('=');
+                String parts[] = new String[] { cookie.substring(0, split), cookie.substring(split + 1) };
+                if ("Steam_Language".equals(parts[0])) {
+                    continue;
+                }
+                cookieStore.addCookie(getCookie(parts[0], parts[1]));
+            }
         }
         cookieStore.addCookie(getCookie("Steam_Language", "english"));
     }
@@ -88,7 +96,7 @@ public class Http {
     public void get(String url, Handle handle) throws IOException {
         HttpGet httpget = new HttpGet(url);
         addHeaders(httpget);
-        
+
         CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
         CloseableHttpResponse response = null;
         try {
@@ -102,7 +110,7 @@ public class Http {
                         handle.handleError(instream);
                     }
                     else {
-                    	handle.handle(instream);
+                        handle.handle(instream);
                     }
                 }
                 finally {
@@ -131,18 +139,18 @@ public class Http {
         }
     }
 
-	private void addHeaders(AbstractHttpMessage httpMessage) {
-		httpMessage.addHeader("Accept", "*/*");
+    private void addHeaders(AbstractHttpMessage httpMessage) {
+        httpMessage.addHeader("Accept", "*/*");
         httpMessage.addHeader("Accept-Language", "en-US,en;q=0.5");
         httpMessage.addHeader("Cache-Control", "no-cache");
         httpMessage.addHeader("Accept-Encoding", "gzip, deflate");
-        httpMessage.addHeader("User-Agent",
-                "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:28.0) Gecko/20100101 Firefox/28.0");
-		httpMessage.addHeader("Referer", "http://steamcommunity.com/");
-		httpMessage.addHeader("Origin", "http://steamcommunity.com");
-//		httpMessage.addHeader("X-Prototype-Version", "1.7");
-//		httpMessage.addHeader("X-Requested-With", "XMLHttpRequest");
-	}
+        httpMessage
+                .addHeader("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:28.0) Gecko/20100101 Firefox/28.0");
+        httpMessage.addHeader("Referer", "http://steamcommunity.com/");
+        httpMessage.addHeader("Origin", "http://steamcommunity.com");
+        // httpMessage.addHeader("X-Prototype-Version", "1.7");
+        // httpMessage.addHeader("X-Requested-With", "XMLHttpRequest");
+    }
 
     private final Cookie getCookie(String name, String value) {
         Calendar expiresCalendar = Calendar.getInstance();
@@ -179,14 +187,15 @@ public class Http {
         }
         sb.append("sessionid").append("=").append(sessionid);
         if (sessionid.isEmpty()) {
-        	logger.error("Error, sessionid empty");
-        	return;
+            logger.error("Error, sessionid empty");
+            return;
         }
-        
+
         logger.info("Sending data " + sb.toString());
         logger.info("Sending cookie " + cookieStr.toString());
-        
-        httpPost.setEntity(new StringEntity(sb.toString(), ContentType.create("application/x-www-form-urlencoded", "UTF-8")));
+
+        httpPost.setEntity(new StringEntity(sb.toString(), ContentType
+                .create("application/x-www-form-urlencoded", "UTF-8")));
         httpPost.setHeader("Cookie", cookieStr.toString());
         CloseableHttpClient httpclient = HttpClients.custom().build();
         CloseableHttpResponse response = null;

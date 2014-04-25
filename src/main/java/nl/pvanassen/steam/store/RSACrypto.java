@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 class RSACrypto {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     private final Cipher cipher;
     private final RSAPublicKey RSAkey;
 
@@ -41,11 +41,12 @@ class RSACrypto {
             }
             cipher.init(Cipher.ENCRYPT_MODE, RSAkey);
         }
-        catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException | InvalidKeySpecException e) {
+        catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException
+                | InvalidKeySpecException e) {
             logger.error("Error initializing encryption", e);
             throw new RuntimeException("Error initializing encryption", e);
         }
-        
+
     }
 
     byte[] encrypt(byte[] input) {

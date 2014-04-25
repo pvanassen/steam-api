@@ -58,10 +58,10 @@ class SteamService implements StoreService {
         try {
             BuyHandle handle = new BuyHandle();
             http.post("https://steamcommunity.com/market/buylisting/" + listingId, params, handle);
-            if (handle.getMessage() != null && handle.getMessage().contains("temporary")) {
+            if ((handle.getMessage() != null) && handle.getMessage().contains("temporary")) {
                 return buy(listing);
             }
-            if (handle.getMessage() != null && handle.getMessage().contains("Cookies")) {
+            if ((handle.getMessage() != null) && handle.getMessage().contains("Cookies")) {
                 http.reset();
                 return buy(listing);
             }
@@ -86,7 +86,8 @@ class SteamService implements StoreService {
             int totalCount = 5000;
             for (int start = 0; start < totalCount; start += 100) {
                 do {
-                    http.get("http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" + start + "&count=100", handle);
+                    http.get("http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" +
+                             start + "&count=100", handle);
                     totalCount = handle.getTotalCount();
                     // Stop on overrun
                     if (handle.isLastPage()) {
@@ -111,7 +112,8 @@ class SteamService implements StoreService {
             }
             InventoryHandle handle = new InventoryHandle(objectMapper, contextId, inventoryItems);
             try {
-                http.get("http://steamcommunity.com/id/" + username + "/inventory/json/" + appId + "/" + contextId + "/", handle);
+                http.get("http://steamcommunity.com/id/" + username + "/inventory/json/" + appId + "/" +
+                         contextId + "/", handle);
             }
             catch (IOException e) {
                 logger.error("Error fetching inventory data", e);
@@ -122,7 +124,8 @@ class SteamService implements StoreService {
     }
 
     @Override
-    public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle) {
+    public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle,
+            GenericHandle<Listing> listingHandle) {
 
         ListingPageScriptHandle handle = new ListingPageScriptHandle(objectMapper);
         try {
@@ -146,7 +149,7 @@ class SteamService implements StoreService {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see nl.pvanassen.steam.store.StoreService#getNewlyListed()
      */
     @Override
@@ -221,7 +224,8 @@ class SteamService implements StoreService {
         MarketHistoryHandle handle = new MarketHistoryHandle();
         try {
             int stepSize = 100;
-            http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=" + stepSize, handle);
+            http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=" +
+                     stepSize, handle);
             if (handle.isError()) {
                 return getSoldItemsFromHistory();
             }
@@ -229,7 +233,8 @@ class SteamService implements StoreService {
             for (int start = stepSize; start < totalCount; start += stepSize) {
                 do {
                     Thread.sleep(500);
-                    http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count=" + stepSize + "&start=" + start, handle);
+                    http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count=" +
+                             stepSize + "&start=" + start, handle);
                 }
                 while (handle.isError());
             }

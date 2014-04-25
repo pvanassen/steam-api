@@ -2,7 +2,6 @@ package nl.pvanassen.steam.store;
 
 import java.util.Date;
 
-
 /**
  * Listing item 
  * 
@@ -25,10 +24,11 @@ public class Listing extends Item {
     private final int publisherFeeApp;
 
     private final double publisherFeePercent;
-    
+
     private final Date createdDate = new Date();
 
-    Listing( int appId, String urlName, String listingId, String steamIdLister, int subTotal, int fee, int steamFee, int publisherFee, int publisherFeeApp, double publisherFeePercent ) {
+    Listing(int appId, String urlName, String listingId, String steamIdLister, int subTotal, int fee,
+            int steamFee, int publisherFee, int publisherFeeApp, double publisherFeePercent) {
         super(appId, urlName);
         this.listingId = listingId;
         this.steamIdLister = steamIdLister;
@@ -103,9 +103,12 @@ public class Listing extends Item {
      */
     @Override
     public String toString() {
-        return "Listing [appId=" + getAppId() + ", urlName=" + getUrlName() + ", listingId=" + listingId + ", steamIdLister=" + steamIdLister + ", subTotal=" + subTotal + ", fee=" + fee + ", steamFee=" + steamFee + ", publisherFee=" + publisherFee + ", publisherFeeApp=" + publisherFeeApp + ", publisherFeePercent=" + publisherFeePercent + "]";
+        return "Listing [appId=" + getAppId() + ", urlName=" + getUrlName() + ", listingId=" + listingId +
+               ", steamIdLister=" + steamIdLister + ", subTotal=" + subTotal + ", fee=" + fee + ", steamFee=" +
+               steamFee + ", publisherFee=" + publisherFee + ", publisherFeeApp=" + publisherFeeApp +
+               ", publisherFeePercent=" + publisherFeePercent + "]";
     }
-    
+
     /**
      * @return Date when this item was created
      */
