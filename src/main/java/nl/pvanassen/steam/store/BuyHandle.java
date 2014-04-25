@@ -31,7 +31,15 @@ class BuyHandle extends DefaultHandle {
         error = true;
         ObjectMapper om = new ObjectMapper();
         JsonNode node = om.readTree(stream);
-        message = node.get("message").asText();
+        if (node == null) {
+            message = "No result";
+        }
+        if (node.get("message") != null) {
+            message = node.get("message").asText();
+        }
+        else {
+            message = node.toString();
+        }
     }
 
     boolean isError() {

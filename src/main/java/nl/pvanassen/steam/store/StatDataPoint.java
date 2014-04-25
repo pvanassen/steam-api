@@ -11,7 +11,6 @@ public class StatDataPoint {
 
     private final Date date;
     private final int sales;
-
     private final double average;
 
     StatDataPoint(Date date, int sales, double average) {

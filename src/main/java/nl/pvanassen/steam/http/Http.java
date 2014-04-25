@@ -144,9 +144,8 @@ public class Http {
         httpMessage.addHeader("Accept-Language", "en-US,en;q=0.5");
         httpMessage.addHeader("Cache-Control", "no-cache");
         httpMessage.addHeader("Accept-Encoding", "gzip, deflate");
-        httpMessage
-                .addHeader("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:28.0) Gecko/20100101 Firefox/28.0");
-        httpMessage.addHeader("Referer", "http://steamcommunity.com/");
+        httpMessage.addHeader("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:28.0) Gecko/20100101 Firefox/28.0");
+        httpMessage.addHeader("Referer", "http://steamcommunity.com/mantorch");
         httpMessage.addHeader("Origin", "http://steamcommunity.com");
         // httpMessage.addHeader("X-Prototype-Version", "1.7");
         // httpMessage.addHeader("X-Requested-With", "XMLHttpRequest");

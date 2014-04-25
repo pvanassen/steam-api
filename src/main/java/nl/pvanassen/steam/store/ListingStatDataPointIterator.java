@@ -13,13 +13,9 @@ import org.slf4j.LoggerFactory;
 
 class ListingStatDataPointIterator implements Iterator<StatDataPoint>, Iterable<StatDataPoint> {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
-
     private StatDataPoint nextItem;
-
     private JsonNode priceHistory;
-
     private int nodePos = 0;
 
     ListingStatDataPointIterator(JsonNode priceHistory) {
