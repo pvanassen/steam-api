@@ -304,4 +304,13 @@ class SteamService implements StoreService {
         // TODO Auto-generated method stub
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getCookies()
+     */
+    @Override
+    public String getCookies() {
+        return http.getCookies();
+    }
 }

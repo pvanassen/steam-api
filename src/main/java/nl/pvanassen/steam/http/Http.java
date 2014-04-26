@@ -225,5 +225,16 @@ public class Http {
             IOUtils.closeQuietly(httpclient);
         }
     }
+    
+    /**
+     * @return The current used cookies
+     */
+    public String getCookies() {
+        StringBuilder cookies = new StringBuilder();
+        for (Cookie cookie : context.getCookieStore().getCookies()) {
+            cookies.append(cookie.getName()).append('=').append(cookie.getValue()).append(';');
+        }
+        return cookies.toString();
+    }
 
 }

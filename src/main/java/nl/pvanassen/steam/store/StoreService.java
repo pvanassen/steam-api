@@ -92,7 +92,8 @@ public interface StoreService {
      * 
      * @param user Username
      * @param password Password
-     * @throws VerificationException In case a code is requested
+     * @throws VerificationException In case login failed
+     * @throws SteamGuardException In case a code is requested
      */
     void login(String user, String password) throws VerificationException, SteamGuardException;
 
@@ -100,7 +101,12 @@ public interface StoreService {
      * Verification based on a code
      * 
      * @param code The requested code
-     * @return String cookies
      */
     void verification(String code);
+    
+    /**
+     * Get the current cookies
+     * @return Current set of cookies in a String
+     */
+    String getCookies();
 }
