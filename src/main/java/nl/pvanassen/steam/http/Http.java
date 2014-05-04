@@ -42,23 +42,22 @@ public class Http {
      *        unsafe way possible
      * @return Returns an instance of the helper
      */
-    public static Http getInstance(String cookies) {
-        return new Http(cookies);
+    public static Http getInstance(String cookies, String username) {
+        return new Http(cookies, username);
     }
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private final RequestConfig globalConfig;
-
     private final HttpClientContext context;
-
     private final String cookies;
+    private final String username;
 
-    private Http(String cookies) {
+    private Http(String cookies, String username) {
         this.cookies = cookies;
         globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BEST_MATCH).setSocketTimeout(10000)
                 .build();
         context = HttpClientContext.create();
+        this.username = username;
         init();
     }
 
@@ -145,7 +144,7 @@ public class Http {
         httpMessage.addHeader("Cache-Control", "no-cache");
         httpMessage.addHeader("Accept-Encoding", "gzip, deflate");
         httpMessage.addHeader("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:28.0) Gecko/20100101 Firefox/28.0");
-        httpMessage.addHeader("Referer", "http://steamcommunity.com/mantorch");
+        httpMessage.addHeader("Referer", "http://steamcommunity.com/id/" + username + "/inventory/");
         httpMessage.addHeader("Origin", "http://steamcommunity.com");
         // httpMessage.addHeader("X-Prototype-Version", "1.7");
         // httpMessage.addHeader("X-Requested-With", "XMLHttpRequest");

@@ -16,16 +16,15 @@ class SellHandle extends DefaultHandle {
     private String message;
 
     @Override
-    public void handle(InputStream stream) throws IOException {
-        super.handle(stream);
-        return;
-    }
-
-    @Override
     public void handleError(InputStream stream) throws IOException {
         error = true;
         ObjectMapper om = new ObjectMapper();
         JsonNode node = om.readTree(stream);
+        if (node == null || node.get("message") == null) {
+            logger.error("Error could not sell item: unknown error");
+            message = "unknown error";
+            return;
+        }
         message = node.get("message").asText();
         logger.error("Error could not sell item: " + message);
     }

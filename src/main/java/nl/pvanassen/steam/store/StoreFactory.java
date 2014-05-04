@@ -18,14 +18,14 @@ public class StoreFactory {
      * @param cookies Cookies to use
      * @return Instance of the store service
      */
-    public static StoreService getSteamStore(String cookies) {
+    public static StoreService getSteamStore(String cookies, String username) {
         synchronized (CACHE_MAP) {
             WeakReference<String> key = new WeakReference<>(cookies);
             WeakReference<SteamService> service = CACHE_MAP.get(key);
             if ((service != null) && (service.get() != null)) {
                 return service.get();
             }
-            service = new WeakReference<SteamService>(new SteamService(cookies));
+            service = new WeakReference<SteamService>(new SteamService(cookies, username));
             CACHE_MAP.put(key, service);
             return service.get();
         }

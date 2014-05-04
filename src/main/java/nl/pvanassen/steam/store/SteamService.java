@@ -34,8 +34,8 @@ class SteamService implements StoreService {
 
     private final Http http;
 
-    SteamService(String cookies) {
-        http = Http.getInstance(cookies);
+    SteamService(String cookies, String username) {
+        http = Http.getInstance(cookies, username);
     }
 
     /**
