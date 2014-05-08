@@ -3,9 +3,7 @@ package nl.pvanassen.steam.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -13,17 +11,13 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.*;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.AbstractHttpMessage;
 import org.slf4j.Logger;
@@ -35,11 +29,14 @@ import org.slf4j.LoggerFactory;
  * @author Paul van Assen
  */
 public class Http {
-
+    private static final int FIVE_MINUTES = 5 * 60 * 1000;
+    private final Map<AbstractExecutionAwareRequest, Long> connectionsToWatch = new HashMap<>();
+    
     /**
      * @param cookies Cookies to use for the request. This is just a simple string send out to the
      *        server in the most
      *        unsafe way possible
+     * @param username Username for the referer
      * @return Returns an instance of the helper
      */
     public static Http getInstance(String cookies, String username) {
@@ -59,6 +56,10 @@ public class Http {
         context = HttpClientContext.create();
         this.username = username;
         init();
+        WatchDog watchDog = new WatchDog(connectionsToWatch);
+        Thread watchDogThread = new Thread(watchDog, "watchDog-Thread-" + username);
+        watchDogThread.setPriority(Thread.MIN_PRIORITY);
+        watchDogThread.start();
     }
 
     /**
@@ -99,7 +100,9 @@ public class Http {
         CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
         CloseableHttpResponse response = null;
         try {
+            connectionsToWatch.put(httpget, System.currentTimeMillis() + FIVE_MINUTES);
             response = httpclient.execute(httpget, context);
+            connectionsToWatch.remove(httpget);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 InputStream instream = entity.getContent();
@@ -198,7 +201,9 @@ public class Http {
         CloseableHttpClient httpclient = HttpClients.custom().build();
         CloseableHttpResponse response = null;
         try {
+            connectionsToWatch.put(httpPost, System.currentTimeMillis() + FIVE_MINUTES);
             response = httpclient.execute(httpPost);
+            connectionsToWatch.remove(httpPost);
             HttpEntity entity = response.getEntity();
             InputStream instream = entity.getContent();
             // Forbidden, 404, invalid request. Stop
@@ -235,5 +240,31 @@ public class Http {
         }
         return cookies.toString();
     }
-
+    
+    private static class WatchDog implements Runnable {
+        private final Map<AbstractExecutionAwareRequest, Long> connectionsToWatch;
+        WatchDog(Map<AbstractExecutionAwareRequest, Long> connectionsToWatch) {
+            this.connectionsToWatch = connectionsToWatch;
+        }
+        
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    Thread.sleep(60000);
+                }
+                catch (InterruptedException e) {
+                    Thread.interrupted();
+                    return;
+                }
+                long now = System.currentTimeMillis();
+                for (Map.Entry<AbstractExecutionAwareRequest, Long> entry : connectionsToWatch.entrySet()) {
+                    if (entry.getValue() < now) {
+                        entry.getKey().abort();
+                    }
+                }
+            }
+            
+        }
+    }
 }
