@@ -73,6 +73,10 @@ class OutstandingsHandle extends DefaultHandle {
                 }
                 String priceStr = ((Node) PRICE_XPATH.evaluate(outstandingRow, XPathConstants.NODE))
                         .getTextContent().trim();
+                // Skip sold items
+                if (priceStr.contains("Sold")) {
+                	continue;
+                }
                 int price = Integer
                         .parseInt(priceStr.replace(",", "").replace("€", "").replace("--", "00").trim());
                 String removeScript = ((Node) REMOVE_XPATH.evaluate(outstandingRow, XPathConstants.NODE))
@@ -83,7 +87,7 @@ class OutstandingsHandle extends DefaultHandle {
                 int contextId = Integer.parseInt(scriptParts[3].trim());
                 String link = ((Node) LINK_XPATH.evaluate(outstandingRow, XPathConstants.NODE)).getAttributes()
                         .getNamedItem("href").getTextContent();
-                String urlName = link.substring(link.lastIndexOf('/')).trim();
+                String urlName = link.substring(link.lastIndexOf('/') + 1).trim();
                 this.items.add(new OutstandingItem(appId, urlName, listingId, scriptParts[4].trim(), contextId,
                         price));
                 amount += price;
