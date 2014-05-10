@@ -16,6 +16,7 @@ public class StoreFactory {
      * Factory method for getting a store instance
      * 
      * @param cookies Cookies to use
+     * @param username Username for the referral
      * @return Instance of the store service
      */
     public static StoreService getSteamStore(String cookies, String username) {
