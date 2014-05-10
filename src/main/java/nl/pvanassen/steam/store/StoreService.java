@@ -15,7 +15,7 @@ public interface StoreService {
      * @param listing Listing to buy
      * @return The results of a purchase
      */
-    BuyResult buy(Listing listing);
+    BuyResult buy(String listingId, int fee, int subTotal);
 
     /**
      * @param handle Handle overview item
@@ -86,6 +86,14 @@ public interface StoreService {
      * @return Outstanding items
      */
     Outstandings getOutstandings();
+    
+    /**
+     * Remove an active listing
+     * 
+     * @param listingId Listing to remove
+     * @return True if succesful removed
+     */
+    boolean removeListing(String listingId);
 
     /**
      * Do an login attempt. If a code is requested a VerificationError is thrown

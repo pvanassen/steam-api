@@ -27,7 +27,7 @@ public abstract class Item {
         return appId;
     }
 
-    /**
+	/**
      * @return Steam URL name
      */
     public String getUrlName() {
@@ -78,6 +78,11 @@ public abstract class Item {
         }
         return true;
     }
+
+    @Override
+	public String toString() {
+		return "Item [appId=" + appId + ", urlName=" + urlName + "]";
+	}
 
     /**
      * @return A url for debugging

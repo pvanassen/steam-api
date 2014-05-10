@@ -191,7 +191,7 @@ public class Http {
             logger.error("Error, sessionid empty");
             return;
         }
-
+        logger.info("Posting to url: " + url);
         logger.info("Sending data " + sb.toString());
         logger.info("Sending cookie " + cookieStr.toString());
 
@@ -250,7 +250,7 @@ public class Http {
         
         @Override
         public void run() {
-            logger.info("STarting watchdog thread");
+            logger.info("Starting watchdog thread");
             while (true) {
                 try {
                     Thread.sleep(60000);

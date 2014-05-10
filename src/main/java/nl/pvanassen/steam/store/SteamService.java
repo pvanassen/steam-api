@@ -46,10 +46,7 @@ class SteamService implements StoreService {
     }
 
     @Override
-    public BuyResult buy(Listing listing) {
-        String listingId = listing.getListingId();
-        int fee = listing.getFee();
-        int subTotal = listing.getSubTotal();
+    public BuyResult buy(String listingId, int fee, int subTotal) {
         Map<String, String> params = new HashMap<>();
         params.put("currency", "3");
         params.put("fee", Integer.toString(fee));
@@ -59,11 +56,11 @@ class SteamService implements StoreService {
             BuyHandle handle = new BuyHandle();
             http.post("https://steamcommunity.com/market/buylisting/" + listingId, params, handle);
             if ((handle.getMessage() != null) && handle.getMessage().contains("temporary")) {
-                return buy(listing);
+                return buy(listingId, fee, subTotal);
             }
             if ((handle.getMessage() != null) && handle.getMessage().contains("Cookies")) {
                 http.reset();
-                return buy(listing);
+                return buy(listingId, fee, subTotal);
             }
             return new BuyResult(!handle.isError(), handle.getWallet(), handle.getMessage());
         }
@@ -219,6 +216,19 @@ class SteamService implements StoreService {
         }
     }
 
+    @Override
+    public boolean removeListing(String listingId) {
+    	try {
+    		RemoveHandle removeHandle = new RemoveHandle();
+    		http.post("http://steamcommunity.com/market/removelisting/" + listingId, new HashMap<String,String>(), removeHandle);
+            return !removeHandle.isError();
+    	}
+    	catch (IOException | RuntimeException e) {
+            logger.error("Error posting data", e);
+            return false;
+    	}
+    }
+    
     @Override
     public List<MarketHistory> getSoldItemsFromHistory() {
         MarketHistoryHandle handle = new MarketHistoryHandle();
