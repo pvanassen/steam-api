@@ -59,6 +59,7 @@ public class Http {
         WatchDog watchDog = new WatchDog(connectionsToWatch);
         Thread watchDogThread = new Thread(watchDog, "watchDog-Thread-" + username);
         watchDogThread.setPriority(Thread.MIN_PRIORITY);
+        watchDogThread.setDaemon(true);
         watchDogThread.start();
     }
 

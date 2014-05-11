@@ -2,8 +2,11 @@ package nl.pvanassen.steam.store;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -29,18 +32,21 @@ class OutstandingsHandle extends DefaultHandle {
     private static final XPath XPATH = XPATH_FACTORY.newXPath();
     private static final XPathExpression ITEMS_DIV_XPATH;
     private static final XPathExpression PRICE_XPATH;
+    private static final XPathExpression DATE_XPATH;
     private static final XPathExpression REMOVE_XPATH;
     private static final XPathExpression LINK_XPATH;
 
     static {
         XPathExpression itemsDivXpath = null;
         XPathExpression priceXpath = null;
+        XPathExpression dateXpath = null;
         XPathExpression removeXpath = null;
         XPathExpression linkXpath = null;
         try {
             itemsDivXpath = XPATH
                     .compile("//DIV[@class='market_content_block my_listing_section market_home_listing_table']");
             priceXpath = XPATH.compile(".//SPAN[@class='market_listing_price']");
+            dateXpath = XPATH.compile(".//DIV[@class='market_listing_right_cell market_listing_listed_date']");
             removeXpath = XPATH.compile(".//A[@class='item_market_action_button item_market_action_button_edit']");
             linkXpath = XPATH.compile(".//A[@class='market_listing_item_name_link']");
         }
@@ -49,6 +55,7 @@ class OutstandingsHandle extends DefaultHandle {
         }
         ITEMS_DIV_XPATH = itemsDivXpath;
         PRICE_XPATH = priceXpath;
+        DATE_XPATH = dateXpath;
         REMOVE_XPATH = removeXpath;
         LINK_XPATH = linkXpath;
     }
@@ -59,6 +66,7 @@ class OutstandingsHandle extends DefaultHandle {
         int items = 0;
         DOMParser parser = new DOMParser();
         try {
+        	SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.US);
             parser.parse(new InputSource(stream));
             Document document = parser.getDocument();
             Node node = (Node) ITEMS_DIV_XPATH.evaluate(document, XPathConstants.NODE);
@@ -77,8 +85,7 @@ class OutstandingsHandle extends DefaultHandle {
                 if (priceStr.contains("Sold")) {
                 	continue;
                 }
-                int price = Integer
-                        .parseInt(priceStr.replace(",", "").replace("€", "").replace("--", "00").trim());
+                int price = Integer.parseInt(priceStr.replace(",", "").replace("€", "").replace("--", "00").trim());
                 String removeScript = ((Node) REMOVE_XPATH.evaluate(outstandingRow, XPathConstants.NODE))
                         .getAttributes().getNamedItem("href").getTextContent();
                 String[] scriptParts = removeScript.replace("'", "").split(",");
@@ -88,19 +95,21 @@ class OutstandingsHandle extends DefaultHandle {
                 String link = ((Node) LINK_XPATH.evaluate(outstandingRow, XPathConstants.NODE)).getAttributes()
                         .getNamedItem("href").getTextContent();
                 String urlName = link.substring(link.lastIndexOf('/') + 1).trim();
+                String date = ((Node)DATE_XPATH.evaluate(outstandingRow, XPathConstants.NODE)).getTextContent().trim();
+                
                 this.items.add(new OutstandingItem(appId, urlName, listingId, scriptParts[4].trim(), contextId,
-                        price));
+                        price, formatter.parse(date)));
                 amount += price;
                 items++;
             }
             outstandings = new Outstandings(items, amount, this.items);
         }
-        catch (RuntimeException e) {
+        catch (ParseException | RuntimeException e) {
             logger.error("Error getting outstanding items", e);
         }
         catch (SAXException | XPathExpressionException e) {
             logger.error("Error getting outstanding items", e);
-        }
+		}
     }
 
     public Outstandings getOutstandings() {

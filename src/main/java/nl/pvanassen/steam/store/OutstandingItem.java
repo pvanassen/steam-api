@@ -1,18 +1,22 @@
 package nl.pvanassen.steam.store;
 
+import java.util.Date;
+
 public class OutstandingItem extends Item {
 
     private final String listingId;
     private final String itemId;
     private final int contextId;
     private final int price;
-
-    OutstandingItem(int appId, String urlName, String listingId, String itemId, int contextId, int price) {
+    private final Date listedSince;
+    
+    OutstandingItem(int appId, String urlName, String listingId, String itemId, int contextId, int price, Date listedSince) {
         super(appId, urlName);
         this.listingId = listingId;
         this.itemId = itemId;
         this.contextId = contextId;
         this.price = price;
+        this.listedSince = listedSince;
     }
 
     public String getListingId() {
@@ -31,4 +35,7 @@ public class OutstandingItem extends Item {
         return price;
     }
 
+    public Date getListedSince() {
+		return listedSince;
+	}
 }
