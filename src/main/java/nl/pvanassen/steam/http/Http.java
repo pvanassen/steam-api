@@ -243,7 +243,7 @@ public class Http {
     }
     
     private static class WatchDog implements Runnable {
-        private final Logger logger = LoggerFactory.getLogger(getClass());
+        private final Logger logger = LoggerFactory.getLogger("watchdog");
         private final Map<AbstractExecutionAwareRequest, Long> connectionsToWatch;
         WatchDog(Map<AbstractExecutionAwareRequest, Long> connectionsToWatch) {
             this.connectionsToWatch = connectionsToWatch;
@@ -265,7 +265,7 @@ public class Http {
                 for (Map.Entry<AbstractExecutionAwareRequest, Long> entry : connectionsToWatch.entrySet()) {
                     logger.info("Now: " + now + ", timeout connection: " + entry.getValue());
                     if (entry.getValue() < now) {
-                        logger.info("Killing " + entry.getValue());
+                        logger.warn("Killing " + entry.getValue());
                         entry.getKey().abort();
                     }
                 }
