@@ -59,8 +59,8 @@ class SteamService implements StoreService {
                 return buy(listingId, fee, subTotal);
             }
             if ((handle.getMessage() != null) && handle.getMessage().contains("Cookies")) {
-                http.reset();
-                return buy(listingId, fee, subTotal);
+                logger.error("Cookie issue.");
+                throw new CookieException();
             }
             return new BuyResult(!handle.isError(), handle.getWallet(), handle.getMessage());
         }

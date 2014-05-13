@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Paul van Assen
  */
 public class Http {
-    private static final int FIVE_MINUTES = 5 * 60 * 1000;
+    private static final int FIVE_MINUTES = 1 * 60 * 1000;
     private final Map<AbstractExecutionAwareRequest, Long> connectionsToWatch = new HashMap<>();
     
     /**
@@ -263,7 +263,7 @@ public class Http {
                 long now = System.currentTimeMillis();
                 logger.info(connectionsToWatch.size() + " open connections");
                 for (Map.Entry<AbstractExecutionAwareRequest, Long> entry : connectionsToWatch.entrySet()) {
-                    logger.info("Now: " + now + ", timeout connection: " + entry.getValue());
+                    logger.info("Now: " + now + ", timeout connection: " + entry.getValue() + ", waiting another " + (entry.getValue() - now));
                     if (entry.getValue() < now) {
                         logger.warn("Killing " + entry.getValue());
                         entry.getKey().abort();
