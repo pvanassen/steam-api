@@ -180,6 +180,13 @@ class SteamService implements StoreService {
 
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getWallet()
+     */
+    @Deprecated
     @Override
     public int getWallet() {
         WalletHandle handle = new WalletHandle();
@@ -255,6 +262,11 @@ class SteamService implements StoreService {
         return handle.getMarketHistory();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getOutstandings()
+     */
     @Override
     public Outstandings getOutstandings() {
         OutstandingsHandle handle = new OutstandingsHandle();

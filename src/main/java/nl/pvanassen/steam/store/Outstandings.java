@@ -10,11 +10,13 @@ import com.google.common.collect.ImmutableList;
  * @author Paul van Assen
  */
 public class Outstandings {
+    private final int wallet;
     private final int items;
     private final int amount;
     private final List<OutstandingItem> itemList;
 
-    Outstandings(int items, int amount, List<OutstandingItem> itemList) {
+    Outstandings(int wallet, int items, int amount, List<OutstandingItem> itemList) {
+        this.wallet = wallet;
         this.items = items;
         this.amount = amount;
         this.itemList = ImmutableList.copyOf(itemList);
@@ -39,6 +41,13 @@ public class Outstandings {
      */
     public List<OutstandingItem> getItemList() {
         return itemList;
+    }
+    
+    /**
+     * @return Amount of money in the wallet
+     */
+    public int getWallet() {
+        return wallet;
     }
 
 }

@@ -12,7 +12,9 @@ public interface StoreService {
     /**
      * Buy a listed item
      * 
-     * @param listing Listing to buy
+     * @param listingId Listing to buy
+     * @param fee Fee to pay
+     * @param subTotal Sub total, total excluding fee
      * @return The results of a purchase
      */
     BuyResult buy(String listingId, int fee, int subTotal);
@@ -58,7 +60,9 @@ public interface StoreService {
 
     /**
      * @return Returns the amount in cents currently in the wallet
+     * @deprecated Please use getOutstandings
      */
+    @Deprecated
     int getWallet();
 
     /**

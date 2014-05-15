@@ -15,6 +15,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import nl.pvanassen.steam.http.DefaultHandle;
+import nl.pvanassen.steam.store.helper.AmountHelper;
 
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ class OutstandingsHandle extends DefaultHandle {
     private static final XPathExpression DATE_XPATH;
     private static final XPathExpression REMOVE_XPATH;
     private static final XPathExpression LINK_XPATH;
+    private static final XPathExpression WALLET_XPATH;
 
     static {
         XPathExpression itemsDivXpath = null;
@@ -42,13 +44,14 @@ class OutstandingsHandle extends DefaultHandle {
         XPathExpression dateXpath = null;
         XPathExpression removeXpath = null;
         XPathExpression linkXpath = null;
+        XPathExpression walletXpath = null;
         try {
-            itemsDivXpath = XPATH
-                    .compile("//DIV[@class='market_content_block my_listing_section market_home_listing_table']");
+            itemsDivXpath = XPATH.compile("//DIV[@class='market_content_block my_listing_section market_home_listing_table']");
             priceXpath = XPATH.compile(".//SPAN[@class='market_listing_price']");
             dateXpath = XPATH.compile(".//DIV[@class='market_listing_right_cell market_listing_listed_date']");
             removeXpath = XPATH.compile(".//A[@class='item_market_action_button item_market_action_button_edit']");
             linkXpath = XPATH.compile(".//A[@class='market_listing_item_name_link']");
+            walletXpath = XPATH.compile("//SPAN[@id='marketWalletBalanceAmount']");
         }
         catch (XPathExpressionException e) {
             LoggerFactory.getLogger(MarketHistory.class).error("Error instantiating XPATH", e);
@@ -58,10 +61,12 @@ class OutstandingsHandle extends DefaultHandle {
         DATE_XPATH = dateXpath;
         REMOVE_XPATH = removeXpath;
         LINK_XPATH = linkXpath;
+        WALLET_XPATH = walletXpath;
     }
 
     @Override
     public void handle(InputStream stream) throws IOException {
+        int wallet = 0;
         int amount = 0;
         int items = 0;
         DOMParser parser = new DOMParser();
@@ -69,6 +74,8 @@ class OutstandingsHandle extends DefaultHandle {
         	SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.US);
             parser.parse(new InputSource(stream));
             Document document = parser.getDocument();
+            String walletStr = ((Node) WALLET_XPATH.evaluate(document, XPathConstants.NODE)).getTextContent().trim();
+            wallet = AmountHelper.getAmount(walletStr);
             Node node = (Node) ITEMS_DIV_XPATH.evaluate(document, XPathConstants.NODE);
             for (int i = 0; i < node.getChildNodes().getLength(); i++) {
                 Node outstandingRow = node.getChildNodes().item(i);
@@ -102,7 +109,7 @@ class OutstandingsHandle extends DefaultHandle {
                 amount += price;
                 items++;
             }
-            outstandings = new Outstandings(items, amount, this.items);
+            outstandings = new Outstandings(wallet, items, amount, this.items);
         }
         catch (ParseException | RuntimeException e) {
             logger.error("Error getting outstanding items", e);
