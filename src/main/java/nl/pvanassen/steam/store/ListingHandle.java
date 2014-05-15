@@ -2,10 +2,10 @@ package nl.pvanassen.steam.store;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLEncoder;
 import java.util.Deque;
 
 import nl.pvanassen.steam.http.DefaultHandle;
+import nl.pvanassen.steam.store.helper.UrlNameHelper;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -30,8 +30,8 @@ class ListingHandle extends DefaultHandle {
             int appId = listing.get("asset").get("appid").asInt();
             String contextId = listing.get("asset").get("contextid").asText();
             String id = listing.get("asset").get("id").asText();
-            String urlName = URLEncoder.encode(assets.get(Integer.toString(appId)).get(contextId).get(id)
-                    .get("market_hash_name").asText(), "UTF-8").replace("+", "%20");
+            String urlName = UrlNameHelper.getUrlName(assets.get(Integer.toString(appId)).get(contextId).get(id)
+                    .get("market_hash_name").asText());
             try {
                 listings.offerFirst(new Listing(appId, urlName, listing.get("listingid").asText(), listing
                         .get("steamid_lister").asText(), listing.get("converted_price").asInt(), listing

@@ -11,6 +11,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import nl.pvanassen.steam.http.DefaultHandle;
+import nl.pvanassen.steam.store.helper.AmountHelper;
 
 import org.apache.html.dom.HTMLDocumentImpl;
 import org.codehaus.jackson.JsonNode;
@@ -113,8 +114,7 @@ class OverviewHandle extends DefaultHandle {
                 int appId = Integer.valueOf(href.substring(startAppId + 1, startName));
                 logger.info("Found: " + urlName + ", appid: " + appId);
                 Node priceSpan = (Node) PRICE_XPATH.evaluate(node, XPathConstants.NODE);
-                int currentPrice = Integer.valueOf(priceSpan.getTextContent().trim().substring(1).replace("€", "")
-                        .replace(",", "").replace("--", "00"));
+                int currentPrice = AmountHelper.getAmount(priceSpan.getTextContent().trim().substring(1));
                 Node offersSpan = (Node) OFFERINGS_XPATH.evaluate(node, XPathConstants.NODE);
                 int currentOffers = Integer.valueOf(offersSpan.getTextContent().replace(",", ""));
 

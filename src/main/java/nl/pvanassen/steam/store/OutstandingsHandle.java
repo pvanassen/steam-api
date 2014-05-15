@@ -92,7 +92,7 @@ class OutstandingsHandle extends DefaultHandle {
                 if (priceStr.contains("Sold")) {
                 	continue;
                 }
-                int price = Integer.parseInt(priceStr.replace(",", "").replace("€", "").replace("--", "00").trim());
+                int price = AmountHelper.getAmount(priceStr); 
                 String removeScript = ((Node) REMOVE_XPATH.evaluate(outstandingRow, XPathConstants.NODE))
                         .getAttributes().getNamedItem("href").getTextContent();
                 String[] scriptParts = removeScript.replace("'", "").split(",");

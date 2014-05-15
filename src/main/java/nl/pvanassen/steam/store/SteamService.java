@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import nl.pvanassen.steam.error.SteamGuardException;
+import nl.pvanassen.steam.error.VerificationException;
 import nl.pvanassen.steam.http.Http;
 
 import org.apache.commons.codec.binary.Base64;

@@ -1,26 +1,15 @@
 package nl.pvanassen.steam.store;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.*;
 
 import nl.pvanassen.steam.http.DefaultHandle;
+import nl.pvanassen.steam.store.helper.AmountHelper;
+import nl.pvanassen.steam.store.helper.UrlNameHelper;
 
 import org.apache.html.dom.HTMLDocumentImpl;
 import org.codehaus.jackson.JsonNode;
@@ -28,9 +17,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.cyberneko.html.parsers.DOMFragmentParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.w3c.dom.html.HTMLDocument;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -160,8 +147,7 @@ class MarketHistoryHandle extends DefaultHandle {
                     // 0,10&#8364;
                     int price = 0;
                     if (!"".equals(priceStr)) {
-                        price = Integer.parseInt(priceStr.replace(",", "").replace("€", "").replace("--", "00")
-                                .trim());
+                        price = AmountHelper.getAmount(priceStr);
                     }
                     if (asset == null) {
                         // Listing created or sold
@@ -188,8 +174,7 @@ class MarketHistoryHandle extends DefaultHandle {
         for (JsonNode appId : assets) {
             for (JsonNode contextId : appId) {
                 for (JsonNode item : contextId) {
-                    String urlName = URLEncoder.encode(item.get("market_hash_name").asText(), "UTF-8")
-                            .replace("+", "%20");
+                    String urlName = UrlNameHelper.getUrlName(item.get("market_hash_name").asText());
                     assetMap.put(item.get("id").asText(), new Asset(item.get("appid").asInt(), item
                             .get("contextid").asInt(), urlName));
                 }

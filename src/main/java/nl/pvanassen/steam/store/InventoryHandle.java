@@ -2,12 +2,10 @@ package nl.pvanassen.steam.store;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import nl.pvanassen.steam.http.DefaultHandle;
+import nl.pvanassen.steam.store.helper.UrlNameHelper;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -38,21 +36,17 @@ class InventoryHandle extends DefaultHandle {
             if (!item.has("market_hash_name")) {
                 continue;
             }
-            String urlName = URLEncoder.encode(item.get("market_hash_name").asText(), "UTF-8").replace("+", "%20");
-            descriptionMap
-                    .put(item.get("classid").asText() + "-" + item.get("instanceid").asText(), new Description(
-                            item.get("appid").asInt(), urlName, item.get("marketable").asBoolean()));
+            String urlName = UrlNameHelper.getUrlName(item.get("market_hash_name").asText());
+            descriptionMap.put(item.get("classid").asText() + "-" + item.get("instanceid").asText(), new Description(item.get("appid").asInt(), urlName, item.get("marketable").asBoolean()));
         }
 
         JsonNode inventory = node.get("rgInventory");
         for (JsonNode item : inventory) {
-            Description descroption = descriptionMap.get(item.get("classid").asText() + "-" +
-                                                         item.get("instanceid").asText());
+            Description descroption = descriptionMap.get(item.get("classid").asText() + "-" + item.get("instanceid").asText());
             if (descroption == null) {
                 continue;
             }
-            inventoryItemList.add(new InventoryItem(item.get("id").asText(), contextId, item.get("instanceid")
-                    .asText(), descroption.appId, descroption.urlName, descroption.marketable));
+            inventoryItemList.add(new InventoryItem(item.get("id").asText(), contextId, item.get("instanceid").asText(), descroption.appId, descroption.urlName, descroption.marketable));
         }
     }
 

@@ -2,6 +2,11 @@ package nl.pvanassen.steam.store;
 
 import java.util.Date;
 
+/**
+ * Item listed in the market
+ * @author Paul van Assen
+ *
+ */
 public class OutstandingItem extends Item {
 
     private final String listingId;
@@ -19,22 +24,37 @@ public class OutstandingItem extends Item {
         this.listedSince = listedSince;
     }
 
+    /**
+     * @return The listing ID
+     */
     public String getListingId() {
         return listingId;
     }
 
+    /**
+     * @return The item id
+     */
     public String getItemId() {
         return itemId;
     }
 
+    /**
+     * @return Context id
+     */
     public int getContextId() {
         return contextId;
     }
 
+    /**
+     * @return Total price in cents
+     */
     public int getPrice() {
         return price;
     }
 
+    /**
+     * @return Listed since date
+     */
     public Date getListedSince() {
 		return listedSince;
 	}

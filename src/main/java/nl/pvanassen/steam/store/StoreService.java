@@ -3,6 +3,9 @@ package nl.pvanassen.steam.store;
 import java.util.Deque;
 import java.util.List;
 
+import nl.pvanassen.steam.error.SteamGuardException;
+import nl.pvanassen.steam.error.VerificationException;
+
 /**
  * Interface defining a connecion to the steam store
  * 
