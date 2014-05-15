@@ -27,24 +27,23 @@ import com.google.common.collect.ImmutableList;
  * @author Paul van Assen
  */
 class SteamService implements StoreService {
-
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private final ObjectMapper objectMapper = new ObjectMapper();
-
     private static final int[] APP_IDS = new int[] { 440, 570, 730, 753, 238960, 230410 };
-
     private final Http http;
+    private final String username;
 
     SteamService(String cookies, String username) {
         http = Http.getInstance(cookies, username);
+        this.username = username;
     }
 
     /**
      * @param http For mocking
      */
-    SteamService(Http http) {
+    SteamService(Http http, String username) {
         this.http = http;
+        this.username = username;
     }
 
     @Override
@@ -99,6 +98,11 @@ class SteamService implements StoreService {
         catch (IOException e) {
             logger.error("Error handling item", e);
         }
+    }
+    
+    @Override
+    public List<InventoryItem> getInventory() {
+        return getInventory(username);
     }
 
     @Override

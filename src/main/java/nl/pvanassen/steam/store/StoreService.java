@@ -27,10 +27,18 @@ public interface StoreService {
      */
     void getAllItems(GenericHandle<OverviewItem> handle);
 
+
     /**
-     * Retrieve all that is in the inventory
+     * Retrieve all that is in the inventory of the user
      * 
-     * @param username The username to use
+     * @return List of items in the inventory
+     */
+    List<InventoryItem> getInventory();
+    
+    /**
+     * Retrieve all that is in the inventory of a user
+     * 
+     * @param username The username to get the inventory from
      * @return List of items in the inventory
      */
     List<InventoryItem> getInventory(String username);
