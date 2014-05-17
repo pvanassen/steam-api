@@ -246,8 +246,8 @@ class SteamService implements StoreService {
      * @see nl.pvanassen.steam.store.StoreService#getOutstandings()
      */
     @Override
-    public Outstandings getOutstandings() {
-        OutstandingsHandle handle = new OutstandingsHandle();
+    public MarketPage getOutstandings() {
+        MarketPageHandle handle = new MarketPageHandle();
         try {
             http.get("http://steamcommunity.com/market/", handle);
         }
@@ -316,7 +316,6 @@ class SteamService implements StoreService {
     
     @Override
     public Set<Integer> getAppIds() {
-        // TODO Auto-generated method stub
-        return null;
+        return getOutstandings().getAppIds();
     }
 }

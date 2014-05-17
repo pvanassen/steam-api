@@ -26,7 +26,6 @@ public interface StoreService {
      */
     void getAllItems(GenericHandle<OverviewItem> handle);
 
-
     /**
      * Retrieve all that is in the inventory of the user
      * 
@@ -92,7 +91,7 @@ public interface StoreService {
      * 
      * @return Outstanding items
      */
-    Outstandings getOutstandings();
+    MarketPage getOutstandings();
     
     /**
      * Remove an active listing

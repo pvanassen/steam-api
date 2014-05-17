@@ -4,15 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.*;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.helper.AmountHelper;
@@ -20,15 +14,14 @@ import nl.pvanassen.steam.store.helper.AmountHelper;
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-class OutstandingsHandle extends DefaultHandle {
+class MarketPageHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final List<OutstandingItem> items = new LinkedList<>();
-    private Outstandings outstandings;
+    private MarketPage outstandings;
     private static final XPathFactory XPATH_FACTORY = XPathFactory.newInstance();
     private static final XPath XPATH = XPATH_FACTORY.newXPath();
     private static final XPathExpression ITEMS_DIV_XPATH;
@@ -37,6 +30,7 @@ class OutstandingsHandle extends DefaultHandle {
     private static final XPathExpression REMOVE_XPATH;
     private static final XPathExpression LINK_XPATH;
     private static final XPathExpression WALLET_XPATH;
+    private static final XPathExpression APPIDS_XPATH;
 
     static {
         XPathExpression itemsDivXpath = null;
@@ -45,6 +39,8 @@ class OutstandingsHandle extends DefaultHandle {
         XPathExpression removeXpath = null;
         XPathExpression linkXpath = null;
         XPathExpression walletXpath = null;
+        XPathExpression appIdsXpath = null;
+        
         try {
             itemsDivXpath = XPATH.compile("//DIV[@class='market_content_block my_listing_section market_home_listing_table']");
             priceXpath = XPATH.compile(".//SPAN[@class='market_listing_price']");
@@ -52,6 +48,7 @@ class OutstandingsHandle extends DefaultHandle {
             removeXpath = XPATH.compile(".//A[@class='item_market_action_button item_market_action_button_edit']");
             linkXpath = XPATH.compile(".//A[@class='market_listing_item_name_link']");
             walletXpath = XPATH.compile("//SPAN[@id='marketWalletBalanceAmount']");
+            appIdsXpath = XPATH.compile("//A[@class='game_button']");
         }
         catch (XPathExpressionException e) {
             LoggerFactory.getLogger(MarketHistory.class).error("Error instantiating XPATH", e);
@@ -62,6 +59,7 @@ class OutstandingsHandle extends DefaultHandle {
         REMOVE_XPATH = removeXpath;
         LINK_XPATH = linkXpath;
         WALLET_XPATH = walletXpath;
+        APPIDS_XPATH = appIdsXpath;
     }
 
     @Override
@@ -109,7 +107,14 @@ class OutstandingsHandle extends DefaultHandle {
                 amount += price;
                 items++;
             }
-            outstandings = new Outstandings(wallet, items, amount, this.items);
+            Set<Integer> appIds = new HashSet<>();
+            NodeList appIdsNodes = (NodeList)APPIDS_XPATH.evaluate(document, XPathConstants.NODESET);
+            for (int i=0;i!=appIdsNodes.getLength();i++) {
+                Node appIdNode = appIdsNodes.item(i);
+                String appIdStr = appIdNode.getAttributes().getNamedItem("href").getTextContent().split("%3A")[1];
+                appIds.add(Integer.parseInt(appIdStr));
+            }
+            outstandings = new MarketPage(wallet, items, amount, this.items, appIds);
         }
         catch (ParseException | RuntimeException e) {
             logger.error("Error getting outstanding items", e);
@@ -119,7 +124,7 @@ class OutstandingsHandle extends DefaultHandle {
 		}
     }
 
-    public Outstandings getOutstandings() {
+    public MarketPage getOutstandings() {
         return outstandings;
     }
 

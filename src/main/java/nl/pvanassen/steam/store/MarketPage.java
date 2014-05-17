@@ -1,25 +1,29 @@
 package nl.pvanassen.steam.store;
 
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Outstanding items
  * 
  * @author Paul van Assen
  */
-public class Outstandings {
+public class MarketPage {
     private final int wallet;
     private final int items;
     private final int amount;
     private final List<OutstandingItem> itemList;
+    private final Set<Integer> appIds;
 
-    Outstandings(int wallet, int items, int amount, List<OutstandingItem> itemList) {
+    MarketPage(int wallet, int items, int amount, List<OutstandingItem> itemList, Set<Integer> appIds) {
         this.wallet = wallet;
         this.items = items;
         this.amount = amount;
         this.itemList = ImmutableList.copyOf(itemList);
+        this.appIds = ImmutableSet.copyOf(appIds);
     }
 
     /**
@@ -50,4 +54,10 @@ public class Outstandings {
         return wallet;
     }
 
+    /**
+     * @return App ids
+     */
+    public Set<Integer> getAppIds() {
+        return appIds;
+    }
 }
