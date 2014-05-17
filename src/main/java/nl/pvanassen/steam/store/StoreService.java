@@ -1,7 +1,6 @@
 package nl.pvanassen.steam.store;
 
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 import nl.pvanassen.steam.error.SteamGuardException;
 import nl.pvanassen.steam.error.VerificationException;
@@ -70,13 +69,6 @@ public interface StoreService {
     List<Listing> getNewlyListed();
 
     /**
-     * @return Returns the amount in cents currently in the wallet
-     * @deprecated Please use getOutstandings
-     */
-    @Deprecated
-    int getWallet();
-
-    /**
      * Sell an item in the inventory
      * 
      * @param assetId Asset id to sell
@@ -132,4 +124,10 @@ public interface StoreService {
      * @return Current set of cookies in a String
      */
     String getCookies();
+    
+    /**
+     * Get all known app ids
+     * @return Returns a set containing all known tradable app ids
+     */
+    Set<Integer> getAppIds();
 }

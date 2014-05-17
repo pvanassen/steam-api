@@ -2,12 +2,7 @@ package nl.pvanassen.steam.store;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import nl.pvanassen.steam.error.SteamGuardException;
 import nl.pvanassen.steam.error.VerificationException;
@@ -186,29 +181,6 @@ class SteamService implements StoreService {
 
     }
 
-    /**
-     * 
-     * {@inheritDoc}
-     *
-     * @see nl.pvanassen.steam.store.StoreService#getWallet()
-     */
-    @Deprecated
-    @Override
-    public int getWallet() {
-        WalletHandle handle = new WalletHandle();
-        try {
-            http.get("http://steamcommunity.com/market/", handle);
-            if (handle.getWallet() == 0) {
-                http.reset();
-                return getWallet();
-            }
-        }
-        catch (IOException e) {
-            logger.error("Error getting wallet", e);
-        }
-        return handle.getWallet();
-    }
-
     @Override
     public boolean sell(String assetId, int appId, String urlName, int contextId, int price) {
         try {
@@ -340,5 +312,11 @@ class SteamService implements StoreService {
     @Override
     public String getCookies() {
         return http.getCookies();
+    }
+    
+    @Override
+    public Set<Integer> getAppIds() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
