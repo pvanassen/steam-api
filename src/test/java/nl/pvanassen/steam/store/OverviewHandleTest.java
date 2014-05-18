@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;

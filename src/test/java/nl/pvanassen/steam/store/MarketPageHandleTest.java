@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-public class OutstandingsHandleTest extends MarketPageHandle {
+public class MarketPageHandleTest {
 
 	@Test
 	public void testEmptyHandle() throws IOException {
@@ -16,6 +16,7 @@ public class OutstandingsHandleTest extends MarketPageHandle {
 		assertEquals("Expected 0", 0, handle.getOutstandings().getAmount());
 		assertEquals("Expected 0", 0, handle.getOutstandings().getItems());
 		assertNotNull(handle.getItems());
+        assertNotNull(handle.getOutstandings().getAppIds());
 	}
 
 
@@ -28,6 +29,7 @@ public class OutstandingsHandleTest extends MarketPageHandle {
 		assertEquals("Expected 87", 87, handle.getOutstandings().getItems());
         assertNotNull(handle.getItems());
         assertEquals(87, handle.getItems().size());
+        assertNotNull(handle.getOutstandings().getAppIds());
 	}
 
 }

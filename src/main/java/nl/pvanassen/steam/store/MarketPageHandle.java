@@ -72,8 +72,10 @@ class MarketPageHandle extends DefaultHandle {
         	SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.US);
             parser.parse(new InputSource(stream));
             Document document = parser.getDocument();
-            String walletStr = ((Node) WALLET_XPATH.evaluate(document, XPathConstants.NODE)).getTextContent().trim();
-            wallet = AmountHelper.getAmount(walletStr);
+            Node walletNode = ((Node) WALLET_XPATH.evaluate(document, XPathConstants.NODE));;
+            if (walletNode != null) {
+            	wallet = AmountHelper.getAmount(walletNode.getTextContent().trim());
+            }
             Node node = (Node) ITEMS_DIV_XPATH.evaluate(document, XPathConstants.NODE);
             for (int i = 0; i < node.getChildNodes().getLength(); i++) {
                 Node outstandingRow = node.getChildNodes().item(i);
