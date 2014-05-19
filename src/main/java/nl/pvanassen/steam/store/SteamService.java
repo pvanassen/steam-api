@@ -153,10 +153,10 @@ class SteamService implements StoreService {
     @Override
     public List<Listing> getNewlyListed() {
         try {
-            LinkedList<Listing> listing = new LinkedList<>();
+        	ListingDeque listing = new ListingDeque();
             ListingHandle handle = new ListingHandle(objectMapper, listing);
             http.get("http://steamcommunity.com/market/recent", handle);
-            return listing;
+            return listing.getDeque();
         }
         catch (IOException e) {
             logger.error("Error getting inventory", e);
@@ -170,7 +170,7 @@ class SteamService implements StoreService {
      * @see nl.pvanassen.steam.store.StoreService#getAsyncNewlyListed(java.util.Deque)
      */
     @Override
-    public void getAsyncNewlyListed(Deque<Listing> queue) {
+    public void getAsyncNewlyListed(ListingDeque queue) {
         try {
             ListingHandle handle = new ListingHandle(objectMapper, queue);
             http.get("http://steamcommunity.com/market/recent", handle);

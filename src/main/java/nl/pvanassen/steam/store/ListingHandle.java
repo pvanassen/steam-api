@@ -2,7 +2,6 @@ package nl.pvanassen.steam.store;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Deque;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.helper.UrlNameHelper;
@@ -15,9 +14,9 @@ import org.slf4j.LoggerFactory;
 class ListingHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ObjectMapper objectMapper;
-    private final Deque<Listing> listings;
+    private final ListingDeque listings;
 
-    ListingHandle(ObjectMapper objectMapper, Deque<Listing> listings) {
+    ListingHandle(ObjectMapper objectMapper, ListingDeque listings) {
         this.objectMapper = objectMapper;
         this.listings = listings;
     }

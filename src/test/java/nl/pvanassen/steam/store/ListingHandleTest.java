@@ -11,11 +11,12 @@ import org.junit.Test;
 
 public class ListingHandleTest {
     private ListingHandle handle;
-    private final Deque<Listing> listingQueue = new LinkedList<>();
+    private ListingDeque listingQueue;
     
     @Before
     public void setUp() {
         handle = new ListingHandle( new ObjectMapper(), listingQueue );
+        listingQueue = new ListingDeque();
     }
 
     @Test
@@ -33,9 +34,8 @@ public class ListingHandleTest {
 
     @Test
     public void testHandle() throws IOException {
-        listingQueue.clear();
         handle.handle( getClass().getResourceAsStream( "/listing.json" ) );
-        List<Listing> listings = new ArrayList<>(listingQueue);
+        List<Listing> listings = new ArrayList<>(listingQueue.getDeque());
         assertEquals( 10, listings.size() );
         assertEquals( 730, listings.get( 9 ).getAppId() );
         assertEquals( "eSports%20Case", listings.get( 9 ).getUrlName() );

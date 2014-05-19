@@ -46,7 +46,7 @@ public interface StoreService {
      * 
      * @param queue Queue to add the items to
      */
-    void getAsyncNewlyListed(Deque<Listing> queue);
+    void getAsyncNewlyListed(ListingDeque queue);
 
     /**
      * The datapoints will always be called first. Once they are done the listings handle is called

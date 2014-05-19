@@ -115,4 +115,41 @@ public class Listing extends Item {
     public Date getCreatedDate() {
         return createdDate;
     }
+
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((listingId == null) ? 0 : listingId.hashCode());
+		return result;
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (!(obj instanceof Listing)) {
+			return false;
+		}
+		Listing other = (Listing) obj;
+		if (listingId == null) {
+			if (other.listingId != null) {
+				return false;
+			}
+		} else if (!listingId.equals(other.listingId)) {
+			return false;
+		}
+		return true;
+	}
 }
