@@ -15,11 +15,10 @@ public class ListingHandleTest {
     
     @Before
     public void setUp() {
-        handle = new ListingHandle( new ObjectMapper(), listingQueue );
         listingQueue = new ListingDeque();
+        handle = new ListingHandle( new ObjectMapper(), listingQueue );
     }
 
-    @Test
     public void testPerformance() throws IOException {
         for ( int i = 0; i != 5000; i++ ) {
             handle.handle( getClass().getResourceAsStream( "/listing.json" ) );

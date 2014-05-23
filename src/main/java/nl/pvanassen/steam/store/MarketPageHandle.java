@@ -113,7 +113,7 @@ class MarketPageHandle extends DefaultHandle {
             NodeList appIdsNodes = (NodeList)APPIDS_XPATH.evaluate(document, XPathConstants.NODESET);
             for (int i=0;i!=appIdsNodes.getLength();i++) {
                 Node appIdNode = appIdsNodes.item(i);
-                String appIdStr = appIdNode.getAttributes().getNamedItem("href").getTextContent().split("%3A")[1];
+                String appIdStr = appIdNode.getAttributes().getNamedItem("href").getTextContent().split("=")[1];
                 appIds.add(Integer.parseInt(appIdStr));
             }
             outstandings = new MarketPage(wallet, items, amount, this.items, appIds);

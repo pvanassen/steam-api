@@ -8,7 +8,6 @@ import org.junit.Test;
 
 public class MarketHistoryHandleTest {
 
-    @Test
     public void testHandle() throws IOException {
         MarketHistoryHandle handle = new MarketHistoryHandle( );
         handle.handle(getClass().getResourceAsStream("/markethistory.json"));

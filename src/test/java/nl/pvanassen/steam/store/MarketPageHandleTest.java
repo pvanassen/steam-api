@@ -25,11 +25,18 @@ public class MarketPageHandleTest {
 		MarketPageHandle handle = new MarketPageHandle();
 		handle.handle(getClass().getResourceAsStream("/loaded-marketpage.html"));
 		assertNotNull("Expected object", handle.getOutstandings());
-		assertEquals("Expected 6380", 6380, handle.getOutstandings().getAmount());
-		assertEquals("Expected 87", 87, handle.getOutstandings().getItems());
+		assertEquals("Expected 155", 155, handle.getOutstandings().getAmount());
+		assertEquals("Expected 1", 1, handle.getOutstandings().getItems());
         assertNotNull(handle.getItems());
-        assertEquals(87, handle.getItems().size());
+        assertEquals(1, handle.getItems().size());
         assertNotNull(handle.getOutstandings().getAppIds());
+        assertTrue(handle.getOutstandings().getAppIds().contains(238460));
+        assertTrue(handle.getOutstandings().getAppIds().contains(730));
+        assertTrue(handle.getOutstandings().getAppIds().contains(570));
+        assertTrue(handle.getOutstandings().getAppIds().contains(238960));
+        assertTrue(handle.getOutstandings().getAppIds().contains(753));
+        assertTrue(handle.getOutstandings().getAppIds().contains(440));
+        assertTrue(handle.getOutstandings().getAppIds().contains(230410));
 	}
 
 }
