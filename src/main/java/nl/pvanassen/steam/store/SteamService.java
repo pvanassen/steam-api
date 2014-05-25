@@ -24,13 +24,14 @@ import com.google.common.collect.ImmutableList;
 class SteamService implements StoreService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private static final int[] APP_IDS = new int[] { 440, 570, 730, 753, 238960, 230410 };
     private final Http http;
     private final String username;
-
+    private final Set<Integer> appIds;
+    
     SteamService(String cookies, String username) {
         http = Http.getInstance(cookies, username);
         this.username = username;
+        appIds = getOutstandings().getAppIds();
     }
 
     /**
@@ -39,6 +40,7 @@ class SteamService implements StoreService {
     SteamService(Http http, String username) {
         this.http = http;
         this.username = username;
+        appIds = getOutstandings().getAppIds();
     }
 
     @Override
@@ -103,7 +105,7 @@ class SteamService implements StoreService {
     @Override
     public List<InventoryItem> getInventory(String username) {
         List<InventoryItem> inventoryItems = new LinkedList<>();
-        for (int appId : APP_IDS) {
+        for (int appId : appIds) {
             int contextId = 2;
             if (appId == 753) {
                 contextId = 6;
