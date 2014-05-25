@@ -110,6 +110,7 @@ class SteamService implements StoreService {
             if (appId == 753) {
                 contextId = 6;
             }
+            logger.info("Getting inventory for app id " + appId);
             InventoryHandle handle = new InventoryHandle(objectMapper, contextId, inventoryItems);
             try {
                 http.get("http://steamcommunity.com/id/" + username + "/inventory/json/" + appId + "/" +

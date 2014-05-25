@@ -32,11 +32,15 @@ class InventoryHandle extends DefaultHandle {
             return;
         }
         for (JsonNode item : descriptions) {
+        	String urlName;
             // Fix for steam sending crap
             if (!item.has("market_hash_name")) {
-                continue;
+            	// Unprefered fallback
+            	urlName = UrlNameHelper.getUrlName(item.get("name").asText());
             }
-            String urlName = UrlNameHelper.getUrlName(item.get("market_hash_name").asText());
+            else {
+            	urlName = UrlNameHelper.getUrlName(item.get("market_hash_name").asText());
+            }
             descriptionMap.put(item.get("classid").asText() + "-" + item.get("instanceid").asText(), new Description(item.get("appid").asInt(), urlName, item.get("marketable").asBoolean()));
         }
 
