@@ -1,11 +1,23 @@
 package nl.pvanassen.steam.store;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
-import javax.xml.xpath.*;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.helper.AmountHelper;
@@ -17,7 +29,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.cyberneko.html.parsers.DOMFragmentParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.*;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.html.HTMLDocument;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -25,7 +39,7 @@ import org.xml.sax.SAXException;
 class MarketHistoryHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final List<MarketHistory> marketHistory = new LinkedList<>();
-    private final List<MarketHistoryPart> marketHistoryParts = new LinkedList<>();
+    private final ObjectMapper om = new ObjectMapper();
     private static final XPathFactory XPATH_FACTORY = XPathFactory.newInstance();
     private static final XPath XPATH = XPATH_FACTORY.newXPath();
     private static final XPathExpression HISTORY_ROW_XPATH;
@@ -46,11 +60,11 @@ class MarketHistoryHandle extends DefaultHandle {
         XPathExpression actedXpath = null;
         try {
             historyRowXpath = XPATH.compile("//DIV[@class='market_listing_row market_recent_listing_row']");
-            gainLossXpath = XPATH.compile(".//DIV[@class='market_listing_left_cell market_listing_gainorloss']");
-            dateXpath = XPATH.compile(".//DIV[@class='market_listing_right_cell market_listing_listed_date']");
-            priceXpath = XPATH.compile(".//SPAN[@class='market_listing_price']");
-            buyerXpath = XPATH.compile(".//DIV[@class='market_listing_whoactedwith_name_block']");
-            actedXpath = XPATH.compile(".//DIV[@class='market_listing_right_cell market_listing_whoactedwith']");
+            gainLossXpath = XPATH.compile("./DIV[@class='market_listing_left_cell market_listing_gainorloss']");
+            dateXpath = XPATH.compile("./DIV[@class='market_listing_right_cell market_listing_listed_date']");
+            priceXpath = XPATH.compile("./DIV/SPAN/SPAN[@class='market_listing_price']");
+            buyerXpath = XPATH.compile("./DIV/DIV[@class='market_listing_whoactedwith_name_block']");
+            actedXpath = XPATH.compile("./DIV[@class='market_listing_right_cell market_listing_whoactedwith']");
         }
         catch (XPathExpressionException e) {
             LoggerFactory.getLogger(MarketHistory.class).error("Error instantiating XPATH", e);
@@ -82,7 +96,6 @@ class MarketHistoryHandle extends DefaultHandle {
     @Override
     public void handle(InputStream stream) throws IOException {
         error = false;
-        ObjectMapper om = new ObjectMapper();
         JsonNode node = om.readTree(stream);
         totalCount = node.get("total_count").asInt();
         String resultHtml = node.get("results_html").asText();
@@ -126,13 +139,12 @@ class MarketHistoryHandle extends DefaultHandle {
                         status = MarketHistoryStatus.REMOVED;
                     }
                 }
-                NodeList dates = (NodeList) DATE_XPATH.evaluate(historyRow, XPathConstants.NODESET);
-                String listedStr = dates.item(0).getTextContent().trim();
-                String actedStr = dates.item(0).getTextContent().trim();
+                boolean full = status == MarketHistoryStatus.BOUGHT || status == MarketHistoryStatus.SOLD;
+
                 String priceStr = ((Node) PRICE_XPATH.evaluate(historyRow, XPathConstants.NODE)).getTextContent()
                         .trim();
                 String buyer = "";
-                if ((status == MarketHistoryStatus.BOUGHT) || (status == MarketHistoryStatus.SOLD)) {
+                if (full) {
                     buyer = ((Node) BUYER_XPATH.evaluate(historyRow, XPathConstants.NODE)).getTextContent()
                             .replace("Buyer:", "").trim();
                 }
@@ -142,16 +154,23 @@ class MarketHistoryHandle extends DefaultHandle {
                 }
                 Asset asset = assetMap.get(hoverMap.get(rowName));
                 try {
-                    Date acted = formatter.parse(actedStr);
-                    Date listed = formatter.parse(listedStr);
+                    Date acted = null;
+                    Date listed = null;
+                    if (full) {
+                        NodeList dates = (NodeList) DATE_XPATH.evaluate(historyRow, XPathConstants.NODESET);
+                        String listedStr = dates.item(0).getTextContent().trim();
+                        String actedStr = dates.item(1).getTextContent().trim();
+                    	acted = formatter.parse(actedStr);
+                    	listed = formatter.parse(listedStr);
+                    }
                     // 0,10&#8364;
                     int price = 0;
                     if (!"".equals(priceStr)) {
                         price = AmountHelper.getAmount(priceStr);
                     }
                     if (asset == null) {
-                        // Listing created or sold
-                        continue;
+                        marketHistory.add(new MarketHistory(rowName, -1, -1, "",
+                                listed, acted, price, buyer, status));
                     }
                     else {
                         marketHistory.add(new MarketHistory(rowName, asset.appId, asset.contextId, asset.urlName,

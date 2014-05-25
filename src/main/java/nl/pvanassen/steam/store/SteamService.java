@@ -153,7 +153,7 @@ class SteamService implements StoreService {
     @Override
     public List<Listing> getNewlyListed() {
         try {
-        	ListingDeque listing = new ListingDeque();
+        	ListingDeque listing = new ListingDeque(60000);
             ListingHandle handle = new ListingHandle(objectMapper, listing);
             http.get("http://steamcommunity.com/market/recent", handle);
             return listing.getDeque();

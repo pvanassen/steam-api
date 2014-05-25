@@ -11,12 +11,14 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class ListingDeque implements Runnable {
 	private final BlockingDeque<Listing> deque = new LinkedBlockingDeque<>();
 	private final Map<Long,String> processedMap = new HashMap<>();
+	private final int keepTime;
 	
-	public ListingDeque() {
+	public ListingDeque(int keepTime) {
 		Thread thread = new Thread(this, "ListingDeque-cleanup");
 		thread.setPriority(Thread.MIN_PRIORITY);
 		thread.setDaemon(true);
 		thread.start();
+		this.keepTime = keepTime;
 	}
 	
 	void offerFirst(Listing listing) {
@@ -40,13 +42,13 @@ public class ListingDeque implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				Thread.sleep(60000);
+				Thread.sleep(1000);
 			}
 			catch (InterruptedException e) {
 				// System shutdown
 				return;
 			}
-			long cutoff = System.currentTimeMillis() - 60000;
+			long cutoff = System.currentTimeMillis() - keepTime;
 			Iterator<Long> itr = processedMap.keySet().iterator();
 			while (itr.hasNext()) {
 				Long val = itr.next();

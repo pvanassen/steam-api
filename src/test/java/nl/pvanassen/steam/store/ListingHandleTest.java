@@ -15,7 +15,7 @@ public class ListingHandleTest {
     
     @Before
     public void setUp() {
-        listingQueue = new ListingDeque();
+        listingQueue = new ListingDeque(5000);
         handle = new ListingHandle( new ObjectMapper(), listingQueue );
     }
 
