@@ -6,6 +6,8 @@ import java.util.Set;
 import nl.pvanassen.steam.error.SteamGuardException;
 import nl.pvanassen.steam.error.VerificationException;
 
+import com.google.common.base.Optional;
+
 /**
  * Interface defining a connecion to the steam store
  * 
@@ -150,8 +152,11 @@ public interface StoreService {
     
     /**
      * Make a trade offer of items to a user
-     * @param userHash Hash of the user
-     * @param items Items to offer
+     * @param partner Trading partner ID
+     * @param me What do I offer
+     * @param them What do they offer
+     * @param message A message for the trade
+     * @return The trade offer id
      */
-    void makeTradeOffer(String userHash, List<InventoryItem> items);
+    int makeTradeOffer(long partner, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message);
 }

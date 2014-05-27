@@ -4,16 +4,18 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
 
-import nl.pvanassen.steam.error.SteamGuardException;
-import nl.pvanassen.steam.error.VerificationException;
+import nl.pvanassen.steam.error.*;
 import nl.pvanassen.steam.http.Http;
 
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -335,8 +337,40 @@ class SteamService implements StoreService {
     }
     
     @Override
-    public void makeTradeOffer(String userHash, List<InventoryItem> items) {
-        // TODO Auto-generated method stub
-        
+    public int makeTradeOffer(long partner, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message) {
+        ObjectNode tradeOffer = objectMapper.createObjectNode();
+        tradeOffer.put("newversion", true);
+        tradeOffer.put("version", 3);
+        ObjectNode meNode = tradeOffer.putObject("me");
+        fillTradeNode(me, meNode);
+        ObjectNode themNode = tradeOffer.putObject("them");
+        fillTradeNode(them, themNode);
+        Map<String,String> params = new HashMap<>();
+        params.put("json_tradeoffer", tradeOffer.toString());
+        params.put("partner", Long.toString(partner));
+        params.put("trade_offer_create_params", "");
+        params.put("tradeoffermessage", message.or(""));
+        try {
+            TradeOfferHandle handle = new TradeOfferHandle(objectMapper);
+            http.post("https://steamcommunity.com/tradeoffer/new/send", params, handle);
+            return handle.getTradeOfferId();
+        }
+        catch (IOException e) {
+            logger.error("Error making trade offer", e);
+            throw new SteamException("Error making trade offer", e);
+        }
+    }
+
+    private void fillTradeNode(List<InventoryItem> me, ObjectNode meNode) {
+        ArrayNode assetsNode = meNode.putArray("assets");
+        for (InventoryItem item : me) {
+            ObjectNode itemNode = assetsNode.addObject();
+            itemNode.put("appid", item.getAppId());
+            itemNode.put("contextid", item.getContextId());
+            itemNode.put("amount", 1);
+            itemNode.put("assetid", item.getAssetId());
+        }
+        meNode.putArray("currency");
+        meNode.put("ready", false);
     }
 }
