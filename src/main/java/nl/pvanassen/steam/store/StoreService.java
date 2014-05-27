@@ -1,6 +1,7 @@
 package nl.pvanassen.steam.store;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 import nl.pvanassen.steam.error.SteamGuardException;
 import nl.pvanassen.steam.error.VerificationException;
@@ -146,4 +147,11 @@ public interface StoreService {
      * @return Returns a set containing all known tradable app ids
      */
     Set<Integer> getAppIds();
+    
+    /**
+     * Make a trade offer of items to a user
+     * @param userHash Hash of the user
+     * @param items Items to offer
+     */
+    void makeTradeOffer(String userHash, List<InventoryItem> items);
 }

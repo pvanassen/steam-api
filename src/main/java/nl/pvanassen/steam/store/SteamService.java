@@ -333,4 +333,10 @@ class SteamService implements StoreService {
     public Set<Integer> getAppIds() {
         return getOutstandings().getAppIds();
     }
+    
+    @Override
+    public void makeTradeOffer(String userHash, List<InventoryItem> items) {
+        // TODO Auto-generated method stub
+        
+    }
 }
