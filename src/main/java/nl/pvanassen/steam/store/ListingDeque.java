@@ -8,11 +8,20 @@ import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
+/**
+ * A fifo buffer for listings that will filter out any duplicates. 
+ * @author Paul van Assen
+ *
+ */
 public class ListingDeque implements Runnable {
 	private final BlockingDeque<Listing> deque = new LinkedBlockingDeque<>();
 	private final Map<Long,String> processedMap = new HashMap<>();
 	private final int keepTime;
 	
+	/**
+	 * Constructor with a time to keep items in a map to prevent duplicates
+	 * @param keepTime Time in miliseconds
+	 */
 	public ListingDeque(int keepTime) {
 		Thread thread = new Thread(this, "ListingDeque-cleanup");
 		thread.setPriority(Thread.MIN_PRIORITY);
@@ -29,6 +38,11 @@ public class ListingDeque implements Runnable {
 		deque.offerFirst(listing);
 	}
 	
+	/**
+	 * Takes first item
+	 * @return The first element in the fifo deque. 
+	 * @throws InterruptedException If during the wait the thread is interupted. 
+	 */
 	public Listing takeFirst() throws InterruptedException {
 		Listing listing = deque.takeFirst();
 		return listing;

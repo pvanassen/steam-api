@@ -181,8 +181,8 @@ class SteamService implements StoreService {
 
     /**
      * {@inheritDoc}
-     * 
-     * @see nl.pvanassen.steam.store.StoreService#getAsyncNewlyListed(java.util.Deque)
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getAsyncNewlyListed(nl.pvanassen.steam.store.ListingDeque)
      */
     @Override
     public void getAsyncNewlyListed(ListingDeque queue) {
