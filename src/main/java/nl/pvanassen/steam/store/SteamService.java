@@ -106,20 +106,32 @@ class SteamService implements StoreService {
     public List<InventoryItem> getInventory(String username) {
         List<InventoryItem> inventoryItems = new LinkedList<>();
         for (int appId : appIds) {
-            int contextId = 2;
-            if (appId == 753) {
-                contextId = 6;
-            }
-            logger.info("Getting inventory for app id " + appId);
-            InventoryHandle handle = new InventoryHandle(objectMapper, contextId, inventoryItems);
-            try {
-                http.get("http://steamcommunity.com/id/" + username + "/inventory/json/" + appId + "/" +
-                         contextId + "/", handle);
-            }
-            catch (IOException e) {
-                logger.error("Error fetching inventory data", e);
+        	inventoryItems.addAll(getInventory(username, appId));
+        }
+        return ImmutableList.copyOf(inventoryItems);
+    }
+    
+    @Override
+    public List<InventoryItem> getInventory(int appId) {
+        return getInventory(username, appId);
+    }
+    
+    @Override
+    public List<InventoryItem> getInventory(String username, int appId) {
+        List<InventoryItem> inventoryItems = new LinkedList<>();
+        int contextId = 2;
+        if (appId == 753) {
+            contextId = 6;
+        }
+        logger.info("Getting inventory for app id " + appId);
+        InventoryHandle handle = new InventoryHandle(objectMapper, contextId, inventoryItems);
+        try {
+            http.get("http://steamcommunity.com/id/" + username + "/inventory/json/" + appId + "/" +
+                     contextId + "/", handle);
+        }
+        catch (IOException e) {
+            logger.error("Error fetching inventory data", e);
 
-            }
         }
         return ImmutableList.copyOf(inventoryItems);
     }
