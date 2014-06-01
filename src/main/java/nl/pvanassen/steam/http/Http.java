@@ -96,7 +96,7 @@ public class Http {
      */
     public void get(String url, Handle handle) throws IOException {
         HttpGet httpget = new HttpGet(url);
-        addHeaders(httpget);
+        addHeaders(httpget, "http://steamcommunity.com/id/" + username + "/inventory/");
 
         CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
         CloseableHttpResponse response = null;
@@ -142,13 +142,13 @@ public class Http {
         }
     }
 
-    private void addHeaders(AbstractHttpMessage httpMessage) {
+    private void addHeaders(AbstractHttpMessage httpMessage, String referer) {
         httpMessage.addHeader("Accept", "*/*");
         httpMessage.addHeader("Accept-Language", "en-US,en;q=0.5");
         httpMessage.addHeader("Cache-Control", "no-cache");
         httpMessage.addHeader("Accept-Encoding", "gzip, deflate");
         httpMessage.addHeader("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:28.0) Gecko/20100101 Firefox/28.0");
-        httpMessage.addHeader("Referer", "http://steamcommunity.com/id/" + username + "/inventory/");
+        httpMessage.addHeader("Referer", referer);
         httpMessage.addHeader("Origin", "http://steamcommunity.com");
         // httpMessage.addHeader("X-Prototype-Version", "1.7");
         // httpMessage.addHeader("X-Requested-With", "XMLHttpRequest");
@@ -171,9 +171,9 @@ public class Http {
      * @param handle Handle to use
      * @throws IOException if a network error occurs
      */
-    public void post(String url, Map<String, String> params, Handle handle) throws IOException {
+    public void post(String url, Map<String, String> params, Handle handle, String referer) throws IOException {
         HttpPost httpPost = new HttpPost(url);
-        addHeaders(httpPost);
+        addHeaders(httpPost, referer);
         String sessionid = "";
         StringBuilder cookieStr = new StringBuilder();
         for (Cookie cookie : context.getCookieStore().getCookies()) {

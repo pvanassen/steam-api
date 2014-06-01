@@ -54,7 +54,7 @@ class SteamService implements StoreService {
         params.put("total", Integer.toString(fee + subTotal));
         try {
             BuyHandle handle = new BuyHandle();
-            http.post("https://steamcommunity.com/market/buylisting/" + listingId, params, handle);
+            http.post("https://steamcommunity.com/market/buylisting/" + listingId, params, handle, "http://steamcommunity.com/id/" + username + "/inventory/");
             if ((handle.getMessage() != null) && handle.getMessage().contains("temporary")) {
                 return buy(listingId, fee, subTotal);
             }
@@ -141,13 +141,17 @@ class SteamService implements StoreService {
     @Override
     public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle,
             GenericHandle<Listing> listingHandle) {
-
+    	String url = "http://steamcommunity.com/market/listings/" + appId + "/" + urlName;
         ListingPageScriptHandle handle = new ListingPageScriptHandle(objectMapper);
         try {
-            http.get("http://steamcommunity.com/market/listings/" + appId + "/" + urlName, handle);
+            http.get(url, handle);
         }
         catch (IOException e) {
             logger.error("Error fetching listing page data", e);
+        	throw new SteamException("Error getting data for url: " + url, e);
+        }
+        if (handle.isError()) {
+        	throw new SteamException("Error getting data for url: " + url);
         }
         JsonNode priceHistoryInfo = handle.getPriceHistoryInfo();
         for (StatDataPoint point : new ListingStatDataPointIterator(priceHistoryInfo)) {
@@ -209,7 +213,7 @@ class SteamService implements StoreService {
             params.put("price", Integer.toString(price));
             logger.info(params.toString());
             SellHandle sellHandle = new SellHandle();
-            http.post("https://steamcommunity.com/market/sellitem/", params, sellHandle);
+            http.post("https://steamcommunity.com/market/sellitem/", params, sellHandle, "http://steamcommunity.com/id/" + username + "/inventory/");
             return !sellHandle.isError();
         }
         catch (IOException | RuntimeException e) {
@@ -222,7 +226,7 @@ class SteamService implements StoreService {
     public boolean removeListing(String listingId) {
     	try {
     		RemoveHandle removeHandle = new RemoveHandle();
-    		http.post("http://steamcommunity.com/market/removelisting/" + listingId, new HashMap<String,String>(), removeHandle);
+    		http.post("http://steamcommunity.com/market/removelisting/" + listingId, new HashMap<String,String>(), removeHandle, "http://steamcommunity.com/id/" + username + "/inventory/");
             return !removeHandle.isError();
     	}
     	catch (IOException | RuntimeException e) {
@@ -281,7 +285,7 @@ class SteamService implements StoreService {
         GetRSAHandle rsaHandle = new GetRSAHandle(objectMapper);
         DoLoginHandle doLoginHandle = new DoLoginHandle(objectMapper);
         try {
-            http.post("https://store.steampowered.com/login/getrsakey/", params, rsaHandle);
+            http.post("https://store.steampowered.com/login/getrsakey/", params, rsaHandle, "http://steamcommunity.com/id/" + username + "/inventory/");
             if (!rsaHandle.isSuccess()) {
                 throw new VerificationException("Invalid username");
             }
@@ -301,7 +305,7 @@ class SteamService implements StoreService {
             params.put("password", encryptedPasswordBase64);
             params.put("remember_login", "true");
             params.put("rsatimestamp", Long.toString(rsaHandle.getTimestamp()));
-            http.post("https://steamcommunity.com/login/dologin/", params, doLoginHandle);
+            http.post("https://steamcommunity.com/login/dologin/", params, doLoginHandle, "http://steamcommunity.com/id/" + username + "/inventory/");
             if (doLoginHandle.isSuccess()) {
                 // logged in
                 return;
@@ -337,7 +341,7 @@ class SteamService implements StoreService {
     }
     
     @Override
-    public int makeTradeOffer(long partner, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message) {
+    public int makeTradeOffer(long steamId, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message) {
         ObjectNode tradeOffer = objectMapper.createObjectNode();
         tradeOffer.put("newversion", true);
         tradeOffer.put("version", 3);
@@ -347,12 +351,13 @@ class SteamService implements StoreService {
         fillTradeNode(them, themNode);
         Map<String,String> params = new HashMap<>();
         params.put("json_tradeoffer", tradeOffer.toString());
-        params.put("partner", Long.toString(partner));
-        params.put("trade_offer_create_params", "");
+        params.put("partner", Long.toString(steamId));
+        params.put("trade_offer_create_params", "{}");
         params.put("tradeoffermessage", message.or(""));
+        logger.info("Sending: " + params.toString());
         try {
             TradeOfferHandle handle = new TradeOfferHandle(objectMapper);
-            http.post("https://steamcommunity.com/tradeoffer/new/send", params, handle);
+            http.post("https://steamcommunity.com/tradeoffer/new/send", params, handle, "http://steamcommunity.com/tradeoffer/new/?partner=" + Long.toString(steamId & 0xFFFFFFFFL));
             return handle.getTradeOfferId();
         }
         catch (IOException e) {

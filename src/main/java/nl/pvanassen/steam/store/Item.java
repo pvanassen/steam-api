@@ -90,5 +90,4 @@ public abstract class Item {
     public String getUrl() {
         return "http://steamcommunity.com/market/listings/" + appId + "/" + urlName;
     }
-
 }

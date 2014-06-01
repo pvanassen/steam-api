@@ -20,9 +20,11 @@ public class ListingPageScriptHandle extends DefaultHandle {
     private final ObjectMapper om;
     private JsonNode listingInfo;
     private JsonNode priceHistoryInfo;
-
+    private boolean error;
+    
     ListingPageScriptHandle(ObjectMapper om) {
         this.om = om;
+        error = false;
     }
 
     JsonNode getListingInfo() {
@@ -31,6 +33,11 @@ public class ListingPageScriptHandle extends DefaultHandle {
 
     JsonNode getPriceHistoryInfo() {
         return priceHistoryInfo;
+    }
+    
+    @Override
+    public void handleError(InputStream stream) throws IOException {
+    	error = true;
     }
 
     @Override
@@ -64,4 +71,7 @@ public class ListingPageScriptHandle extends DefaultHandle {
         }
     }
 
+    boolean isError() {
+		return error;
+	}
 }
