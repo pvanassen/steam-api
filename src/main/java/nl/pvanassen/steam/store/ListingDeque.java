@@ -1,12 +1,16 @@
 package nl.pvanassen.steam.store;
 
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A fifo buffer for listings that will filter out any duplicates. 
@@ -14,8 +18,9 @@ import java.util.concurrent.LinkedBlockingDeque;
  *
  */
 public class ListingDeque implements Runnable {
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final BlockingDeque<Listing> deque = new LinkedBlockingDeque<>();
-	private final Map<Long,String> processedMap = new HashMap<>();
+	private final Map<String,Long> processedMap = new HashMap<>();
 	private final int keepTime;
 	
 	/**
@@ -31,11 +36,14 @@ public class ListingDeque implements Runnable {
 	}
 	
 	void offerFirst(Listing listing) {
-		if (processedMap.values().contains(listing.getListingId())) {
+		logger.info("Adding " + listing.getListingId());
+		if (processedMap.containsKey(listing.getListingId())) {
+			logger.info("Listing already known. " + listing.getListingId());
 			return;
 		}
-		processedMap.put(System.currentTimeMillis(), listing.getListingId());
+		processedMap.put(listing.getListingId(), System.currentTimeMillis());
 		deque.offerFirst(listing);
+		logger.info("Added " + listing.getListingId());
 	}
 	
 	/**
@@ -56,20 +64,21 @@ public class ListingDeque implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(60000);
 			}
 			catch (InterruptedException e) {
 				// System shutdown
 				return;
 			}
 			long cutoff = System.currentTimeMillis() - keepTime;
-			Iterator<Long> itr = processedMap.keySet().iterator();
-			while (itr.hasNext()) {
-				Long val = itr.next();
-				if (val.longValue() < cutoff) {
-					itr.remove();
+			Set<String> toRemove = new HashSet<>();
+			for(Map.Entry<String,Long> entry : processedMap.entrySet()) {
+				if (entry.getValue().longValue() < cutoff) {
+					logger.info("Removing " + entry.getKey());
+					toRemove.add(entry.getKey());
 				}
 			}
+			processedMap.keySet().removeAll(toRemove);
 		}
 		
 	}
