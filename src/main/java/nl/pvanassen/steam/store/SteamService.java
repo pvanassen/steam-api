@@ -165,18 +165,13 @@ class SteamService implements StoreService {
             listingHandle.handle(item);
         }
     }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see nl.pvanassen.steam.store.StoreService#getNewlyListed()
-     */
+    
     @Override
-    public List<Listing> getNewlyListed() {
+    public List<Listing> getNewlyListed(int currency, String country) {
         try {
         	ListingDeque listing = new ListingDeque(60000);
             ListingHandle handle = new ListingHandle(objectMapper, listing);
-            http.get("http://steamcommunity.com/market/recent", handle);
+            http.get("http://steamcommunity.com/market/recent?currency=" + currency + "&country=" + country + "&" + System.currentTimeMillis(), handle);
             return listing.getDeque();
         }
         catch (IOException e) {
@@ -185,16 +180,11 @@ class SteamService implements StoreService {
         return Collections.emptyList();
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see nl.pvanassen.steam.store.StoreService#getAsyncNewlyListed(nl.pvanassen.steam.store.ListingDeque)
-     */
     @Override
-    public void getAsyncNewlyListed(ListingDeque queue) {
+    public void getAsyncNewlyListed(int currency, String country, ListingDeque queue) {
         try {
             ListingHandle handle = new ListingHandle(objectMapper, queue);
-            http.get("http://steamcommunity.com/market/recent", handle);
+            http.get("http://steamcommunity.com/market/recent?currency=" + currency + "&country=" + country + "&" + System.currentTimeMillis(), handle);
         }
         catch (IOException e) {
             logger.error("Error getting inventory", e);

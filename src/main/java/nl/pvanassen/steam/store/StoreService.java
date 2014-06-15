@@ -63,10 +63,12 @@ public interface StoreService {
 
     /**
      * Retrieve all newly listed
+     * @param currency Currency to retrieve
+     * @param country Country to get listings for
      * 
      * @param queue Queue to add the items to
      */
-    void getAsyncNewlyListed(ListingDeque queue);
+    void getAsyncNewlyListed(int currency, String country, ListingDeque queue);
 
     /**
      * The datapoints will always be called first. Once they are done the listings handle is called
@@ -83,9 +85,11 @@ public interface StoreService {
     /**
      * Retrieve the newly listed
      * 
+     * @param currency Currency to retrieve
+     * @param country Country to get listings for
      * @return Listings
      */
-    List<Listing> getNewlyListed();
+    List<Listing> getNewlyListed(int currency, String country);
 
     /**
      * Sell an item in the inventory
