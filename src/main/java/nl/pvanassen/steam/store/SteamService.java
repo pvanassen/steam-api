@@ -170,7 +170,7 @@ class SteamService implements StoreService {
     public List<Listing> getNewlyListed(int currency, String country) {
         try {
         	ListingDeque listing = new ListingDeque(60000);
-            ListingHandle handle = new ListingHandle(objectMapper, listing);
+            ListingHandle handle = new ListingHandle(objectMapper, listing, country);
             http.get("http://steamcommunity.com/market/recent?currency=" + currency + "&country=" + country + "&" + System.currentTimeMillis(), handle);
             return listing.getDeque();
         }
@@ -183,7 +183,7 @@ class SteamService implements StoreService {
     @Override
     public void getAsyncNewlyListed(int currency, String country, ListingDeque queue) {
         try {
-            ListingHandle handle = new ListingHandle(objectMapper, queue);
+            ListingHandle handle = new ListingHandle(objectMapper, queue, country);
             http.get("http://steamcommunity.com/market/recent?currency=" + currency + "&country=" + country + "&" + System.currentTimeMillis(), handle);
         }
         catch (IOException e) {

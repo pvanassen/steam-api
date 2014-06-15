@@ -24,11 +24,13 @@ public class Listing extends Item {
     private final int publisherFeeApp;
 
     private final double publisherFeePercent;
+    
+    private final String country;
 
     private final Date createdDate = new Date();
 
     Listing(int appId, String urlName, String listingId, String steamIdLister, int subTotal, int fee,
-            int steamFee, int publisherFee, int publisherFeeApp, double publisherFeePercent) {
+            int steamFee, int publisherFee, int publisherFeeApp, double publisherFeePercent, String country) {
         super(appId, urlName);
         this.listingId = listingId;
         this.steamIdLister = steamIdLister;
@@ -38,6 +40,7 @@ public class Listing extends Item {
         this.publisherFee = publisherFee;
         this.publisherFeeApp = publisherFeeApp;
         this.publisherFeePercent = publisherFeePercent;
+        this.country = country;
     }
 
     /**
@@ -106,7 +109,7 @@ public class Listing extends Item {
         return "Listing [appId=" + getAppId() + ", urlName=" + getUrlName() + ", listingId=" + listingId +
                ", steamIdLister=" + steamIdLister + ", subTotal=" + subTotal + ", fee=" + fee + ", steamFee=" +
                steamFee + ", publisherFee=" + publisherFee + ", publisherFeeApp=" + publisherFeeApp +
-               ", publisherFeePercent=" + publisherFeePercent + "]";
+               ", publisherFeePercent=" + publisherFeePercent + ", country=" + country + "]";
     }
 
     /**
@@ -115,6 +118,10 @@ public class Listing extends Item {
     public Date getCreatedDate() {
         return createdDate;
     }
+    
+    public String getCountry() {
+		return country;
+	}
 
 	/**
 	 * @see java.lang.Object#hashCode()

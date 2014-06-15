@@ -53,7 +53,7 @@ public class ListingItemIterator implements Iterator<Listing>, Iterable<Listing>
             int publisherFeeApp = item.get("publisher_fee_app").asInt();
             double publisherFeePercent = item.get("publisher_fee_percent").asDouble();
             return new Listing(appId, urlName, listingId, steamIdListing, convertedPrice, convertedFee,
-                    convertedSteamFee, convertedPublisherFee, publisherFeeApp, publisherFeePercent);
+                    convertedSteamFee, convertedPublisherFee, publisherFeeApp, publisherFeePercent, "--");
         }
         catch (RuntimeException e) {
             logger.info("Error getting item " + item, e);

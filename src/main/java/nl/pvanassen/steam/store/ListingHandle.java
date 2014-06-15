@@ -15,10 +15,12 @@ class ListingHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ObjectMapper objectMapper;
     private final ListingDeque listings;
-
-    ListingHandle(ObjectMapper objectMapper, ListingDeque listings) {
+    private final String country;
+    
+    ListingHandle(ObjectMapper objectMapper, ListingDeque listings, String country) {
         this.objectMapper = objectMapper;
         this.listings = listings;
+        this.country = country;
     }
 
     @Override
@@ -36,7 +38,7 @@ class ListingHandle extends DefaultHandle {
                         .get("steamid_lister").asText(), listing.get("converted_price").asInt(), listing
                         .get("converted_fee").asInt(), listing.get("converted_steam_fee").asInt(), listing
                         .get("converted_publisher_fee").asInt(), listing.get("publisher_fee_app").asInt(), listing
-                        .get("publisher_fee_percent").asDouble()));
+                        .get("publisher_fee_percent").asDouble(), country));
             }
             catch (NullPointerException e) {
                 logger.error("Error fetching " + listing);
