@@ -23,7 +23,9 @@ class BuyHandle extends DefaultHandle {
         ObjectMapper om = new ObjectMapper();
         JsonNode node = om.readTree(stream);
         JsonNode walletInfo = node.get("wallet_info");
-        wallet = walletInfo.get("wallet_balance").asInt();
+        if (walletInfo != null) {
+            wallet = walletInfo.get("wallet_balance").asInt();
+        }
     }
 
     @Override

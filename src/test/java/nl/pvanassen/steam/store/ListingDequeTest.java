@@ -16,10 +16,6 @@ public class ListingDequeTest {
 		assertEquals(1, deque.getDeque().size());
 		assertEquals(listing1, deque.takeFirst());
 		assertEquals(0, deque.getDeque().size());
-		Thread.sleep(6000);
-		deque.offerFirst(listing1);
-		assertEquals(1, deque.getDeque().size());
-		assertEquals(listing1, deque.takeFirst());
 	}
 
 }

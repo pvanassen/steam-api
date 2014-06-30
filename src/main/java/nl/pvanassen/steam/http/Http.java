@@ -161,7 +161,7 @@ public class Http {
         httpMessage.addHeader("Origin", "http://steamcommunity.com");
         httpMessage.addHeader("Pragma", "no-cache");
         httpMessage.addHeader("Referer", referer);
-        httpMessage.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0'");
+        httpMessage.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0");
         // httpMessage.addHeader("X-Prototype-Version", "1.7");
         // httpMessage.addHeader("X-Requested-With", "XMLHttpRequest");
     }
@@ -186,12 +186,9 @@ public class Http {
     public void post(String url, Map<String, String> params, Handle handle, String referer) throws IOException {
         HttpPost httpPost = new HttpPost(url);
         addHeaders(httpPost, referer);
-        String sessionid = "";
+        String sessionid = getSessionId();
         StringBuilder cookieStr = new StringBuilder();
         for (Cookie cookie : context.getCookieStore().getCookies()) {
-            if (cookie.getName().equals("sessionid")) {
-                sessionid = cookie.getValue();
-            }
             cookieStr.append(cookie.getName()).append("=").append(cookie.getValue()).append("; ");
         }
         cookieStr.setLength(cookieStr.length() - 2);
@@ -208,11 +205,13 @@ public class Http {
                 .create("application/x-www-form-urlencoded", "UTF-8")));
         httpPost.setHeader("Cookie", cookieStr.toString());
         
-        logger.info(" curl '" + httpPost.getURI().toString() + "'");
+        StringBuilder curl = new StringBuilder();
+        curl.append("\ncurl '").append(httpPost.getURI().toString()).append("' \\\n");
         for (Header header : httpPost.getAllHeaders()) {
-        	logger.info("-H '" + header.getName() + ": " + header.getValue() + "'");
+            curl.append("-H '").append(header.getName()).append(": ").append(header.getValue()).append("' \\\n");
         }
-        logger.info("--data '" + httpPost.getEntity().toString() + "'");
+        curl.append("--data '").append(sb.toString()).append("'");
+        logger.info("\n" + curl.toString());
         CloseableHttpClient httpclient = HttpClients.custom().build();
         CloseableHttpResponse response = null;
         try {
@@ -287,4 +286,14 @@ public class Http {
             
         }
     }
+
+    public String getSessionId() {
+        for (Cookie cookie : context.getCookieStore().getCookies()) {
+            if (cookie.getName().equals("sessionid")) {
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
+    
 }
