@@ -3,36 +3,37 @@ package nl.pvanassen.steam.store;
 import java.io.IOException;
 import java.io.InputStream;
 
-import nl.pvanassen.steam.http.DefaultHandle;
-
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
-class BuyHandle extends DefaultHandle {
+import nl.pvanassen.steam.http.DefaultHandle;
 
-    private int wallet;
-    private boolean error = false;
+class BuyOrderHandle extends DefaultHandle {
+    private final ObjectMapper objectMapper;
+    private boolean error;
     private String message;
-
-    int getWallet() {
-        return wallet;
+    private String buyOrderId;
+    
+    BuyOrderHandle(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
-
+    
     @Override
     public void handle(InputStream stream) throws IOException {
-        ObjectMapper om = new ObjectMapper();
-        JsonNode node = om.readTree(stream);
-        JsonNode walletInfo = node.get("wallet_info");
-        if (walletInfo != null) {
-            wallet = walletInfo.get("wallet_balance").asInt();
+        JsonNode node = objectMapper.readTree(stream);
+        if (!node.get("success").asBoolean()) {
+            error = true;
+            message = "Unknown";
+        }
+        else {
+            buyOrderId = node.get("buy_orderid").asText();
         }
     }
-
+    
     @Override
     public void handleError(InputStream stream) throws IOException {
         error = true;
-        ObjectMapper om = new ObjectMapper();
-        JsonNode node = om.readTree(stream);
+        JsonNode node = objectMapper.readTree(stream);
         if (node == null) {
             message = "No result";
         }
@@ -43,12 +44,14 @@ class BuyHandle extends DefaultHandle {
             message = node.toString();
         }
     }
-
+    
     boolean isError() {
         return error;
     }
-
     String getMessage() {
         return message;
+    }
+    String getBuyOrderId() {
+        return buyOrderId;
     }
 }

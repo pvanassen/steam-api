@@ -163,4 +163,10 @@ public interface StoreService {
      * @return The trade offer id
      */
     int makeTradeOffer(long partner, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message);
+    
+    String createBuyOrder(Item item, int currencyId, int priceTotal, int quantity);
+    
+    BuyOrderStatus getBuyOrderStatus(String id);
+    
+    void cancelBuyOrder(String id);
 }
