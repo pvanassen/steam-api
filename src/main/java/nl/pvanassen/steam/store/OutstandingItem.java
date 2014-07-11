@@ -2,6 +2,8 @@ package nl.pvanassen.steam.store;
 
 import java.util.Date;
 
+import nl.pvanassen.steam.store.common.Item;
+
 /**
  * Item listed in the market
  * @author Paul van Assen

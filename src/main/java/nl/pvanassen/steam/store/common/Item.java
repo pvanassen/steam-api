@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.common;
 
 /**
  * Base class for any item related stuff

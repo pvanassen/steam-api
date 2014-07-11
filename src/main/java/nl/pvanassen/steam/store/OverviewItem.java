@@ -1,5 +1,7 @@
 package nl.pvanassen.steam.store;
 
+import nl.pvanassen.steam.store.common.Item;
+
 /**
  * Object containing all information for a line on the market page
  * 

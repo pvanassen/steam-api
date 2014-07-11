@@ -1,5 +1,7 @@
 package nl.pvanassen.steam.store;
 
+import nl.pvanassen.steam.store.common.Item;
+
 /**
  * Representation of an item in the inventory
  * 

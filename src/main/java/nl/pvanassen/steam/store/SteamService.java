@@ -6,6 +6,7 @@ import java.util.*;
 
 import nl.pvanassen.steam.error.*;
 import nl.pvanassen.steam.http.Http;
+import nl.pvanassen.steam.store.common.Item;
 
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonNode;
