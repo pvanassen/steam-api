@@ -2,10 +2,21 @@ package nl.pvanassen.steam.store;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import nl.pvanassen.steam.error.*;
+import nl.pvanassen.steam.error.SteamException;
+import nl.pvanassen.steam.error.SteamGuardException;
+import nl.pvanassen.steam.error.VerificationException;
 import nl.pvanassen.steam.http.Http;
+import nl.pvanassen.steam.store.buy.BuyResult;
+import nl.pvanassen.steam.store.buy.BuyService;
+import nl.pvanassen.steam.store.buy.SteamBuyService;
+import nl.pvanassen.steam.store.common.BuyOrder;
 import nl.pvanassen.steam.store.common.Item;
 
 import org.apache.commons.codec.binary.Base64;
@@ -30,11 +41,13 @@ class SteamService implements StoreService {
     private final Http http;
     private final String username;
     private final Set<Integer> appIds;
+    private final BuyService buyService;
     
     SteamService(String cookies, String username) {
         http = Http.getInstance(cookies, username);
         this.username = username;
         appIds = getOutstandings().getAppIds();
+        buyService = new SteamBuyService(http, username);
     }
 
     /**
@@ -44,31 +57,12 @@ class SteamService implements StoreService {
         this.http = http;
         this.username = username;
         appIds = getOutstandings().getAppIds();
+        buyService = new SteamBuyService(http, username);
     }
 
     @Override
     public BuyResult buy(String listingId, int fee, int subTotal) {
-        Map<String, String> params = new HashMap<>();
-        params.put("currency", "3");
-        params.put("fee", Integer.toString(fee));
-        params.put("subtotal", Integer.toString(subTotal));
-        params.put("total", Integer.toString(fee + subTotal));
-        try {
-            BuyHandle handle = new BuyHandle();
-            http.post("https://steamcommunity.com/market/buylisting/" + listingId, params, handle, "http://steamcommunity.com/id/" + username + "/inventory/");
-            if ((handle.getMessage() != null) && handle.getMessage().contains("temporary")) {
-                return buy(listingId, fee, subTotal);
-            }
-            if ((handle.getMessage() != null) && handle.getMessage().contains("Cookies")) {
-                logger.error("Cookie issue.");
-                throw new CookieException();
-            }
-            return new BuyResult(!handle.isError(), handle.getWallet(), handle.getMessage());
-        }
-        catch (IOException e) {
-            logger.error("Error posting data", e);
-            return new BuyResult(false, 0, "");
-        }
+    	return buyService.buy(new BuyOrder(0, "", listingId, subTotal, fee));
     }
 
     /**

@@ -1,6 +1,5 @@
 package nl.pvanassen.steam.store.buy;
 
-import nl.pvanassen.steam.store.BuyResult;
 import nl.pvanassen.steam.store.common.BuyOrder;
 
 /**

@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.buy;
 
 /**
  * Result of a purchase attempt

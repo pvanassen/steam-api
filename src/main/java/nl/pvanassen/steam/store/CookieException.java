@@ -6,7 +6,7 @@ package nl.pvanassen.steam.store;
  *
  */
 public class CookieException extends RuntimeException {
-    CookieException() {
+    public CookieException() {
         super("Error posting data, got cookie error back from Steam");
     }
 }
