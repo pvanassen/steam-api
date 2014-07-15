@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.buyorder;
 
 /**
  * Status of a previously made buy order

@@ -6,6 +6,7 @@ import java.util.Set;
 import nl.pvanassen.steam.error.SteamGuardException;
 import nl.pvanassen.steam.error.VerificationException;
 import nl.pvanassen.steam.store.buy.BuyResult;
+import nl.pvanassen.steam.store.buyorder.BuyOrderStatus;
 import nl.pvanassen.steam.store.common.Item;
 
 import com.google.common.base.Optional;
