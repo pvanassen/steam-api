@@ -64,6 +64,7 @@ class MarketPageHandle extends DefaultHandle {
 
     @Override
     public void handle(InputStream stream) throws IOException {
+    	logger.info("Handling ok");
         int wallet = 0;
         int amount = 0;
         int items = 0;
@@ -72,12 +73,15 @@ class MarketPageHandle extends DefaultHandle {
         	SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.US);
             parser.parse(new InputSource(stream));
             Document document = parser.getDocument();
+        	logger.info("Input parsed");
             Node walletNode = ((Node) WALLET_XPATH.evaluate(document, XPathConstants.NODE));;
             if (walletNode != null) {
             	wallet = AmountHelper.getAmount(walletNode.getTextContent().trim());
+            	logger.info("Got wallet");
             }
             Node node = (Node) ITEMS_DIV_XPATH.evaluate(document, XPathConstants.NODE);
             for (int i = 0; i < node.getChildNodes().getLength(); i++) {
+            	logger.info("Found outstanding row");
                 Node outstandingRow = node.getChildNodes().item(i);
                 if (outstandingRow.getAttributes() == null) {
                     continue;
@@ -112,6 +116,7 @@ class MarketPageHandle extends DefaultHandle {
             Set<Integer> appIds = new HashSet<>();
             NodeList appIdsNodes = (NodeList)APPIDS_XPATH.evaluate(document, XPathConstants.NODESET);
             for (int i=0;i!=appIdsNodes.getLength();i++) {
+            	logger.info("Found app id");
                 Node appIdNode = appIdsNodes.item(i);
                 String appIdStr = appIdNode.getAttributes().getNamedItem("href").getTextContent().split("=")[1];
                 appIds.add(Integer.parseInt(appIdStr));
