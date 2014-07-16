@@ -45,7 +45,7 @@ class MarketPageHandle extends DefaultHandle {
             itemsDivXpath = XPATH.compile("//DIV[@class='market_content_block my_listing_section market_home_listing_table']");
             priceXpath = XPATH.compile(".//SPAN[@class='market_listing_price']");
             dateXpath = XPATH.compile(".//DIV[@class='market_listing_right_cell market_listing_listed_date']");
-            removeXpath = XPATH.compile(".//A[@class='item_market_action_button item_market_action_button_edit']");
+            removeXpath = XPATH.compile(".//A[@class='item_market_action_button item_market_action_button_edit nodisable']");
             linkXpath = XPATH.compile(".//A[@class='market_listing_item_name_link']");
             walletXpath = XPATH.compile("//SPAN[@id='marketWalletBalanceAmount']");
             appIdsXpath = XPATH.compile("//A[@class='game_button']");

@@ -259,6 +259,7 @@ class SteamService implements StoreService {
      */
     @Override
     public MarketPage getOutstandings() {
+    	logger.info("Getting market page");
         MarketPageHandle handle = new MarketPageHandle();
         try {
             http.get("http://steamcommunity.com/market/", handle);
