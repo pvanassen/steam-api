@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.history;
 
 import java.util.Date;
 
@@ -7,17 +7,17 @@ import java.util.Date;
  * 
  * @author Paul van Assen
  */
-public class MarketHistoryPart {
+public class HistoryPart {
     private final String steamId;
     private final String name;
     private final String gameName;
     private final Date listed;
     private final Date acted;
     private final int price;
-    private final MarketHistoryStatus status;
+    private final HistoryStatus status;
 
-    MarketHistoryPart(String steamId, String name, String gameName, Date listed, Date acted, int price,
-            MarketHistoryStatus status) {
+    HistoryPart(String steamId, String name, String gameName, Date listed, Date acted, int price,
+            HistoryStatus status) {
         super();
         this.steamId = steamId;
         this.name = name;
@@ -73,7 +73,7 @@ public class MarketHistoryPart {
     /**
      * @return the status
      */
-    public MarketHistoryStatus getStatus() {
+    public HistoryStatus getStatus() {
         return status;
     }
 

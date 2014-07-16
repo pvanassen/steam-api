@@ -10,6 +10,7 @@ import javax.xml.xpath.*;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.helper.AmountHelper;
+import nl.pvanassen.steam.store.history.History;
 
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
@@ -51,7 +52,7 @@ class MarketPageHandle extends DefaultHandle {
             appIdsXpath = XPATH.compile("//A[@class='game_button']");
         }
         catch (XPathExpressionException e) {
-            LoggerFactory.getLogger(MarketHistory.class).error("Error instantiating XPATH", e);
+            LoggerFactory.getLogger(History.class).error("Error instantiating XPATH", e);
         }
         ITEMS_DIV_XPATH = itemsDivXpath;
         PRICE_XPATH = priceXpath;

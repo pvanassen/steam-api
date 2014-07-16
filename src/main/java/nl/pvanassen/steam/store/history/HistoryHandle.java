@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.history;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,10 +36,10 @@ import org.w3c.dom.html.HTMLDocument;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-class MarketHistoryHandle extends DefaultHandle {
+class HistoryHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final List<MarketHistory> marketHistory = new LinkedList<>();
-    private final ObjectMapper om = new ObjectMapper();
+    private final List<History> marketHistory = new LinkedList<>();
+    private final ObjectMapper om;
     private static final XPathFactory XPATH_FACTORY = XPathFactory.newInstance();
     private static final XPath XPATH = XPATH_FACTORY.newXPath();
     private static final XPathExpression HISTORY_ROW_XPATH;
@@ -67,7 +67,7 @@ class MarketHistoryHandle extends DefaultHandle {
             actedXpath = XPATH.compile("./DIV[@class='market_listing_right_cell market_listing_whoactedwith']");
         }
         catch (XPathExpressionException e) {
-            LoggerFactory.getLogger(MarketHistory.class).error("Error instantiating XPATH", e);
+            LoggerFactory.getLogger(History.class).error("Error instantiating XPATH", e);
         }
         HISTORY_ROW_XPATH = historyRowXpath;
         GAIN_LOSS_XPATH = gainLossXpath;
@@ -77,8 +77,9 @@ class MarketHistoryHandle extends DefaultHandle {
         ACTED_XPATH = actedXpath;
     }
 
-    MarketHistoryHandle() {
+    HistoryHandle(ObjectMapper om) {
         super();
+        this.om = om;
     }
 
     private static class Asset {
@@ -122,24 +123,24 @@ class MarketHistoryHandle extends DefaultHandle {
                 String rowName = historyRow.getAttributes().getNamedItem("id").getTextContent();
                 Node gainLoss = (Node) GAIN_LOSS_XPATH.evaluate(historyRow, XPathConstants.NODE);
                 String gainLossText = gainLoss.getTextContent().trim();
-                MarketHistoryStatus status = null;
+                HistoryStatus status = null;
                 if ("-".equals(gainLossText)) {
-                    status = MarketHistoryStatus.SOLD;
+                    status = HistoryStatus.SOLD;
                 }
                 else if ("+".equals(gainLossText)) {
-                    status = MarketHistoryStatus.BOUGHT;
+                    status = HistoryStatus.BOUGHT;
                 }
                 else {
                     Node actedNode = (Node) ACTED_XPATH.evaluate(historyRow, XPathConstants.NODE);
                     String acted = actedNode.getTextContent().trim();
                     if ("Listing created".equals(acted)) {
-                        status = MarketHistoryStatus.CREATED;
+                        status = HistoryStatus.CREATED;
                     }
                     else if ("Listing canceled".equals(acted)) {
-                        status = MarketHistoryStatus.REMOVED;
+                        status = HistoryStatus.REMOVED;
                     }
                 }
-                boolean full = status == MarketHistoryStatus.BOUGHT || status == MarketHistoryStatus.SOLD;
+                boolean full = status == HistoryStatus.BOUGHT || status == HistoryStatus.SOLD;
 
                 String priceStr = ((Node) PRICE_XPATH.evaluate(historyRow, XPathConstants.NODE)).getTextContent()
                         .trim();
@@ -169,11 +170,11 @@ class MarketHistoryHandle extends DefaultHandle {
                         price = AmountHelper.getAmount(priceStr);
                     }
                     if (asset == null) {
-                        marketHistory.add(new MarketHistory(rowName, -1, -1, "",
+                        marketHistory.add(new History(rowName, -1, -1, "",
                                 listed, acted, price, buyer, status));
                     }
                     else {
-                        marketHistory.add(new MarketHistory(rowName, asset.appId, asset.contextId, asset.urlName,
+                        marketHistory.add(new History(rowName, asset.appId, asset.contextId, asset.urlName,
                                 listed, acted, price, buyer, status));
                     }
                 }
@@ -222,7 +223,7 @@ class MarketHistoryHandle extends DefaultHandle {
         return hoverMap;
     }
 
-    List<MarketHistory> getMarketHistory() {
+    List<History> getMarketHistory() {
         return marketHistory;
     }
 

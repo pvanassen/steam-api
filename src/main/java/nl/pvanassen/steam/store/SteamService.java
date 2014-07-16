@@ -21,6 +21,9 @@ import nl.pvanassen.steam.store.buyorder.BuyOrderStatus;
 import nl.pvanassen.steam.store.buyorder.SteamBuyOrderService;
 import nl.pvanassen.steam.store.common.BuyOrder;
 import nl.pvanassen.steam.store.common.Item;
+import nl.pvanassen.steam.store.history.HistoryService;
+import nl.pvanassen.steam.store.history.History;
+import nl.pvanassen.steam.store.history.SteamHistoryService;
 
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonNode;
@@ -46,13 +49,10 @@ class SteamService implements StoreService {
     private final Set<Integer> appIds;
     private final BuyService buyService;
     private final BuyOrderService buyOrderService;
+    private final HistoryService historyService;
     
     SteamService(String cookies, String username) {
-        http = Http.getInstance(cookies, username);
-        this.username = username;
-        appIds = getOutstandings().getAppIds();
-        buyService = new SteamBuyService(http, username);
-        buyOrderService = new SteamBuyOrderService(http, username);
+        this(Http.getInstance(cookies, username), username);
     }
 
     /**
@@ -64,6 +64,7 @@ class SteamService implements StoreService {
         appIds = getOutstandings().getAppIds();
         buyService = new SteamBuyService(http, username);
         buyOrderService = new SteamBuyOrderService(http, username);
+        historyService = new SteamHistoryService(http);
     }
 
     @Override
@@ -227,29 +228,8 @@ class SteamService implements StoreService {
     }
     
     @Override
-    public List<MarketHistory> getSoldItemsFromHistory() {
-        MarketHistoryHandle handle = new MarketHistoryHandle();
-        try {
-            int stepSize = 100;
-            http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=" +
-                     stepSize, handle);
-            if (handle.isError()) {
-                return getSoldItemsFromHistory();
-            }
-            int totalCount = handle.getTotalCount();
-            for (int start = stepSize; start < totalCount; start += stepSize) {
-                do {
-                    Thread.sleep(500);
-                    http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count=" +
-                             stepSize + "&start=" + start, handle);
-                }
-                while (handle.isError());
-            }
-        }
-        catch (IOException | RuntimeException | InterruptedException e) {
-            logger.error("Error getting data", e);
-        }
-        return handle.getMarketHistory();
+    public List<History> getSoldItemsFromHistory() {
+    	return historyService.getSoldItemsFromHistory();
     }
 
     /**

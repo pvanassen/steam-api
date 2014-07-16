@@ -18,6 +18,11 @@ class BuyOrderHandle extends DefaultHandle {
         this.objectMapper = objectMapper;
     }
     
+    /**
+     * {@inheritDoc}
+     * 
+     * @see nl.pvanassen.steam.http.DefaultHandle#handle(java.io.InputStream)
+     */
     @Override
     public void handle(InputStream stream) throws IOException {
         JsonNode node = objectMapper.readTree(stream);

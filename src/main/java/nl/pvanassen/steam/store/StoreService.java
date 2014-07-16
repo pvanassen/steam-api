@@ -8,6 +8,7 @@ import nl.pvanassen.steam.error.VerificationException;
 import nl.pvanassen.steam.store.buy.BuyResult;
 import nl.pvanassen.steam.store.buyorder.BuyOrderStatus;
 import nl.pvanassen.steam.store.common.Item;
+import nl.pvanassen.steam.store.history.History;
 
 import com.google.common.base.Optional;
 
@@ -111,7 +112,7 @@ public interface StoreService {
      * 
      * @return a list of market history items
      */
-    List<MarketHistory> getSoldItemsFromHistory();
+    List<History> getSoldItemsFromHistory();
 
     /**
      * Get outstanding items

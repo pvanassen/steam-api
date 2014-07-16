@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.history;
 
 import java.util.Date;
 
@@ -9,17 +9,17 @@ import nl.pvanassen.steam.store.common.Item;
  * 
  * @author Paul van Assen
  */
-public class MarketHistory extends Item {
+public class History extends Item {
     private final String steamId;
     private final int contextId;
     private final Date listed;
     private final Date acted;
     private final int price;
     private final String buyer;
-    private final MarketHistoryStatus status;
+    private final HistoryStatus status;
 
-    MarketHistory(String steamId, int appId, int contextId, String urlName, Date listed, Date acted, int price,
-            String buyer, MarketHistoryStatus status) {
+    History(String steamId, int appId, int contextId, String urlName, Date listed, Date acted, int price,
+            String buyer, HistoryStatus status) {
         super(appId, urlName);
         this.steamId = steamId;
         this.contextId = contextId;
@@ -75,7 +75,7 @@ public class MarketHistory extends Item {
     /**
      * @return Status of the item
      */
-    public MarketHistoryStatus getStatus() {
+    public HistoryStatus getStatus() {
         return status;
     }
 
@@ -105,10 +105,10 @@ public class MarketHistory extends Item {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof MarketHistory)) {
+        if (!(obj instanceof History)) {
             return false;
         }
-        MarketHistory other = (MarketHistory) obj;
+        History other = (History) obj;
         if (steamId == null) {
             if (other.steamId != null) {
                 return false;
