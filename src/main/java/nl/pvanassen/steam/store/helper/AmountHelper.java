@@ -11,7 +11,12 @@ public final class AmountHelper {
     private static final LoadingCache<String,Integer> fastAmountCache = CacheBuilder.newBuilder().concurrencyLevel(32).maximumSize(4096).build(new CacheLoader<String,Integer>() {
        @Override
         public Integer load(String html) throws Exception {
-           return Integer.parseInt(html.replace("&#8364;", "").replace("€", "").replace(",", "").replace("-", "0").trim());
+    	   String amount = html;
+    	   int idx = html.indexOf('(');
+    	   if (idx != -1) {
+    		   amount = html.substring(idx+1, html.indexOf(')')-1);
+    	   }
+           return Integer.parseInt(amount.replace("&#8364;", "").replace("€", "").replace(",", "").replace("-", "0").trim());
         } 
     });
     private AmountHelper() {
