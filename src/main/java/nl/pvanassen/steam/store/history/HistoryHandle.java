@@ -164,7 +164,6 @@ class HistoryHandle extends DefaultHandle {
                     	acted = formatter.parse(actedStr);
                     	listed = formatter.parse(listedStr);
                     }
-                    // 0,10&#8364;
                     int price = 0;
                     if (!"".equals(priceStr)) {
                         price = AmountHelper.getAmount(priceStr);
