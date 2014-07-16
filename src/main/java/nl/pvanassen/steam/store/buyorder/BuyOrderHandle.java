@@ -25,7 +25,7 @@ class BuyOrderHandle extends DefaultHandle {
             error = true;
             message = "Unknown";
         }
-        else {
+        else if (node.get("buy_orderid") != null){
             buyOrderId = node.get("buy_orderid").asText();
         }
     }
