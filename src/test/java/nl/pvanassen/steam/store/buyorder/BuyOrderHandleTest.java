@@ -20,7 +20,7 @@ public class BuyOrderHandleTest {
 	@Test
 	public void testCreateError() throws IOException {
 		BuyOrderHandle handle = new BuyOrderHandle(new ObjectMapper());
-		handle.handle(getClass().getResourceAsStream("/buyorder-create-error.json"));
+		handle.handleError(getClass().getResourceAsStream("/buyorder-create-error.json"));
 		assertTrue(handle.isError());
 		assertEquals("Error handling", handle.getMessage());
 		assertNull(handle.getBuyOrderId());
@@ -35,9 +35,9 @@ public class BuyOrderHandleTest {
 	@Test
 	public void testCancelError() throws IOException {
 		BuyOrderHandle handle = new BuyOrderHandle(new ObjectMapper());
-		handle.handle(getClass().getResourceAsStream("/buyorder-cancel-error.json"));
+		handle.handleError(getClass().getResourceAsStream("/buyorder-cancel-error.json"));
 		assertTrue(handle.isError());
-		assertEquals("Error handling", handle.getMessage());
+		assertEquals("Unknown", handle.getMessage());
 		assertNull(handle.getBuyOrderId());
 	}
 

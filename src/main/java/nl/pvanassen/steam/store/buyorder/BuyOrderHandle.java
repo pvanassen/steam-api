@@ -41,7 +41,7 @@ class BuyOrderHandle extends DefaultHandle {
             message = node.get("message").asText();
         }
         else {
-            message = node.toString();
+            message = "Unknown";
         }
     }
     
