@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.inventory;
 
 import nl.pvanassen.steam.store.common.Item;
 

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,9 +20,19 @@ import nl.pvanassen.steam.store.buyorder.BuyOrderStatus;
 import nl.pvanassen.steam.store.buyorder.SteamBuyOrderService;
 import nl.pvanassen.steam.store.common.BuyOrder;
 import nl.pvanassen.steam.store.common.Item;
-import nl.pvanassen.steam.store.history.HistoryService;
 import nl.pvanassen.steam.store.history.History;
+import nl.pvanassen.steam.store.history.HistoryService;
 import nl.pvanassen.steam.store.history.SteamHistoryService;
+import nl.pvanassen.steam.store.inventory.InventoryItem;
+import nl.pvanassen.steam.store.inventory.InventoryService;
+import nl.pvanassen.steam.store.inventory.SteamInventoryService;
+import nl.pvanassen.steam.store.listing.Listing;
+import nl.pvanassen.steam.store.listing.ListingDeque;
+import nl.pvanassen.steam.store.listing.ListingHandle;
+import nl.pvanassen.steam.store.listing.ListingItemIterator;
+import nl.pvanassen.steam.store.listing.ListingPageScriptHandle;
+import nl.pvanassen.steam.store.listing.ListingStatDataPointIterator;
+import nl.pvanassen.steam.store.listing.StatDataPoint;
 
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonNode;
@@ -34,7 +43,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 
 /**
  * Interface to the steam store
@@ -50,6 +58,7 @@ class SteamService implements StoreService {
     private final BuyService buyService;
     private final BuyOrderService buyOrderService;
     private final HistoryService historyService;
+    private final InventoryService inventoryService;
     
     SteamService(String cookies, String username) {
         this(Http.getInstance(cookies, username), username);
@@ -65,6 +74,7 @@ class SteamService implements StoreService {
         buyService = new SteamBuyService(http, username);
         buyOrderService = new SteamBuyOrderService(http, username);
         historyService = new SteamHistoryService(http);
+        inventoryService = new SteamInventoryService(http, username, appIds);
     }
 
     @Override
@@ -103,41 +113,22 @@ class SteamService implements StoreService {
     
     @Override
     public List<InventoryItem> getInventory() {
-        return getInventory(username);
+        return inventoryService.getInventory();
     }
 
     @Override
     public List<InventoryItem> getInventory(String username) {
-        List<InventoryItem> inventoryItems = new LinkedList<>();
-        for (int appId : appIds) {
-        	inventoryItems.addAll(getInventory(username, appId));
-        }
-        return ImmutableList.copyOf(inventoryItems);
+        return inventoryService.getInventory(username);
     }
     
     @Override
     public List<InventoryItem> getInventory(int appId) {
-        return getInventory(username, appId);
+        return inventoryService.getInventory(appId);
     }
     
     @Override
     public List<InventoryItem> getInventory(String username, int appId) {
-        List<InventoryItem> inventoryItems = new LinkedList<>();
-        int contextId = 2;
-        if (appId == 753) {
-            contextId = 6;
-        }
-        logger.info("Getting inventory for app id " + appId);
-        InventoryHandle handle = new InventoryHandle(objectMapper, contextId, inventoryItems);
-        try {
-            http.get("http://steamcommunity.com/id/" + username + "/inventory/json/" + appId + "/" +
-                     contextId + "/", handle);
-        }
-        catch (IOException e) {
-            logger.error("Error fetching inventory data", e);
-
-        }
-        return ImmutableList.copyOf(inventoryItems);
+        return inventoryService.getInventory(username, appId);
     }
 
     @Override
