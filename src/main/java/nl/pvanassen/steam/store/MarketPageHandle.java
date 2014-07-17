@@ -76,7 +76,13 @@ class MarketPageHandle extends DefaultHandle {
             if (walletNode != null) {
             	wallet = AmountHelper.getAmount(walletNode.getTextContent().trim());
             }
+            else {
+            	throw new CookieException("Error wallet not found. Is user logged in?");
+            }
             Node node = (Node) ITEMS_DIV_XPATH.evaluate(document, XPathConstants.NODE);
+            if (node.getChildNodes().getLength() == 0) {
+            	throw new CookieException("Error outstandings node not found. Is user logged in?");
+            }
             for (int i = 0; i < node.getChildNodes().getLength(); i++) {
                 Node outstandingRow = node.getChildNodes().item(i);
                 if (outstandingRow.getAttributes() == null) {
