@@ -1,6 +1,8 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.listing;
 
 import static org.junit.Assert.*;
+import nl.pvanassen.steam.store.common.Listing;
+import nl.pvanassen.steam.store.listing.ListingDeque;
 
 import org.junit.Test;
 

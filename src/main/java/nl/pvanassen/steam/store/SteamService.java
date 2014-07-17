@@ -20,19 +20,21 @@ import nl.pvanassen.steam.store.buyorder.BuyOrderStatus;
 import nl.pvanassen.steam.store.buyorder.SteamBuyOrderService;
 import nl.pvanassen.steam.store.common.BuyOrder;
 import nl.pvanassen.steam.store.common.Item;
+import nl.pvanassen.steam.store.common.Listing;
 import nl.pvanassen.steam.store.history.History;
 import nl.pvanassen.steam.store.history.HistoryService;
 import nl.pvanassen.steam.store.history.SteamHistoryService;
 import nl.pvanassen.steam.store.inventory.InventoryItem;
 import nl.pvanassen.steam.store.inventory.InventoryService;
 import nl.pvanassen.steam.store.inventory.SteamInventoryService;
-import nl.pvanassen.steam.store.listing.Listing;
+import nl.pvanassen.steam.store.item.ItemService;
+import nl.pvanassen.steam.store.item.ListingItemIterator;
+import nl.pvanassen.steam.store.item.ListingPageScriptHandle;
+import nl.pvanassen.steam.store.item.StatDataPoint;
+import nl.pvanassen.steam.store.item.SteamItemService;
 import nl.pvanassen.steam.store.listing.ListingDeque;
-import nl.pvanassen.steam.store.listing.ListingHandle;
-import nl.pvanassen.steam.store.listing.ListingItemIterator;
-import nl.pvanassen.steam.store.listing.ListingPageScriptHandle;
-import nl.pvanassen.steam.store.listing.ListingStatDataPointIterator;
-import nl.pvanassen.steam.store.listing.StatDataPoint;
+import nl.pvanassen.steam.store.listing.ListingService;
+import nl.pvanassen.steam.store.listing.SteamListingService;
 
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonNode;
@@ -59,6 +61,8 @@ class SteamService implements StoreService {
     private final BuyOrderService buyOrderService;
     private final HistoryService historyService;
     private final InventoryService inventoryService;
+    private final ListingService listingService;
+    private final ItemService itemService;
     
     SteamService(String cookies, String username) {
         this(Http.getInstance(cookies, username), username);
@@ -75,6 +79,8 @@ class SteamService implements StoreService {
         buyOrderService = new SteamBuyOrderService(http, username);
         historyService = new SteamHistoryService(http);
         inventoryService = new SteamInventoryService(http, username, appIds);
+        listingService = new SteamListingService(http);
+        itemService = new SteamItemService(http);
     }
 
     @Override
@@ -134,55 +140,17 @@ class SteamService implements StoreService {
     @Override
     public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle,
             GenericHandle<Listing> listingHandle) {
-    	String url = "http://steamcommunity.com/market/listings/" + appId + "/" + urlName;
-        ListingPageScriptHandle handle = new ListingPageScriptHandle(objectMapper);
-        try {
-            http.get(url, handle);
-        }
-        catch (IOException e) {
-            logger.error("Error fetching listing page data", e);
-        	throw new SteamException("Error getting data for url: " + url, e);
-        }
-        if (handle.isError()) {
-        	throw new SteamException("Error getting data for url: " + url);
-        }
-        JsonNode priceHistoryInfo = handle.getPriceHistoryInfo();
-        for (StatDataPoint point : new ListingStatDataPointIterator(priceHistoryInfo)) {
-            dataPointHandle.handle(point);
-        }
-        if (listingHandle == null) {
-            return;
-        }
-        JsonNode listingInfo = handle.getListingInfo();
-        for (Listing item : new ListingItemIterator(appId, urlName, listingInfo)) {
-            listingHandle.handle(item);
-        }
+    	itemService.getItem(appId, urlName, dataPointHandle, listingHandle);
     }
     
     @Override
     public List<Listing> getNewlyListed(int currency, String country) {
-        try {
-        	ListingDeque listing = new ListingDeque(60000);
-            ListingHandle handle = new ListingHandle(objectMapper, listing, country);
-            http.get("http://steamcommunity.com/market/recent?currency=" + currency + "&country=" + country + "&" + System.currentTimeMillis(), handle);
-            return listing.getDeque();
-        }
-        catch (IOException e) {
-            logger.error("Error getting inventory", e);
-        }
-        return Collections.emptyList();
+    	return listingService.getNewlyListed(currency, country);
     }
 
     @Override
     public void getAsyncNewlyListed(int currency, String country, ListingDeque queue) {
-        try {
-            ListingHandle handle = new ListingHandle(objectMapper, queue, country);
-            http.get("http://steamcommunity.com/market/recent?currency=" + currency + "&country=" + country + "&" + System.currentTimeMillis(), handle);
-        }
-        catch (IOException e) {
-            logger.error("Error getting inventory", e);
-        }
-
+    	listingService.getAsyncNewlyListed(currency, country, queue);
     }
 
     @Override

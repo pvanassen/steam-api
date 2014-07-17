@@ -1,9 +1,10 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.listing;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import nl.pvanassen.steam.http.DefaultHandle;
+import nl.pvanassen.steam.store.common.Listing;
 import nl.pvanassen.steam.store.helper.UrlNameHelper;
 
 import org.codehaus.jackson.JsonNode;

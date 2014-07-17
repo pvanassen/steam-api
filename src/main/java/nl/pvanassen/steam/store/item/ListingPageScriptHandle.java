@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.item;
 
 import java.io.BufferedReader;
 import java.io.IOException;

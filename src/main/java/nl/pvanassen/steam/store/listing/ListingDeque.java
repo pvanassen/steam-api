@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.listing;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+
+import nl.pvanassen.steam.store.common.Listing;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

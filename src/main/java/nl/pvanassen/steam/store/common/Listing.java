@@ -1,8 +1,6 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.common;
 
 import java.util.Date;
-
-import nl.pvanassen.steam.store.common.Item;
 
 /**
  * Listing item 
@@ -31,7 +29,7 @@ public class Listing extends Item {
 
     private final Date createdDate = new Date();
 
-    Listing(int appId, String urlName, String listingId, String steamIdLister, int subTotal, int fee,
+    public Listing(int appId, String urlName, String listingId, String steamIdLister, int subTotal, int fee,
             int steamFee, int publisherFee, int publisherFeeApp, double publisherFeePercent, String country) {
         super(appId, urlName);
         this.listingId = listingId;
@@ -121,6 +119,9 @@ public class Listing extends Item {
         return createdDate;
     }
     
+    /**
+     * @return Country string for this listing
+     */
     public String getCountry() {
 		return country;
 	}

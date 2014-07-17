@@ -1,7 +1,9 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.item;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import nl.pvanassen.steam.store.common.Listing;
 
 import org.codehaus.jackson.JsonNode;
 import org.slf4j.Logger;

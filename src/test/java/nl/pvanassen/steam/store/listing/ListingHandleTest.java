@@ -1,9 +1,13 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.listing;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.*;
+
+import nl.pvanassen.steam.store.common.Listing;
+import nl.pvanassen.steam.store.listing.ListingDeque;
+import nl.pvanassen.steam.store.listing.ListingHandle;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;

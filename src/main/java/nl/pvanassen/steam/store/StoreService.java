@@ -8,11 +8,11 @@ import nl.pvanassen.steam.error.VerificationException;
 import nl.pvanassen.steam.store.buy.BuyResult;
 import nl.pvanassen.steam.store.buyorder.BuyOrderStatus;
 import nl.pvanassen.steam.store.common.Item;
+import nl.pvanassen.steam.store.common.Listing;
 import nl.pvanassen.steam.store.history.History;
 import nl.pvanassen.steam.store.inventory.InventoryItem;
-import nl.pvanassen.steam.store.listing.Listing;
+import nl.pvanassen.steam.store.item.StatDataPoint;
 import nl.pvanassen.steam.store.listing.ListingDeque;
-import nl.pvanassen.steam.store.listing.StatDataPoint;
 
 import com.google.common.base.Optional;
 
