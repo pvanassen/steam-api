@@ -36,6 +36,8 @@ import nl.pvanassen.steam.store.login.SteamLoginService;
 import nl.pvanassen.steam.store.outstanding.MarketPage;
 import nl.pvanassen.steam.store.outstanding.OutstandingService;
 import nl.pvanassen.steam.store.outstanding.SteamOutstandingService;
+import nl.pvanassen.steam.store.sell.SellService;
+import nl.pvanassen.steam.store.sell.SteamSellService;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
@@ -64,6 +66,7 @@ class SteamService implements StoreService {
     private final ItemService itemService;
     private final LoginService loginService;
     private final OutstandingService outstandingService;
+    private final SellService sellService;
     
     SteamService(String cookies, String username) {
         this(Http.getInstance(cookies, username), username);
@@ -84,6 +87,7 @@ class SteamService implements StoreService {
         itemService = new SteamItemService(http);
         loginService = new SteamLoginService(http);
         outstandingService = new SteamOutstandingService(http);
+        sellService = new SteamSellService(http, username);
     }
 
     @Override
@@ -158,22 +162,7 @@ class SteamService implements StoreService {
 
     @Override
     public boolean sell(String assetId, int appId, String urlName, int contextId, int price) {
-        try {
-            Map<String, String> params = new HashMap<>();
-            params.put("amount", "1");
-            params.put("appid", Integer.toString(appId));
-            params.put("assetid", assetId);
-            params.put("contextid", Integer.toString(contextId));
-            params.put("price", Integer.toString(price));
-            logger.info(params.toString());
-            SellHandle sellHandle = new SellHandle();
-            http.post("https://steamcommunity.com/market/sellitem/", params, sellHandle, "http://steamcommunity.com/id/" + username + "/inventory/");
-            return !sellHandle.isError();
-        }
-        catch (IOException | RuntimeException e) {
-            logger.error("Error posting data", e);
-            return false;
-        }
+    	return sellService.sell(assetId, appId, urlName, contextId, price);
     }
 
     @Override

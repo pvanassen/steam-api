@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.sell;
 
 import java.io.IOException;
 import java.io.InputStream;
