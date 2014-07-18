@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.login;
 
 import java.math.BigInteger;
 import java.security.InvalidKeyException;

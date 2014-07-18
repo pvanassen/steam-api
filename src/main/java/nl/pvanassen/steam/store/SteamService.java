@@ -2,7 +2,6 @@ package nl.pvanassen.steam.store;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,16 +27,15 @@ import nl.pvanassen.steam.store.inventory.InventoryItem;
 import nl.pvanassen.steam.store.inventory.InventoryService;
 import nl.pvanassen.steam.store.inventory.SteamInventoryService;
 import nl.pvanassen.steam.store.item.ItemService;
-import nl.pvanassen.steam.store.item.ListingItemIterator;
-import nl.pvanassen.steam.store.item.ListingPageScriptHandle;
 import nl.pvanassen.steam.store.item.StatDataPoint;
 import nl.pvanassen.steam.store.item.SteamItemService;
 import nl.pvanassen.steam.store.listing.ListingDeque;
 import nl.pvanassen.steam.store.listing.ListingService;
 import nl.pvanassen.steam.store.listing.SteamListingService;
+import nl.pvanassen.steam.store.login.LoginService;
+import nl.pvanassen.steam.store.login.SteamLoginService;
 
 import org.apache.commons.codec.binary.Base64;
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -63,6 +61,7 @@ class SteamService implements StoreService {
     private final InventoryService inventoryService;
     private final ListingService listingService;
     private final ItemService itemService;
+    private final LoginService loginService;
     
     SteamService(String cookies, String username) {
         this(Http.getInstance(cookies, username), username);
@@ -81,6 +80,7 @@ class SteamService implements StoreService {
         inventoryService = new SteamInventoryService(http, username, appIds);
         listingService = new SteamListingService(http);
         itemService = new SteamItemService(http);
+        loginService = new SteamLoginService(http);
     }
 
     @Override
@@ -211,49 +211,12 @@ class SteamService implements StoreService {
 
     @Override
     public void login(String user, String password) throws VerificationException, SteamGuardException {
-        Map<String, String> params = new HashMap<>();
-        params.put("username", user);
-        GetRSAHandle rsaHandle = new GetRSAHandle(objectMapper);
-        DoLoginHandle doLoginHandle = new DoLoginHandle(objectMapper);
-        try {
-            http.post("https://store.steampowered.com/login/getrsakey/", params, rsaHandle, "http://steamcommunity.com/id/" + username + "/inventory/");
-            if (!rsaHandle.isSuccess()) {
-                throw new VerificationException("Invalid username");
-            }
-            BigInteger pubKeyMod = new BigInteger(rsaHandle.getPublicKeyMod(), 16);
-            BigInteger pubKeyExp = new BigInteger(rsaHandle.getPublicKeyExp(), 10);
-            RSACrypto crypto = new RSACrypto(pubKeyMod, pubKeyExp, false);
-
-            byte[] encrypted = crypto.encrypt(password.getBytes());
-            String encryptedPasswordBase64 = Base64.encodeBase64String(encrypted);
-
-            params.put("captcha_text", "");
-            params.put("captchagid", "");
-            params.put("emailauth", "");
-            params.put("emailsteamid", "");
-            params.put("loginfriendlyname", "");
-
-            params.put("password", encryptedPasswordBase64);
-            params.put("remember_login", "true");
-            params.put("rsatimestamp", Long.toString(rsaHandle.getTimestamp()));
-            http.post("https://steamcommunity.com/login/dologin/", params, doLoginHandle, "http://steamcommunity.com/id/" + username + "/inventory/");
-            if (doLoginHandle.isSuccess()) {
-                // logged in
-                return;
-            }
-            if (doLoginHandle.getMessage().contains("SteamGuard")) {
-                throw new SteamGuardException();
-            }
-        }
-        catch (IOException e) {
-            logger.error("Error logging in", e);
-            throw new VerificationException("Error logging in", e);
-        }
+    	loginService.login(user, password);
     }
 
     @Override
     public void verification(String code) {
-        // TODO Auto-generated method stub
+    	loginService.verification(code);
     }
 
     /**
