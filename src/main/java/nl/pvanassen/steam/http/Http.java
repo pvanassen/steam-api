@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Paul van Assen
  */
 public class Http {
-    private static final int FIVE_MINUTES = 1 * 60 * 1000;
+    private static final int TIMEOUT = 5000;
     private final Map<AbstractExecutionAwareRequest, Long> connectionsToWatch = new HashMap<>();
     
     /**
@@ -110,7 +110,7 @@ public class Http {
         CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
         CloseableHttpResponse response = null;
         try {
-            connectionsToWatch.put(httpget, System.currentTimeMillis() + FIVE_MINUTES);
+            connectionsToWatch.put(httpget, System.currentTimeMillis() + TIMEOUT);
             response = httpclient.execute(httpget, context);
             connectionsToWatch.remove(httpget);
             HttpEntity entity = response.getEntity();
@@ -215,7 +215,7 @@ public class Http {
         CloseableHttpClient httpclient = HttpClients.custom().build();
         CloseableHttpResponse response = null;
         try {
-            connectionsToWatch.put(httpPost, System.currentTimeMillis() + FIVE_MINUTES);
+            connectionsToWatch.put(httpPost, System.currentTimeMillis() + TIMEOUT);
             response = httpclient.execute(httpPost);
             connectionsToWatch.remove(httpPost);
             HttpEntity entity = response.getEntity();
@@ -267,7 +267,7 @@ public class Http {
             logger.info("Starting watchdog thread");
             while (true) {
                 try {
-                    Thread.sleep(60000);
+                    Thread.sleep(1000);
                 }
                 catch (InterruptedException e) {
                     Thread.interrupted();
