@@ -11,6 +11,7 @@ import nl.pvanassen.steam.store.common.Item;
 import nl.pvanassen.steam.store.common.Listing;
 import nl.pvanassen.steam.store.history.History;
 import nl.pvanassen.steam.store.inventory.InventoryItem;
+import nl.pvanassen.steam.store.item.OverviewItem;
 import nl.pvanassen.steam.store.item.StatDataPoint;
 import nl.pvanassen.steam.store.listing.ListingDeque;
 import nl.pvanassen.steam.store.outstanding.MarketPage;

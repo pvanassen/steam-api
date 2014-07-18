@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.item;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -7,6 +7,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+
+import nl.pvanassen.steam.store.GenericHandle;
+import nl.pvanassen.steam.store.item.OverviewHandle;
+import nl.pvanassen.steam.store.item.OverviewItem;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;

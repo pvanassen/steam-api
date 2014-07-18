@@ -3,10 +3,8 @@ package nl.pvanassen.steam.store;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.error.SteamGuardException;
 import nl.pvanassen.steam.error.VerificationException;
 import nl.pvanassen.steam.http.Http;
@@ -26,6 +24,7 @@ import nl.pvanassen.steam.store.inventory.InventoryItem;
 import nl.pvanassen.steam.store.inventory.InventoryService;
 import nl.pvanassen.steam.store.inventory.SteamInventoryService;
 import nl.pvanassen.steam.store.item.ItemService;
+import nl.pvanassen.steam.store.item.OverviewItem;
 import nl.pvanassen.steam.store.item.StatDataPoint;
 import nl.pvanassen.steam.store.item.SteamItemService;
 import nl.pvanassen.steam.store.listing.ListingDeque;
@@ -42,8 +41,6 @@ import nl.pvanassen.steam.store.tradeoffer.SteamTradeofferService;
 import nl.pvanassen.steam.store.tradeoffer.TradeofferService;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,26 +103,7 @@ class SteamService implements StoreService {
      */
     @Override
     public void getAllItems(GenericHandle<OverviewItem> genericHandle) {
-        try {
-            OverviewHandle handle = new OverviewHandle(genericHandle, objectMapper);
-            // Initial high, will be corrected on first run
-            int totalCount = 5000;
-            for (int start = 0; start < totalCount; start += 100) {
-                do {
-                    http.get("http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" +
-                             start + "&count=100", handle);
-                    totalCount = handle.getTotalCount();
-                    // Stop on overrun
-                    if (handle.isLastPage()) {
-                        return;
-                    }
-                }
-                while (handle.isError());
-            }
-        }
-        catch (IOException e) {
-            logger.error("Error handling item", e);
-        }
+        itemService.getAllItems(genericHandle);
     }
     
     @Override

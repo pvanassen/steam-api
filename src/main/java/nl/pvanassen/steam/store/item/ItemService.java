@@ -13,6 +13,11 @@ import nl.pvanassen.steam.store.common.Listing;
 public interface ItemService {
 
     /**
+     * @param handle Handle overview item
+     */
+    void getAllItems(GenericHandle<OverviewItem> handle);
+
+    /**
      * The datapoints will always be called first. Once they are done the listings handle is called
      * 
      * @param appId Appid of the item to get

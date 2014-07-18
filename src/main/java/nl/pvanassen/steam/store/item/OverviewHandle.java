@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.item;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +11,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import nl.pvanassen.steam.http.DefaultHandle;
+import nl.pvanassen.steam.store.GenericHandle;
 import nl.pvanassen.steam.store.helper.AmountHelper;
 import nl.pvanassen.steam.store.history.History;
 
