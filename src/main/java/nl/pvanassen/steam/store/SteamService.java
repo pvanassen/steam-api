@@ -1,7 +1,6 @@
 package nl.pvanassen.steam.store;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +33,10 @@ import nl.pvanassen.steam.store.listing.ListingService;
 import nl.pvanassen.steam.store.listing.SteamListingService;
 import nl.pvanassen.steam.store.login.LoginService;
 import nl.pvanassen.steam.store.login.SteamLoginService;
+import nl.pvanassen.steam.store.outstanding.MarketPage;
+import nl.pvanassen.steam.store.outstanding.OutstandingService;
+import nl.pvanassen.steam.store.outstanding.SteamOutstandingService;
 
-import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -62,6 +63,7 @@ class SteamService implements StoreService {
     private final ListingService listingService;
     private final ItemService itemService;
     private final LoginService loginService;
+    private final OutstandingService outstandingService;
     
     SteamService(String cookies, String username) {
         this(Http.getInstance(cookies, username), username);
@@ -81,6 +83,7 @@ class SteamService implements StoreService {
         listingService = new SteamListingService(http);
         itemService = new SteamItemService(http);
         loginService = new SteamLoginService(http);
+        outstandingService = new SteamOutstandingService(http);
     }
 
     @Override
@@ -198,15 +201,7 @@ class SteamService implements StoreService {
      */
     @Override
     public MarketPage getOutstandings() {
-    	logger.info("Getting market page");
-        MarketPageHandle handle = new MarketPageHandle();
-        try {
-            http.get("http://steamcommunity.com/market/", handle);
-        }
-        catch (IOException e) {
-            logger.error("Error getting outstanding listings", e);
-        }
-        return handle.getOutstandings();
+    	return outstandingService.getOutstandings();
     }
 
     @Override

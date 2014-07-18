@@ -1,8 +1,10 @@
-package nl.pvanassen.steam.store;
+package nl.pvanassen.steam.store.outstanding;
 
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+
+import nl.pvanassen.steam.store.outstanding.MarketPageHandle;
 
 import org.junit.Test;
 
