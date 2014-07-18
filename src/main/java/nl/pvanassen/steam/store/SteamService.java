@@ -1,7 +1,5 @@
 package nl.pvanassen.steam.store;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -35,12 +33,13 @@ import nl.pvanassen.steam.store.login.SteamLoginService;
 import nl.pvanassen.steam.store.outstanding.MarketPage;
 import nl.pvanassen.steam.store.outstanding.OutstandingService;
 import nl.pvanassen.steam.store.outstanding.SteamOutstandingService;
+import nl.pvanassen.steam.store.remove.RemoveService;
+import nl.pvanassen.steam.store.remove.SteamRemoveService;
 import nl.pvanassen.steam.store.sell.SellService;
 import nl.pvanassen.steam.store.sell.SteamSellService;
 import nl.pvanassen.steam.store.tradeoffer.SteamTradeofferService;
 import nl.pvanassen.steam.store.tradeoffer.TradeofferService;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +52,6 @@ import com.google.common.base.Optional;
  */
 class SteamService implements StoreService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final ObjectMapper objectMapper = new ObjectMapper();
     private final Http http;
     private final String username;
     private final Set<Integer> appIds;
@@ -67,6 +65,7 @@ class SteamService implements StoreService {
     private final OutstandingService outstandingService;
     private final SellService sellService;
     private final TradeofferService tradeofferService;
+    private final RemoveService removeService;
     
     SteamService(String cookies, String username) {
         this(Http.getInstance(cookies, username), username);
@@ -89,6 +88,7 @@ class SteamService implements StoreService {
         outstandingService = new SteamOutstandingService(http);
         sellService = new SteamSellService(http, username);
         tradeofferService = new SteamTradeofferService(http);
+        removeService = new SteamRemoveService(http, username);
     }
 
     @Override
@@ -149,15 +149,7 @@ class SteamService implements StoreService {
 
     @Override
     public boolean removeListing(String listingId) {
-    	try {
-    		RemoveHandle removeHandle = new RemoveHandle();
-    		http.post("http://steamcommunity.com/market/removelisting/" + listingId, new HashMap<String,String>(), removeHandle, "http://steamcommunity.com/id/" + username + "/inventory/");
-            return !removeHandle.isError();
-    	}
-    	catch (IOException | RuntimeException e) {
-            logger.error("Error posting data", e);
-            return false;
-    	}
+    	return removeService.removeListing(listingId);
     }
     
     @Override
