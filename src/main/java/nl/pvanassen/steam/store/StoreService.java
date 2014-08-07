@@ -5,6 +5,16 @@ import java.util.Set;
 
 import nl.pvanassen.steam.error.SteamGuardException;
 import nl.pvanassen.steam.error.VerificationException;
+import nl.pvanassen.steam.store.buy.BuyResult;
+import nl.pvanassen.steam.store.buyorder.BuyOrderStatus;
+import nl.pvanassen.steam.store.common.Item;
+import nl.pvanassen.steam.store.common.Listing;
+import nl.pvanassen.steam.store.history.History;
+import nl.pvanassen.steam.store.inventory.InventoryItem;
+import nl.pvanassen.steam.store.item.OverviewItem;
+import nl.pvanassen.steam.store.item.StatDataPoint;
+import nl.pvanassen.steam.store.listing.ListingDeque;
+import nl.pvanassen.steam.store.outstanding.MarketPage;
 
 import com.google.common.base.Optional;
 
@@ -62,15 +72,6 @@ public interface StoreService {
     List<InventoryItem> getInventory(String username, int appId);
 
     /**
-     * Retrieve all newly listed
-     * @param currency Currency to retrieve
-     * @param country Country to get listings for
-     * 
-     * @param queue Queue to add the items to
-     */
-    void getAsyncNewlyListed(int currency, String country, ListingDeque queue);
-
-    /**
      * The datapoints will always be called first. Once they are done the listings handle is called
      * 
      * @param appId Appid of the item to get
@@ -92,6 +93,15 @@ public interface StoreService {
     List<Listing> getNewlyListed(int currency, String country);
 
     /**
+     * Retrieve all newly listed
+     * @param currency Currency to retrieve
+     * @param country Country to get listings for
+     * 
+     * @param queue Queue to add the items to
+     */
+    void getAsyncNewlyListed(int currency, String country, ListingDeque queue);
+
+    /**
      * Sell an item in the inventory
      * 
      * @param assetId Asset id to sell
@@ -108,7 +118,7 @@ public interface StoreService {
      * 
      * @return a list of market history items
      */
-    List<MarketHistory> getSoldItemsFromHistory();
+    List<History> getSoldItemsFromHistory();
 
     /**
      * Get outstanding items
