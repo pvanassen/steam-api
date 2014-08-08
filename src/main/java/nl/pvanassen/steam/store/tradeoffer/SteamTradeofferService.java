@@ -56,7 +56,7 @@ public class SteamTradeofferService implements TradeofferService {
         params.put("tradeoffermessage", message.or(""));
         logger.info("Sending: " + params.toString());
         try {
-            TradeOfferHandle handle = new TradeOfferHandle(objectMapper);
+            TradeofferHandle handle = new TradeofferHandle(objectMapper);
             http.post("https://steamcommunity.com/tradeoffer/new/send", params, handle, "http://steamcommunity.com/tradeoffer/new/?partner=" + Long.toString(steamId & 0xFFFFFFFFL));
             return handle.getTradeOfferId();
         }
@@ -77,6 +77,11 @@ public class SteamTradeofferService implements TradeofferService {
         }
         meNode.putArray("currency");
         meNode.put("ready", false);
+    }
+    
+    public List<Integer> getTradeOffers() {
+    	
+    	return null;
     }
     
 }

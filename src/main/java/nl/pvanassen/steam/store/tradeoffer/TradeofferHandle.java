@@ -8,11 +8,11 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 
-class TradeOfferHandle extends DefaultHandle {
+class TradeofferHandle extends DefaultHandle {
     private final ObjectMapper om;
     private int tradeOfferId;
 
-    TradeOfferHandle(ObjectMapper om) {
+    TradeofferHandle(ObjectMapper om) {
         this.om = om;
     }
 
