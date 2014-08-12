@@ -5,11 +5,10 @@ package nl.pvanassen.steam.store.outstanding;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import nl.pvanassen.steam.http.Http;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import nl.pvanassen.steam.http.Http;
 
 /**
  * @author Paul van Assen

@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Paul van Assen
  */
 public class Http {
-    private static final int TIMEOUT = 5000;
+    private static final int TIMEOUT = 15000;
     private final Map<AbstractExecutionAwareRequest, Long> connectionsToWatch = new HashMap<>();
     
     /**

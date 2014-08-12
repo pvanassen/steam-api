@@ -77,18 +77,18 @@ class SteamService implements StoreService {
     SteamService(Http http, String username) {
         this.http = http;
         this.username = username;
-        appIds = getOutstandings().getAppIds();
+        outstandingService = new SteamOutstandingService(http);
         buyService = new SteamBuyService(http, username);
         buyOrderService = new SteamBuyOrderService(http, username);
         historyService = new SteamHistoryService(http);
-        inventoryService = new SteamInventoryService(http, username, appIds);
         listingService = new SteamListingService(http);
         itemService = new SteamItemService(http);
         loginService = new SteamLoginService(http);
-        outstandingService = new SteamOutstandingService(http);
         sellService = new SteamSellService(http, username);
         tradeofferService = new SteamTradeofferService(http);
         removeService = new SteamRemoveService(http, username);
+        appIds = getOutstandings().getAppIds();
+        inventoryService = new SteamInventoryService(http, username, appIds);
     }
 
     @Override
