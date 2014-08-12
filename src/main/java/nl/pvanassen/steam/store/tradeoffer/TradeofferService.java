@@ -28,4 +28,6 @@ public interface TradeofferService {
      * @return A list of trade order ids
      */
     List<Integer> getTradeOffers();
+    
+    void acceptTradeOffer(int offerId);
 }

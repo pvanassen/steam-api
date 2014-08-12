@@ -84,4 +84,10 @@ public class SteamTradeofferService implements TradeofferService {
     	return null;
     }
     
+    @Override
+    public void acceptTradeOffer(int offerId) {
+    	// TODO Auto-generated method stub
+    	
+    }
+    
 }
