@@ -79,13 +79,18 @@ public class SteamTradeofferService implements TradeofferService {
         meNode.put("ready", false);
     }
     
-    public List<Integer> getTradeOffers() {
-    	
-    	return null;
+    public List<Tradeoffer> getTradeOffers() {
+    	ListTradeoffersHandle handle = new ListTradeoffersHandle();
+    	try {
+    		http.get("https://steamcommunity.com/id/mantorch/tradeoffers/", handle);
+    	} catch (IOException e) {
+    		logger.error("Error getting trade offers", e);
+		}
+    	return handle.getTradeoffers();
     }
     
     @Override
-    public void acceptTradeOffer(int offerId) {
+    public void acceptTradeOffer(Tradeoffer tradeoffer) {
     	// TODO Auto-generated method stub
     	
     }
