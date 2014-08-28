@@ -1,4 +1,6 @@
-package nl.pvanassen.steam.error;
+package nl.pvanassen.steam.store.login;
+
+import nl.pvanassen.steam.error.SteamException;
 
 
 /**

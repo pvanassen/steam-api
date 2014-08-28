@@ -21,6 +21,10 @@ class DoLoginHandle extends DefaultHandle {
     private String emailDomain;
 
     private String emailSteamId;
+    
+    private boolean capchaNeeded;
+
+    private String capchaGid;
 
     DoLoginHandle(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -31,9 +35,15 @@ class DoLoginHandle extends DefaultHandle {
         JsonNode node = objectMapper.readTree(stream);
         success = node.get("success").asBoolean();
         message = node.get("message").asText();
-        emailAuthNeeded = node.get("emailauth_needed").asBoolean();
-        emailDomain = node.get("emaildomain").asText();
-        emailSteamId = node.get("emailsteamid").asText();
+        if (node.get("capcha_needed") != null) {
+            capchaNeeded = node.get("capcha_needed").asBoolean();
+            capchaGid = node.get("capcha_gid").asText();
+        }
+        if (node.get("emailauth_needed") != null) {
+            emailAuthNeeded = node.get("emailauth_needed").asBoolean();
+            emailDomain = node.get("emaildomain").asText();
+            emailSteamId = node.get("emailsteamid").asText();
+        }
     }
 
     boolean isSuccess() {
@@ -56,4 +66,11 @@ class DoLoginHandle extends DefaultHandle {
         return emailSteamId;
     }
 
+    boolean isCapchaNeeded() {
+        return capchaNeeded;
+    }
+    
+    String getCapchaGid() {
+        return capchaGid;
+    }
 }
