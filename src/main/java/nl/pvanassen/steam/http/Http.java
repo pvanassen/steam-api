@@ -176,14 +176,27 @@ public class Http {
         cookie.setPath("/");
         return cookie;
     }
+    
+    /**
+     * @param url Url to call
+     * @param params Parameters to send with the request
+     * @param handle Handle to use
+     * @param referer Referer to use in the calls
+     * @throws IOException if a network error occurs
+     */
+    public void post(String url, Map<String, String> params, Handle handle, String referer) throws IOException {
+        post(url, params, handle, referer, true);
+    }
 
     /**
      * @param url Url to call
      * @param params Parameters to send with the request
      * @param handle Handle to use
+     * @param referer Referer to use in the calls
+     * @param sessionIdRequired Is the session id required in the POST?
      * @throws IOException if a network error occurs
      */
-    public void post(String url, Map<String, String> params, Handle handle, String referer) throws IOException {
+    public void post(String url, Map<String, String> params, Handle handle, String referer, boolean sessionIdRequired) throws IOException {
         HttpPost httpPost = new HttpPost(url);
         addHeaders(httpPost, referer);
         String sessionid = getSessionId();
@@ -196,10 +209,12 @@ public class Http {
         for (Map.Entry<String, String> entry : params.entrySet()) {
             sb.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), "UTF-8")).append("&");
         }
-        sb.append("sessionid").append("=").append(sessionid);
-        if (sessionid.isEmpty()) {
-            logger.error("Error, sessionid empty");
-            return;
+        if (sessionIdRequired) {
+            if (sessionid == null || sessionid.isEmpty()) {
+                logger.error("Error, sessionid empty");
+                return;
+            }
+            sb.append("sessionid").append("=").append(sessionid);
         }
         httpPost.setEntity(new StringEntity(sb.toString(), ContentType
                 .create("application/x-www-form-urlencoded", "UTF-8")));
