@@ -23,4 +23,8 @@ public interface TradeofferService {
      * @return The trade offer id
      */
     int makeTradeOffer(long partner, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message);
+    
+    List<Integer> getTradeOffers();
+    
+    void acceptTradeOffer(int tradeOfferId);
 }

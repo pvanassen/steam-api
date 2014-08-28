@@ -65,6 +65,20 @@ public class SteamTradeofferService implements TradeofferService {
             throw new SteamException("Error making trade offer", e);
         }
     }
+    
+    @Override
+    public List<Integer> getTradeOffers() {
+    	// TODO Auto-generated method stub
+    	return null;
+    }
+    
+    @Override
+    public void acceptTradeOffer(int tradeOfferId) {
+    	// TODO Auto-generated method stub
+    	
+    }
+    
+    
 
     private void fillTradeNode(List<InventoryItem> me, ObjectNode meNode) {
         ArrayNode assetsNode = meNode.putArray("assets");

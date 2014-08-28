@@ -3,8 +3,6 @@ package nl.pvanassen.steam.store;
 import java.util.List;
 import java.util.Set;
 
-import nl.pvanassen.steam.error.SteamGuardException;
-import nl.pvanassen.steam.error.VerificationException;
 import nl.pvanassen.steam.http.Http;
 import nl.pvanassen.steam.store.buy.BuyResult;
 import nl.pvanassen.steam.store.buy.BuyService;
@@ -29,7 +27,9 @@ import nl.pvanassen.steam.store.listing.ListingDeque;
 import nl.pvanassen.steam.store.listing.ListingService;
 import nl.pvanassen.steam.store.listing.SteamListingService;
 import nl.pvanassen.steam.store.login.LoginService;
+import nl.pvanassen.steam.store.login.SteamGuardException;
 import nl.pvanassen.steam.store.login.SteamLoginService;
+import nl.pvanassen.steam.store.login.VerificationException;
 import nl.pvanassen.steam.store.outstanding.MarketPage;
 import nl.pvanassen.steam.store.outstanding.OutstandingService;
 import nl.pvanassen.steam.store.outstanding.SteamOutstandingService;
