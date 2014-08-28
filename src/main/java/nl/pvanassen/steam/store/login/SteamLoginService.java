@@ -8,8 +8,6 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.pvanassen.steam.error.SteamGuardException;
-import nl.pvanassen.steam.error.VerificationException;
 import nl.pvanassen.steam.http.Http;
 
 import org.apache.commons.codec.binary.Base64;
@@ -44,12 +42,23 @@ public class SteamLoginService implements LoginService {
      */
     @Override
     public void login(String user, String password) throws VerificationException, SteamGuardException {
+        login(user, password, "", "");
+    }
+    
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.login.LoginService#login(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void login(String user, String password, String capchaGid, String capchaAnswer) throws VerificationException, SteamGuardException {
         Map<String, String> params = new HashMap<>();
         params.put("username", user);
         GetRSAHandle rsaHandle = new GetRSAHandle(objectMapper);
         DoLoginHandle doLoginHandle = new DoLoginHandle(objectMapper);
         try {
-            http.post("https://store.steampowered.com/login/getrsakey/", params, rsaHandle, "http://steamcommunity.com/id/" + user + "/inventory/");
+            http.post("https://store.steampowered.com/login/getrsakey/", params, rsaHandle, "http://steamcommunity.com/id/" + user + "/inventory/", false);
             if (!rsaHandle.isSuccess()) {
                 throw new VerificationException("Invalid username");
             }
@@ -60,8 +69,8 @@ public class SteamLoginService implements LoginService {
             byte[] encrypted = crypto.encrypt(password.getBytes());
             String encryptedPasswordBase64 = Base64.encodeBase64String(encrypted);
 
-            params.put("captcha_text", "");
-            params.put("captchagid", "");
+            params.put("captcha_text", capchaAnswer);
+            params.put("captchagid", capchaGid);
             params.put("emailauth", "");
             params.put("emailsteamid", "");
             params.put("loginfriendlyname", "");
@@ -69,7 +78,7 @@ public class SteamLoginService implements LoginService {
             params.put("password", encryptedPasswordBase64);
             params.put("remember_login", "true");
             params.put("rsatimestamp", Long.toString(rsaHandle.getTimestamp()));
-            http.post("https://steamcommunity.com/login/dologin/", params, doLoginHandle, "http://steamcommunity.com/id/" + user + "/inventory/");
+            http.post("https://steamcommunity.com/login/dologin/", params, doLoginHandle, "http://steamcommunity.com/id/" + user + "/inventory/", false);
             if (doLoginHandle.isSuccess()) {
                 // logged in
                 return;
@@ -77,6 +86,7 @@ public class SteamLoginService implements LoginService {
             if (doLoginHandle.getMessage().contains("SteamGuard")) {
                 throw new SteamGuardException();
             }
+            throw new VerificationException(doLoginHandle.getMessage());
         }
         catch (IOException e) {
             logger.error("Error logging in", e);
