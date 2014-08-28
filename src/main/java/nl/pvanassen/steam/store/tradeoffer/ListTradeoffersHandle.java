@@ -90,7 +90,7 @@ class ListTradeoffersHandle extends DefaultHandle {
                 for (int j=0;j!=items.getLength();j++) {
                     Node item = items.item(i);
                     dataToImageMap.put(item.getAttributes().getNamedItem("data-economy-item").getTextContent(),
-                    item.getChildNodes().item(0).getAttributes().getNamedItem("src").getTextContent());
+                    item.getChildNodes().item(1).getAttributes().getNamedItem("src").getTextContent());
                 }
                 tradeoffers.add(new Tradeoffer(partnerId, offerId, quote, ImmutableList.<Item>of()));
             }
