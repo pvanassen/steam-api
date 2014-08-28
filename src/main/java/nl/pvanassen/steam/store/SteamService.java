@@ -40,9 +40,6 @@ import nl.pvanassen.steam.store.sell.SteamSellService;
 import nl.pvanassen.steam.store.tradeoffer.SteamTradeofferService;
 import nl.pvanassen.steam.store.tradeoffer.TradeofferService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.base.Optional;
 
 /**
@@ -51,9 +48,8 @@ import com.google.common.base.Optional;
  * @author Paul van Assen
  */
 class SteamService implements StoreService {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+//    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Http http;
-    private final String username;
     private final Set<Integer> appIds;
     private final BuyService buyService;
     private final BuyOrderService buyOrderService;
@@ -76,14 +72,13 @@ class SteamService implements StoreService {
      */
     SteamService(Http http, String username) {
         this.http = http;
-        this.username = username;
+        loginService = new SteamLoginService(http);
         outstandingService = new SteamOutstandingService(http);
         buyService = new SteamBuyService(http, username);
         buyOrderService = new SteamBuyOrderService(http, username);
         historyService = new SteamHistoryService(http);
         listingService = new SteamListingService(http);
         itemService = new SteamItemService(http);
-        loginService = new SteamLoginService(http);
         sellService = new SteamSellService(http, username);
         tradeofferService = new SteamTradeofferService(http);
         removeService = new SteamRemoveService(http, username);
