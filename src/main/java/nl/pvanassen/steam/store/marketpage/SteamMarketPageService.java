@@ -50,7 +50,7 @@ public class SteamMarketPageService implements MarketPageService {
     
     @Override
     public Set<Integer> getAppIds() {
-    	logger.info("Getting market page");
+    	logger.info("Getting market page for app ids");
         AppIdsHandle handle = new AppIdsHandle();
         try {
             http.get("http://steamcommunity.com/market/", handle);
