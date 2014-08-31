@@ -4,13 +4,11 @@
 package nl.pvanassen.steam.store.login;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
 import nl.pvanassen.steam.http.Http;
 
-import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,17 +40,29 @@ public class SteamLoginService implements LoginService {
      */
     @Override
     public void login(String user, String password) throws VerificationException, SteamGuardException {
-        login(user, password, "", "");
+        login(user, password, "", "", "", "", "");
     }
     
 
     /**
      * {@inheritDoc}
      *
-     * @see nl.pvanassen.steam.store.login.LoginService#login(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see nl.pvanassen.steam.store.login.LoginService#loginCapcha(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public void login(String user, String password, String capchaGid, String capchaAnswer) throws VerificationException, SteamGuardException {
+    public void loginCapcha(String user, String password, String capchaGid, String capchaAnswer) throws VerificationException, SteamGuardException {
+        login(user, password, capchaGid, capchaAnswer, "", "", "");
+    }
+    
+    @Override
+    public void loginSteamGuard(String user, String password,
+    		String emailSteamId, String friendlyName, String code)
+    		throws VerificationException, SteamGuardException, CapchaException {
+        login(user, password, "", "", emailSteamId, friendlyName, code);
+    }
+
+    @Override
+    public void login(String user, String password, String capchaGid, String capchaAnswer, String emailSteamId, String friendlyName, String code) throws VerificationException, SteamGuardException {
         Map<String, String> params = new HashMap<>();
         params.put("username", user);
         GetRSAHandle rsaHandle = new GetRSAHandle(objectMapper);
@@ -68,9 +78,9 @@ public class SteamLoginService implements LoginService {
 
             params.put("captcha_text", capchaAnswer);
             params.put("captchagid", capchaGid);
-            params.put("emailauth", "");
-            params.put("emailsteamid", "");
-            params.put("loginfriendlyname", "");
+            params.put("emailauth", code);
+            params.put("emailsteamid", emailSteamId);
+            params.put("loginfriendlyname", friendlyName);
 
             params.put("password", encryptedPasswordBase64);
             params.put("remember_login", "true");
@@ -81,7 +91,7 @@ public class SteamLoginService implements LoginService {
                 return;
             }
             if (doLoginHandle.getMessage().contains("SteamGuard")) {
-                throw new SteamGuardException();
+                throw new SteamGuardException(doLoginHandle.getEmailSteamId());
             }
             if (doLoginHandle.isCapchaNeeded()) {
             	String capchaG = doLoginHandle.getCapchaGid();
@@ -95,24 +105,4 @@ public class SteamLoginService implements LoginService {
         }
     }
     
-    private static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                                 + Character.digit(s.charAt(i+1), 16));
-        }
-        return data;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see nl.pvanassen.steam.store.login.LoginService#verification(java.lang.String)
-     */
-    @Override
-    public void verification(String code) {
-    	
-        // TODO Auto-generated method stub
-    }
 }

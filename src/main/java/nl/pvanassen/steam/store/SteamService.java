@@ -27,9 +27,7 @@ import nl.pvanassen.steam.store.listing.ListingDeque;
 import nl.pvanassen.steam.store.listing.ListingService;
 import nl.pvanassen.steam.store.listing.SteamListingService;
 import nl.pvanassen.steam.store.login.LoginService;
-import nl.pvanassen.steam.store.login.SteamGuardException;
 import nl.pvanassen.steam.store.login.SteamLoginService;
-import nl.pvanassen.steam.store.login.VerificationException;
 import nl.pvanassen.steam.store.outstanding.MarketPage;
 import nl.pvanassen.steam.store.outstanding.OutstandingService;
 import nl.pvanassen.steam.store.outstanding.SteamOutstandingService;
@@ -162,16 +160,6 @@ class SteamService implements StoreService {
     	return outstandingService.getOutstandings();
     }
 
-    @Override
-    public void login(String user, String password) throws VerificationException, SteamGuardException {
-    	loginService.login(user, password);
-    }
-
-    @Override
-    public void verification(String code) {
-    	loginService.verification(code);
-    }
-
     /**
      * {@inheritDoc}
      *
@@ -205,5 +193,13 @@ class SteamService implements StoreService {
     @Override
     public BuyOrderStatus getBuyOrderStatus(String buyOrderId) {
     	return buyOrderService.getBuyOrderStatus(buyOrderId);
+    }
+
+    /**
+     * @see nl.pvanassen.steam.store.StoreService#getLoginService()
+     */
+    @Override
+    public LoginService getLoginService() {
+    	return loginService;
     }
 }

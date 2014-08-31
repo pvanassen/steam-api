@@ -12,8 +12,7 @@ import nl.pvanassen.steam.store.inventory.InventoryItem;
 import nl.pvanassen.steam.store.item.OverviewItem;
 import nl.pvanassen.steam.store.item.StatDataPoint;
 import nl.pvanassen.steam.store.listing.ListingDeque;
-import nl.pvanassen.steam.store.login.SteamGuardException;
-import nl.pvanassen.steam.store.login.VerificationException;
+import nl.pvanassen.steam.store.login.LoginService;
 import nl.pvanassen.steam.store.outstanding.MarketPage;
 
 import com.google.common.base.Optional;
@@ -135,22 +134,7 @@ public interface StoreService {
      */
     boolean removeListing(String listingId);
 
-    /**
-     * Do an login attempt. If a code is requested a VerificationError is thrown
-     * 
-     * @param user Username
-     * @param password Password
-     * @throws VerificationException In case login failed
-     * @throws SteamGuardException In case a code is requested
-     */
-    void login(String user, String password) throws VerificationException, SteamGuardException;
-
-    /**
-     * Verification based on a code
-     * 
-     * @param code The requested code
-     */
-    void verification(String code);
+    LoginService getLoginService();
     
     /**
      * Get the current cookies
