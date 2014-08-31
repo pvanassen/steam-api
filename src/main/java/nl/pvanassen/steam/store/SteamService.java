@@ -29,8 +29,8 @@ import nl.pvanassen.steam.store.listing.SteamListingService;
 import nl.pvanassen.steam.store.login.LoginService;
 import nl.pvanassen.steam.store.login.SteamLoginService;
 import nl.pvanassen.steam.store.marketpage.MarketPage;
-import nl.pvanassen.steam.store.marketpage.OutstandingService;
-import nl.pvanassen.steam.store.marketpage.SteamOutstandingService;
+import nl.pvanassen.steam.store.marketpage.MarketPageService;
+import nl.pvanassen.steam.store.marketpage.SteamMarketPageService;
 import nl.pvanassen.steam.store.remove.RemoveService;
 import nl.pvanassen.steam.store.remove.SteamRemoveService;
 import nl.pvanassen.steam.store.sell.SellService;
@@ -56,7 +56,7 @@ class SteamService implements StoreService {
     private final ListingService listingService;
     private final ItemService itemService;
     private final LoginService loginService;
-    private final OutstandingService outstandingService;
+    private final MarketPageService marketPageService;
     private final SellService sellService;
     private final TradeofferService tradeofferService;
     private final RemoveService removeService;
@@ -71,7 +71,8 @@ class SteamService implements StoreService {
     SteamService(Http http, String username) {
         this.http = http;
         loginService = new SteamLoginService(http);
-        outstandingService = new SteamOutstandingService(http);
+        marketPageService = new SteamMarketPageService(http);
+        appIds = marketPageService.getAppIds();
         buyService = new SteamBuyService(http, username);
         buyOrderService = new SteamBuyOrderService(http, username);
         historyService = new SteamHistoryService(http);
@@ -80,7 +81,6 @@ class SteamService implements StoreService {
         sellService = new SteamSellService(http, username);
         tradeofferService = new SteamTradeofferService(http);
         removeService = new SteamRemoveService(http, username);
-        appIds = getOutstandings().getAppIds();
         inventoryService = new SteamInventoryService(http, username, appIds);
     }
 
@@ -157,7 +157,7 @@ class SteamService implements StoreService {
      */
     @Override
     public MarketPage getOutstandings() {
-    	return outstandingService.getOutstandings();
+    	return marketPageService.getOutstandings();
     }
 
     /**

@@ -4,6 +4,7 @@
 package nl.pvanassen.steam.store.marketpage;
 
 import java.io.IOException;
+import java.util.Set;
 
 import nl.pvanassen.steam.http.Http;
 
@@ -14,18 +15,18 @@ import org.slf4j.LoggerFactory;
  * @author Paul van Assen
  *
  */
-public class SteamOutstandingService implements OutstandingService {
+public class SteamMarketPageService implements MarketPageService {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Http http;
     
-    public SteamOutstandingService(String cookies, String username) {
+    public SteamMarketPageService(String cookies, String username) {
         this(Http.getInstance(cookies, username));
     }
 
     /**
      * @param http For mocking
      */
-    public SteamOutstandingService(Http http) {
+    public SteamMarketPageService(Http http) {
         this.http = http;
     }
     
@@ -45,5 +46,18 @@ public class SteamOutstandingService implements OutstandingService {
             logger.error("Error getting outstanding listings", e);
         }
         return handle.getOutstandings();
+    }
+    
+    @Override
+    public Set<Integer> getAppIds() {
+    	logger.info("Getting market page");
+        AppIdsHandle handle = new AppIdsHandle();
+        try {
+            http.get("http://steamcommunity.com/market/", handle);
+        }
+        catch (IOException e) {
+            logger.error("Error getting outstanding listings", e);
+        }
+        return handle.getAppIds();
     }
 }
