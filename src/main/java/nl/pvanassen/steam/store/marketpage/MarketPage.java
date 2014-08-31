@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store.outstanding;
+package nl.pvanassen.steam.store.marketpage;
 
 import java.util.List;
 import java.util.Set;

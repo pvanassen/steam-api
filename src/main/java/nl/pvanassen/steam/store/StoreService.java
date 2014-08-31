@@ -13,7 +13,7 @@ import nl.pvanassen.steam.store.item.OverviewItem;
 import nl.pvanassen.steam.store.item.StatDataPoint;
 import nl.pvanassen.steam.store.listing.ListingDeque;
 import nl.pvanassen.steam.store.login.LoginService;
-import nl.pvanassen.steam.store.outstanding.MarketPage;
+import nl.pvanassen.steam.store.marketpage.MarketPage;
 
 import com.google.common.base.Optional;
 

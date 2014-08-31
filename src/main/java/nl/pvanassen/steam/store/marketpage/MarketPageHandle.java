@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store.outstanding;
+package nl.pvanassen.steam.store.marketpage;
 
 import java.io.IOException;
 import java.io.InputStream;
