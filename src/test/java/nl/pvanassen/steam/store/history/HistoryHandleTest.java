@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class HistoryHandleTest {
 	@Test
     public void testHandle() throws IOException {

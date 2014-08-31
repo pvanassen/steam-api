@@ -39,7 +39,7 @@ public class OverviewHandleTest implements GenericHandle<OverviewItem>{
 	}
 	
 	@Test
-	public void testMormalPage() throws IOException {
+	public void testNormalPage() throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		OverviewHandle handle = new OverviewHandle(this, objectMapper);
 		handle.handle(getClass().getResourceAsStream("/overview-ok.json"));
