@@ -16,6 +16,9 @@ public class RSA {
 		BigInteger data = pkcs1pad2(password.getBytes(), (modulus.bitLength() + 7 ) >> 3);
 		BigInteger d2 = data.modPow(exponent, modulus);
 		String dataHex = d2.toString(16);
+		if ((dataHex.length() & 1) == 1) {
+			dataHex = "0" + dataHex;
+		}
 		byte[] encrypted = hexStringToByteArray(dataHex);
 		return Base64.encodeBase64String(encrypted);
 	}

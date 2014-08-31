@@ -22,9 +22,9 @@ class DoLoginHandle extends DefaultHandle {
 
     private String emailSteamId;
     
-    private boolean capchaNeeded;
+    private boolean captchaNeeded;
 
-    private String capchaGid;
+    private String captchaGid;
 
     DoLoginHandle(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -37,9 +37,9 @@ class DoLoginHandle extends DefaultHandle {
         if (node.get("message") != null) {
         	message = node.get("message").asText();
         }
-        if (node.get("capcha_needed") != null) {
-            capchaNeeded = node.get("capcha_needed").asBoolean();
-            capchaGid = node.get("capcha_gid").asText();
+        if (node.get("captcha_needed") != null) {
+            captchaNeeded = node.get("captcha_needed").asBoolean();
+            captchaGid = node.get("captcha_gid").asText();
         }
         if (node.get("emailauth_needed") != null) {
             emailAuthNeeded = node.get("emailauth_needed").asBoolean();
@@ -68,11 +68,11 @@ class DoLoginHandle extends DefaultHandle {
         return emailSteamId;
     }
 
-    boolean isCapchaNeeded() {
-        return capchaNeeded;
+    boolean isCaptchaNeeded() {
+        return captchaNeeded;
     }
     
-    String getCapchaGid() {
-        return capchaGid;
+    String getCaptchaGid() {
+        return captchaGid;
     }
 }

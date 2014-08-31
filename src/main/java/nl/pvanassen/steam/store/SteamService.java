@@ -172,7 +172,7 @@ class SteamService implements StoreService {
     
     @Override
     public Set<Integer> getAppIds() {
-        return getOutstandings().getAppIds();
+        return marketPageService.getAppIds();
     }
     
     @Override
