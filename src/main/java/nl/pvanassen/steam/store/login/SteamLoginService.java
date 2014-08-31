@@ -86,6 +86,10 @@ public class SteamLoginService implements LoginService {
             if (doLoginHandle.getMessage().contains("SteamGuard")) {
                 throw new SteamGuardException();
             }
+            if (doLoginHandle.isCapchaNeeded()) {
+            	String capchaG = doLoginHandle.getCapchaGid();
+            	throw new CapchaException("https://steamcommunity.com/public/captcha.php?gid=" + capchaG, capchaG);
+            }
             throw new VerificationException(doLoginHandle.getMessage());
         }
         catch (IOException e) {

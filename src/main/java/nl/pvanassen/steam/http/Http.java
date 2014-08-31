@@ -205,10 +205,12 @@ public class Http {
         for (Map.Entry<String, String> entry : params.entrySet()) {
             sb.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), "UTF-8")).append("&");
         }
-        sb.append("sessionid").append("=").append(sessionid);
-        if (sessionid.isEmpty()) {
-            logger.error("Error, sessionid empty");
-            return;
+        if (sessionRequired) {
+	        sb.append("sessionid").append("=").append(sessionid);
+	        if (sessionid.isEmpty()) {
+	            logger.error("Error, sessionid empty");
+	            return;
+	        }
         }
         httpPost.setEntity(new StringEntity(sb.toString(), ContentType
                 .create("application/x-www-form-urlencoded", "UTF-8")));

@@ -23,14 +23,14 @@ class RSACrypto {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final Cipher cipher;
-    private final RSAPublicKey RSAkey;
+    private final RSAPublicKey rsaKey;
 
     RSACrypto(BigInteger mod, BigInteger exp, boolean oaep) {
         try {
             final RSAPublicKeySpec publicKeySpec = new RSAPublicKeySpec(mod, exp);
 
             final KeyFactory factory = KeyFactory.getInstance("RSA");
-            RSAkey = (RSAPublicKey) factory.generatePublic(publicKeySpec);
+            rsaKey = (RSAPublicKey) factory.generatePublic(publicKeySpec);
 
             Security.addProvider(new BouncyCastleProvider());
             if (oaep) {
@@ -39,7 +39,7 @@ class RSACrypto {
             else {
                 cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
             }
-            cipher.init(Cipher.ENCRYPT_MODE, RSAkey);
+            cipher.init(Cipher.ENCRYPT_MODE, rsaKey);
         }
         catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException
                 | InvalidKeySpecException e) {
