@@ -62,12 +62,9 @@ public class SteamLoginService implements LoginService {
             if (!rsaHandle.isSuccess()) {
                 throw new VerificationException("Invalid username");
             }
-            BigInteger pubKeyMod = new BigInteger(rsaHandle.getPublicKeyMod(), 16);
-            BigInteger pubKeyExp = new BigInteger(rsaHandle.getPublicKeyExp(), 10);
-            RSACrypto crypto = new RSACrypto(pubKeyMod, pubKeyExp, false);
+            RSA crypto = new RSA(rsaHandle.getPublicKeyMod(), rsaHandle.getPublicKeyExp());
 
-            byte[] encrypted = crypto.encrypt(password.getBytes());
-            String encryptedPasswordBase64 = Base64.encodeBase64String(encrypted);
+            String encryptedPasswordBase64 = crypto.encrypt(password);
 
             params.put("captcha_text", capchaAnswer);
             params.put("captchagid", capchaGid);
@@ -96,6 +93,16 @@ public class SteamLoginService implements LoginService {
             logger.error("Error logging in", e);
             throw new VerificationException("Error logging in", e);
         }
+    }
+    
+    private static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                                 + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
     }
 
     /**

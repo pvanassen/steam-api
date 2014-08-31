@@ -34,7 +34,9 @@ class DoLoginHandle extends DefaultHandle {
     public void handle(InputStream stream) throws IOException {
         JsonNode node = objectMapper.readTree(stream);
         success = node.get("success").asBoolean();
-        message = node.get("message").asText();
+        if (node.get("message") != null) {
+        	message = node.get("message").asText();
+        }
         if (node.get("capcha_needed") != null) {
             capchaNeeded = node.get("capcha_needed").asBoolean();
             capchaGid = node.get("capcha_gid").asText();

@@ -161,7 +161,7 @@ public class Http {
         httpMessage.addHeader("Origin", "http://steamcommunity.com");
         httpMessage.addHeader("Pragma", "no-cache");
         httpMessage.addHeader("Referer", referer);
-        httpMessage.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0");
+        httpMessage.addHeader("User-Agent", "Mozilsdfsdfsdfla/5.0 (Windfssfdsdfows NT 6.1; WOW64; rv:24.0) Gecsfsfsfko/20100101 Firesfsfsffox/24.0");
         // httpMessage.addHeader("X-Prototype-Version", "1.7");
         // httpMessage.addHeader("X-Requested-With", "XMLHttpRequest");
     }
