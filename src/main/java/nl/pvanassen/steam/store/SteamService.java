@@ -71,7 +71,7 @@ class SteamService implements StoreService {
     SteamService(Http http, String username) {
         this.http = http;
         loginService = new SteamLoginService(http);
-        marketPageService = new SteamMarketPageService(http);
+        marketPageService = new SteamMarketPageService(http, username);
         appIds = marketPageService.getAppIds();
         buyService = new SteamBuyService(http, username);
         buyOrderService = new SteamBuyOrderService(http, username);

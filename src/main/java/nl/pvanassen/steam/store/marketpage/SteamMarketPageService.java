@@ -18,16 +18,18 @@ import org.slf4j.LoggerFactory;
 public class SteamMarketPageService implements MarketPageService {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Http http;
+    private final String username;
     
     public SteamMarketPageService(String cookies, String username) {
-        this(Http.getInstance(cookies, username));
+        this(Http.getInstance(cookies, username), username);
     }
 
     /**
      * @param http For mocking
      */
-    public SteamMarketPageService(Http http) {
+    public SteamMarketPageService(Http http, String username) {
         this.http = http;
+        this.username = username;
     }
     
     /**
@@ -37,7 +39,7 @@ public class SteamMarketPageService implements MarketPageService {
      */
     @Override
     public MarketPage getOutstandings() {
-    	logger.info("Getting market page");
+    	logger.info("Getting market page for " + username);
         MarketPageHandle handle = new MarketPageHandle();
         try {
             http.get("http://steamcommunity.com/market/", handle);

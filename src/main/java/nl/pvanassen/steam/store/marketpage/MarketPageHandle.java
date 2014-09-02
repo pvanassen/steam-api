@@ -77,6 +77,12 @@ class MarketPageHandle extends DefaultHandle {
             if (walletNode != null) {
             	wallet = AmountHelper.getAmount(walletNode.getTextContent().trim());
             }
+            else {
+            	logger.error("Wallet node is null!");
+            }
+            if (wallet == 0) {
+            	logger.error("No cash in this account, that's weird?");
+            }
             Node node = (Node) ITEMS_DIV_XPATH.evaluate(document, XPathConstants.NODE);
             for (int i = 0; i < node.getChildNodes().getLength(); i++) {
                 Node outstandingRow = node.getChildNodes().item(i);
