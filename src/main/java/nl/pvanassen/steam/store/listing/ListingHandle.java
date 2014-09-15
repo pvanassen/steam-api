@@ -35,6 +35,10 @@ class ListingHandle extends DefaultHandle {
             String urlName = UrlNameHelper.getUrlName(assets.get(Integer.toString(appId)).get(contextId).get(id)
                     .get("market_hash_name").asText());
             try {
+            	if (listing.get("price").asInt() == 0) {
+            		logger.warn("Sometimes Steam send 0 price. Skipping");
+            		continue;
+            	}
                 listings.offerFirst(new Listing(appId, urlName, listing.get("listingid").asText(), listing
                         .get("steamid_lister").asText(), listing.get("converted_price").asInt(), listing
                         .get("converted_fee").asInt(), listing.get("converted_steam_fee").asInt(), listing
@@ -42,7 +46,7 @@ class ListingHandle extends DefaultHandle {
                         .get("publisher_fee_percent").asDouble(), country));
             }
             catch (NullPointerException e) {
-                logger.error("Error fetching " + listing);
+                logger.error("Error fetching " + listing + ", " + e.getMessage());
             }
         }
     }
