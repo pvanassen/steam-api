@@ -117,7 +117,7 @@ public interface StoreService {
      * 
      * @return a list of market history items
      */
-    List<History> getSoldItemsFromHistory();
+    History getHistory(String lastSteamId);
 
     /**
      * Get outstanding items

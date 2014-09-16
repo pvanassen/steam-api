@@ -146,8 +146,8 @@ class SteamService implements StoreService {
     }
     
     @Override
-    public List<History> getSoldItemsFromHistory() {
-    	return historyService.getSoldItemsFromHistory();
+    public History getHistory(String lastSteamId) {
+    	return historyService.getHistory(lastSteamId);
     }
 
     /**

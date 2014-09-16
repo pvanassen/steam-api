@@ -1,7 +1,6 @@
 package nl.pvanassen.steam.store.history;
 
 import java.io.IOException;
-import java.util.List;
 
 import nl.pvanassen.steam.http.Http;
 
@@ -31,28 +30,22 @@ public class SteamHistoryService implements HistoryService {
 	public SteamHistoryService(Http http) {
 		this.http = http;
 	}
-
-	/**
-	 * 
-	 * {@inheritDoc}
-	 *
-	 * @see nl.pvanassen.steam.store.history.HistoryService#getSoldItemsFromHistory()
-	 */
+	
 	@Override
-	public List<History> getSoldItemsFromHistory() {
-		HistoryHandle handle = new HistoryHandle(objectMapper);
+	public History getHistory(String lastSteamId) {
+		HistoryHandle handle = new HistoryHandle(lastSteamId, objectMapper);
 		try {
 			int stepSize = 100;
 			http.get(
 					"http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count="
 							+ stepSize, handle);
 			if (handle.isError()) {
-				return getSoldItemsFromHistory();
+				return getHistory(lastSteamId);
 			}
 			int totalCount = handle.getTotalCount();
 			for (int start = stepSize; start < totalCount; start += stepSize) {
 				do {
-					Thread.sleep(500);
+					Thread.sleep(2000);
 					http.get(
 							"http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count="
 									+ stepSize + "&start=" + start, handle);
@@ -61,6 +54,6 @@ public class SteamHistoryService implements HistoryService {
 		} catch (IOException | RuntimeException | InterruptedException e) {
 			logger.error("Error getting data", e);
 		}
-		return handle.getMarketHistory();
+		return new History(handle.getPurchases(), handle.getSales(), handle.getListingsCreated(), handle.getListingsRemoved());
 	}
 }

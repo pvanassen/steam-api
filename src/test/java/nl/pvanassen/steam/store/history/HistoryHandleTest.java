@@ -6,16 +6,17 @@ import java.io.IOException;
 import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class HistoryHandleTest {
 	@Test
     public void testHandle() throws IOException {
-        HistoryHandle handle = new HistoryHandle(new ObjectMapper());
+        HistoryHandle handle = new HistoryHandle(null, new ObjectMapper());
         handle.handle(getClass().getResourceAsStream("/markethistory.json"));
-        List<History> history = handle.getMarketHistory();
-        assertEquals(1000, history.size());
+        List<Purchase> purchases = handle.getPurchases();
+        List<HistoryRow> listingsCreated = handle.getListingsCreated();
+        List<HistoryRow> listingsRemoved = handle.getListingsRemoved();
+        List<Sale> sales = handle.getSales();
+        assertEquals(330, purchases.size());
     }
 }

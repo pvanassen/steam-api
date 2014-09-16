@@ -1,6 +1,5 @@
 package nl.pvanassen.steam.store.history;
 
-import java.util.List;
 
 /**
  * History service for retrieving purchase and selling history
@@ -10,9 +9,12 @@ import java.util.List;
  */
 public interface HistoryService {
 	/**
-	 * Get sold items currently offered
+	 * Get trading history
 	 * 
-	 * @return a list of market history items
+	 * @param lastSteamId
+	 *            The ID of the last row processed in previous runs. Leave null
+	 *            if this is the first run
+	 * @return The trading history for this account
 	 */
-	List<History> getSoldItemsFromHistory();
+	History getHistory(String lastSteamId);
 }
