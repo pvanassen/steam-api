@@ -4,18 +4,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
-import javax.xml.xpath.*;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.helper.AmountHelper;
-import nl.pvanassen.steam.store.history.History;
 
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -52,7 +61,7 @@ class MarketPageHandle extends DefaultHandle {
             appIdsXpath = XPATH.compile("//A[@class='game_button']");
         }
         catch (XPathExpressionException e) {
-            LoggerFactory.getLogger(History.class).error("Error instantiating XPATH", e);
+            LoggerFactory.getLogger(MarketPageHandle.class).error("Error instantiating XPATH", e);
         }
         ITEMS_DIV_XPATH = itemsDivXpath;
         PRICE_XPATH = priceXpath;

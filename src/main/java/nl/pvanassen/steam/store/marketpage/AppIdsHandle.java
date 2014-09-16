@@ -12,7 +12,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import nl.pvanassen.steam.http.DefaultHandle;
-import nl.pvanassen.steam.store.history.History;
 
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
@@ -38,7 +37,7 @@ class AppIdsHandle extends DefaultHandle {
             appIdsXpath = XPATH.compile("//A[@class='game_button']");
         }
         catch (XPathExpressionException e) {
-            LoggerFactory.getLogger(History.class).error("Error instantiating XPATH", e);
+            LoggerFactory.getLogger(AppIdsHandle.class).error("Error instantiating XPATH", e);
         }
         APPIDS_XPATH = appIdsXpath;
     }

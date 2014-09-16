@@ -15,7 +15,6 @@ import javax.xml.xpath.XPathFactory;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.common.Item;
-import nl.pvanassen.steam.store.history.History;
 
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
@@ -55,7 +54,7 @@ class ListTradeoffersHandle extends DefaultHandle {
         	tradeOfferItemList = XPATH.compile("//DIV[@class='tradeoffer_item_list']/DIV");
         }
         catch (XPathExpressionException e) {
-            LoggerFactory.getLogger(History.class).error("Error instantiating XPATH", e);
+            LoggerFactory.getLogger(ListTradeoffersHandle.class).error("Error instantiating XPATH", e);
         }
         TRADE_OFFERS_XPATH = tradeOffers;
         PARTNERID_XPATH = partnerId;

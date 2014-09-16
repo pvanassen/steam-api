@@ -13,7 +13,6 @@ import javax.xml.xpath.XPathFactory;
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.GenericHandle;
 import nl.pvanassen.steam.store.helper.AmountHelper;
-import nl.pvanassen.steam.store.history.History;
 
 import org.apache.html.dom.HTMLDocumentImpl;
 import org.codehaus.jackson.JsonNode;
@@ -56,7 +55,7 @@ class OverviewHandle extends DefaultHandle {
                     .compile(".//DIV[@class='market_listing_item_name_block']/SPAN[@class='market_listing_game_name']");
         }
         catch (XPathExpressionException e) {
-            LoggerFactory.getLogger(History.class).error("Error instantiating XPATH", e);
+            LoggerFactory.getLogger(OverviewHandle.class).error("Error instantiating XPATH", e);
         }
         ROW_XPATH = rowXpath;
         PRICE_XPATH = priceXpath;
