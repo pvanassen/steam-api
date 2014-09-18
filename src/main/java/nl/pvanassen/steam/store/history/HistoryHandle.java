@@ -8,10 +8,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -19,6 +19,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.helper.AmountHelper;
 import nl.pvanassen.steam.store.helper.UrlNameHelper;
@@ -36,16 +37,16 @@ import org.w3c.dom.html.HTMLDocument;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.google.common.collect.ImmutableList;
+
 class HistoryHandle extends DefaultHandle {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	private final String lastSteamId;
-	private final List<Purchase> purchases = new LinkedList<>();
-	private final List<Sale> sales = new LinkedList<>();
-	private final List<HistoryRow> listingsCreated = new LinkedList<>();
-	private final List<HistoryRow> listingsRemoved = new LinkedList<>();
+	private final Set<Purchase> purchases = new LinkedHashSet<>();
+	private final Set<Sale> sales = new LinkedHashSet<>();
+	private final Set<ListingCreated> listingsCreated = new LinkedHashSet<>();
+	private final Set<ListingRemoved> listingsRemoved = new LinkedHashSet<>();
 	private final ObjectMapper om;
-	private static final XPathFactory XPATH_FACTORY = XPathFactory
-			.newInstance();
+	private static final XPathFactory XPATH_FACTORY = XPathFactory.newInstance();
 	private static final XPath XPATH = XPATH_FACTORY.newXPath();
 	private static final XPathExpression HISTORY_ROW_XPATH;
 	private static final XPathExpression GAIN_LOSS_XPATH;
@@ -53,9 +54,13 @@ class HistoryHandle extends DefaultHandle {
 	private static final XPathExpression PRICE_XPATH;
 	private static final XPathExpression BUYER_XPATH;
 	private static final XPathExpression ACTED_XPATH;
-	private int totalCount;
+
+	private final String lastRowId;
 	private boolean error = false;
-	private boolean foundSteamId;
+	private boolean foundRowId;
+	private String latestRowId;
+	private boolean savedFirstRowId = false;
+	private int totalCount;
 
 	static {
 		XPathExpression historyRowXpath = null;
@@ -89,13 +94,13 @@ class HistoryHandle extends DefaultHandle {
 		ACTED_XPATH = actedXpath;
 	}
 
-	HistoryHandle(String lastSteamId, ObjectMapper om) {
+	HistoryHandle(String lastRowId, ObjectMapper om) {
 		super();
-		if (lastSteamId == null) {
-			this.lastSteamId = "";
+		if (lastRowId == null) {
+			this.lastRowId = "";
 		}
 		else {
-			this.lastSteamId = lastSteamId;
+			this.lastRowId = lastRowId;
 		}
 		this.om = om;
 	}
@@ -127,24 +132,27 @@ class HistoryHandle extends DefaultHandle {
 		DOMFragmentParser parser = new DOMFragmentParser();
 		HTMLDocument document = new HTMLDocumentImpl();
 		try {
-			SimpleDateFormat formatter = new SimpleDateFormat("d MMM",
-					Locale.US);
-
+			SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.US);
 			Map<String, Asset> assetMap = getAssetMap(node);
 			Map<String, String> hoverMap = getHovers(node);
 
 			DocumentFragment fragment = document.createDocumentFragment();
-			parser.parse(new InputSource(new StringReader(resultHtml)),
-					fragment);
+			parser.parse(new InputSource(new StringReader(resultHtml)), fragment);
 
-			NodeList nodeSet = (NodeList) HISTORY_ROW_XPATH.evaluate(fragment,
-					XPathConstants.NODESET);
+			NodeList nodeSet = (NodeList) HISTORY_ROW_XPATH.evaluate(fragment, XPathConstants.NODESET);
 			for (int i = 0; i < nodeSet.getLength(); i++) {
 				Node historyRow = nodeSet.item(i);
 				String rowName = historyRow.getAttributes().getNamedItem("id")
 						.getTextContent();
-				Node gainLoss = (Node) GAIN_LOSS_XPATH.evaluate(historyRow,
-						XPathConstants.NODE);
+				if (!savedFirstRowId) {
+					this.latestRowId = rowName;
+					savedFirstRowId = true;
+				}
+				if (rowName.equals(lastRowId)) {
+					foundRowId = true;
+					return;
+				}
+				Node gainLoss = (Node) GAIN_LOSS_XPATH.evaluate(historyRow, XPathConstants.NODE);
 				String gainLossText = gainLoss.getTextContent().trim();
 				HistoryStatus status = null;
 				if ("-".equals(gainLossText)) {
@@ -152,8 +160,7 @@ class HistoryHandle extends DefaultHandle {
 				} else if ("+".equals(gainLossText)) {
 					status = HistoryStatus.BOUGHT;
 				} else {
-					Node actedNode = (Node) ACTED_XPATH.evaluate(historyRow,
-							XPathConstants.NODE);
+					Node actedNode = (Node) ACTED_XPATH.evaluate(historyRow, XPathConstants.NODE);
 					String acted = actedNode.getTextContent().trim();
 					if ("Listing created".equals(acted)) {
 						status = HistoryStatus.CREATED;
@@ -161,24 +168,18 @@ class HistoryHandle extends DefaultHandle {
 						status = HistoryStatus.REMOVED;
 					}
 				}
-				boolean full = status == HistoryStatus.BOUGHT
-						|| status == HistoryStatus.SOLD;
+				boolean full = status == HistoryStatus.BOUGHT || status == HistoryStatus.SOLD;
 
-				String priceStr = ((Node) PRICE_XPATH.evaluate(historyRow,
-						XPathConstants.NODE)).getTextContent().trim();
+				String priceStr = ((Node) PRICE_XPATH.evaluate(historyRow, XPathConstants.NODE)).getTextContent().trim();
 				String buyer = "";
 				if (full) {
 					buyer = ((Node) BUYER_XPATH.evaluate(historyRow,
 							XPathConstants.NODE)).getTextContent()
-							.replace("Buyer:", "").trim();
+							.replace("Buyer:", "").replace("Seller:", "").trim();
 				}
 				int eventIdx = rowName.indexOf("_event");
 				if (eventIdx > -1) {
 					rowName = rowName.substring(0, eventIdx);
-				}
-				if (rowName.equals(lastSteamId)) {
-					foundSteamId = true;
-					return;
 				}
 				Asset asset = assetMap.get(hoverMap.get(rowName));
 				try {
@@ -197,24 +198,28 @@ class HistoryHandle extends DefaultHandle {
 					if (!"".equals(priceStr)) {
 						price = AmountHelper.getAmount(priceStr);
 					}
+					boolean added = false;
 					switch (status) {
-					case BOUGHT:
-						purchases.add(new Purchase(rowName, asset.appId,
-								asset.urlName, asset.contextId, listed, acted,
-								price, buyer));
-						break;
-					case CREATED:
-						listingsCreated.add(new HistoryRow(rowName, listed,
-								acted, price));
-						break;
-					case REMOVED:
-						listingsRemoved.add(new HistoryRow(rowName, listed,
-								acted, price));
-						break;
-					case SOLD:
-						sales.add(new Sale(rowName, asset.appId, asset.urlName,
-								asset.contextId, listed, acted, price, buyer));
-						break;
+						case BOUGHT:
+							added = purchases.add(new Purchase(rowName, asset.appId,
+									asset.urlName, asset.contextId, listed, acted,
+									price, buyer));
+							break;
+						case CREATED:
+							added = listingsCreated.add(new ListingCreated(rowName, listed,
+									acted, price));
+							break;
+						case REMOVED:
+							added = listingsRemoved.add(new ListingRemoved(rowName, listed,
+									acted, price));
+							break;
+						case SOLD:
+							added = sales.add(new Sale(rowName, asset.appId, asset.urlName,
+									asset.contextId, listed, acted, price, buyer));
+							break;
+					}
+					if (!added) {
+						throw new SteamException("Item not added, already present");
 					}
 				} catch (ParseException e) {
 					logger.error("Error parsing date", e);
@@ -264,25 +269,17 @@ class HistoryHandle extends DefaultHandle {
 		}
 		return hoverMap;
 	}
-
-	List<HistoryRow> getListingsCreated() {
-		return listingsCreated;
+	
+	History getHistory() {
+		return new History(ImmutableList.copyOf(purchases), ImmutableList.copyOf(sales), ImmutableList.copyOf(listingsCreated), ImmutableList.copyOf(listingsRemoved), latestRowId);
 	}
-
-	List<HistoryRow> getListingsRemoved() {
-		return listingsRemoved;
-	}
-
-	List<Purchase> getPurchases() {
-		return purchases;
-	}
-
-	List<Sale> getSales() {
-		return sales;
-	}
-
+	
 	int getTotalCount() {
 		return totalCount;
+	}
+	
+	boolean isFoundRowId() {
+		return foundRowId;
 	}
 
 	boolean isError() {

@@ -54,6 +54,6 @@ public class SteamHistoryService implements HistoryService {
 		} catch (IOException | RuntimeException | InterruptedException e) {
 			logger.error("Error getting data", e);
 		}
-		return new History(handle.getPurchases(), handle.getSales(), handle.getListingsCreated(), handle.getListingsRemoved());
+		return handle.getHistory();
 	}
 }

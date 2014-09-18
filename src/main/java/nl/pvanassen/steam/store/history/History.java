@@ -5,16 +5,17 @@ import java.util.List;
 public class History {
 	private final List<Purchase> purchases;
 	private final List<Sale> sales;
-	private final List<HistoryRow> listingsCreated;
-	private final List<HistoryRow> listingsRemoved;
+	private final List<ListingCreated> listingsCreated;
+	private final List<ListingRemoved> listingsRemoved;
+	private final String latestRowId;
 
-	History(List<Purchase> purchases, List<Sale> sales,
-			List<HistoryRow> listingsCreated, List<HistoryRow> listingsRemoved) {
+	History(List<Purchase> purchases, List<Sale> sales, List<ListingCreated> listingsCreated, List<ListingRemoved> listingsRemoved, String latestRowId) {
 		super();
 		this.purchases = purchases;
 		this.sales = sales;
 		this.listingsCreated = listingsCreated;
 		this.listingsRemoved = listingsRemoved;
+		this.latestRowId = latestRowId;
 	}
 
 	/**
@@ -34,14 +35,21 @@ public class History {
 	/**
 	 * @return the listingsCreated
 	 */
-	public List<HistoryRow> getListingsCreated() {
+	public List<ListingCreated> getListingsCreated() {
 		return listingsCreated;
 	}
 
 	/**
 	 * @return the listingsRemoved
 	 */
-	public List<HistoryRow> getListingsRemoved() {
+	public List<ListingRemoved> getListingsRemoved() {
 		return listingsRemoved;
+	}
+	
+	/**
+	 * @return The most recent row id parsed
+	 */
+	public String getLatestRowId() {
+		return latestRowId;
 	}
 }

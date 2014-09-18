@@ -8,13 +8,19 @@ public class Sale extends HistoryRow {
 	private final Item item;
 	private final int contextId;
 	private final String buyer;
+	private final String steamId1;
+	private final String steamId2;
 
-	Sale(String steamId, int appId, String urlName, int contextId, Date listed,
+	Sale(String rowName, int appId, String urlName, int contextId, Date listed,
 			Date acted, int price, String buyer) {
-		super(steamId, listed, acted, price);
+		super(rowName, listed, acted, price);
 		this.item = new HistoryItem(appId, urlName);
 		this.contextId = contextId;
 		this.buyer = buyer;
+		String idString = rowName.substring("history_row_".length());
+		String[] ids = idString.split("_");
+		steamId1 = ids[0];
+		steamId2 = ids[1];
 	}
 
 	/**
@@ -36,5 +42,13 @@ public class Sale extends HistoryRow {
 	 */
 	public Item getItem() {
 		return item;
+	}
+	
+	public String getSteamId1() {
+		return steamId1;
+	}
+	
+	public String getSteamId2() {
+		return steamId2;
 	}
 }
