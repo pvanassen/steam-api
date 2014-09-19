@@ -142,6 +142,7 @@ class HistoryHandle extends DefaultHandle {
 			NodeList nodeSet = (NodeList) HISTORY_ROW_XPATH.evaluate(fragment, XPathConstants.NODESET);
 			for (int i = 0; i < nodeSet.getLength(); i++) {
 				Node historyRow = nodeSet.item(i);
+				historyRow.getParentNode().removeChild(historyRow);
 				String rowName = historyRow.getAttributes().getNamedItem("id")
 						.getTextContent();
 				if (!savedFirstRowId) {
