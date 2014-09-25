@@ -37,6 +37,7 @@ public class HistoryHandleTest {
         for (Sale sale : sales) {
         	itemMap.put(sale.getSteamId1(), sale.getItem());
         }
+
         for (ListingCreated row : listingsCreated) {
         	for (Sale sale : sales) {
         		if (row.getSteamId1().equals(sale.getSteamId1())) {

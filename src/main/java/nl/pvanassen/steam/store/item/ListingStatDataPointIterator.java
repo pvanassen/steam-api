@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 class ListingStatDataPointIterator implements Iterator<StatDataPoint>, Iterable<StatDataPoint> {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH: Z", Locale.US);
     private StatDataPoint nextItem;
     private JsonNode priceHistory;
     private int nodePos = 0;
@@ -32,11 +32,10 @@ class ListingStatDataPointIterator implements Iterator<StatDataPoint>, Iterable<
         JsonNode item = priceHistory.get(nodePos++);
         String dateStr = item.get(0).asText();
         double average = item.get(1).asDouble() * 100;
-        String soldHour = item.get(2).asText();
-        int sales = Integer.valueOf(soldHour.substring(0, soldHour.length() - 5));
+        int sales = item.get(2).asInt();
         Date date;
         try {
-            date = dateFormat.parse(dateStr);
+            date = dateFormat.parse(dateStr + "000");
         }
         catch (ParseException e) {
             logger.error("Error parsing steam", e);
