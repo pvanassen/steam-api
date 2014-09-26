@@ -28,6 +28,7 @@ import nl.pvanassen.steam.store.listing.ListingService;
 import nl.pvanassen.steam.store.listing.SteamListingService;
 import nl.pvanassen.steam.store.login.LoginService;
 import nl.pvanassen.steam.store.login.SteamLoginService;
+import nl.pvanassen.steam.store.marketpage.AppIds;
 import nl.pvanassen.steam.store.marketpage.MarketPage;
 import nl.pvanassen.steam.store.marketpage.MarketPageService;
 import nl.pvanassen.steam.store.marketpage.SteamMarketPageService;
@@ -70,9 +71,9 @@ class SteamService implements StoreService {
      */
     SteamService(Http http, String username) {
         this.http = http;
+        appIds = AppIds.getAppids();
         loginService = new SteamLoginService(http);
         marketPageService = new SteamMarketPageService(http, username);
-        appIds = marketPageService.getAppIds();
         buyService = new SteamBuyService(http, username);
         buyOrderService = new SteamBuyOrderService(http, username);
         historyService = new SteamHistoryService(http);

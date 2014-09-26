@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
@@ -19,6 +18,7 @@ import org.apache.http.client.methods.AbstractExecutionAwareRequest;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.cookie.Cookie;
@@ -106,49 +106,7 @@ public class Http {
     public void get(String url, Handle handle) throws IOException {
         HttpGet httpget = new HttpGet(url);
         addHeaders(httpget, "http://steamcommunity.com/id/" + username + "/inventory/");
-
-        CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
-        CloseableHttpResponse response = null;
-        try {
-            connectionsToWatch.put(httpget, System.currentTimeMillis() + TIMEOUT);
-            response = httpclient.execute(httpget, context);
-            connectionsToWatch.remove(httpget);
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                InputStream instream = entity.getContent();
-                try {
-                    // Forbidden, 404, invalid request. Stop
-                    if (response.getStatusLine().getStatusCode() >= 400) {
-                        handle.handleError(instream);
-                    }
-                    else {
-                        handle.handle(instream);
-                    }
-                }
-                finally {
-                    IOUtils.closeQuietly(instream);
-                }
-            }
-        }
-        catch (HttpHostConnectException e) {
-            logger.warn("Steam doesn't like me. Slowing down and sleeping a bit");
-            try {
-                Thread.sleep(30000);
-            }
-            catch (InterruptedException e1) {
-                // No sleep, shutdown
-                return;
-            }
-            get(url, handle);
-        }
-        catch (ClientProtocolException e) {
-            logger.error("Error in protocol", e);
-            throw e;
-        }
-        finally {
-            IOUtils.closeQuietly(response);
-            IOUtils.closeQuietly(httpclient);
-        }
+        handleConnection(httpget, handle);
     }
 
     private void addHeaders(AbstractHttpMessage httpMessage, String referer) {
@@ -196,11 +154,6 @@ public class Http {
         HttpPost httpPost = new HttpPost(url);
         addHeaders(httpPost, referer);
         String sessionid = getSessionId();
-        StringBuilder cookieStr = new StringBuilder();
-        for (Cookie cookie : context.getCookieStore().getCookies()) {
-            cookieStr.append(cookie.getName()).append("=").append(cookie.getValue()).append("; ");
-        }
-        cookieStr.setLength(cookieStr.length() - 2);
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : params.entrySet()) {
             sb.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), "UTF-8")).append("&");
@@ -214,45 +167,7 @@ public class Http {
         }
         httpPost.setEntity(new StringEntity(sb.toString(), ContentType
                 .create("application/x-www-form-urlencoded", "UTF-8")));
-        httpPost.setHeader("Cookie", cookieStr.toString());
-        
-        StringBuilder curl = new StringBuilder();
-        curl.append("\ncurl '").append(httpPost.getURI().toString()).append("' \\\n");
-        for (Header header : httpPost.getAllHeaders()) {
-            curl.append("-H '").append(header.getName()).append(": ").append(header.getValue()).append("' \\\n");
-        }
-        curl.append("--data '").append(sb.toString()).append("'");
-        logger.info("\n" + curl.toString());
-        CloseableHttpClient httpclient = HttpClients.custom().build();
-        CloseableHttpResponse response = null;
-        try {
-            connectionsToWatch.put(httpPost, System.currentTimeMillis() + TIMEOUT);
-            response = httpclient.execute(httpPost);
-            connectionsToWatch.remove(httpPost);
-            HttpEntity entity = response.getEntity();
-            InputStream instream = entity.getContent();
-            // Forbidden, 404, invalid request. Stop
-            try {
-                if (response.getStatusLine().getStatusCode() >= 400) {
-                    handle.handleError(instream);
-                }
-                else {
-                    handle.handle(instream);
-                }
-            }
-            finally {
-                IOUtils.closeQuietly(instream);
-            }
-
-        }
-        catch (ClientProtocolException e) {
-            logger.error("Error in protocol", e);
-            throw e;
-        }
-        finally {
-            IOUtils.closeQuietly(response);
-            IOUtils.closeQuietly(httpclient);
-        }
+        handleConnection(httpPost, handle);
     }
     
     /**
@@ -307,4 +222,50 @@ public class Http {
         return null;
     }
     
+    private void handleConnection(HttpRequestBase httpget, Handle handle) throws IOException {
+        CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
+        CloseableHttpResponse response = null;
+        try {
+        	if (logger.isInfoEnabled()) {
+        		logger.info("Executing request with cookies: " + getCookies());
+        	}
+            connectionsToWatch.put(httpget, System.currentTimeMillis() + TIMEOUT);
+            response = httpclient.execute(httpget, context);
+            connectionsToWatch.remove(httpget);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                InputStream instream = entity.getContent();
+                try {
+                    // Forbidden, 404, invalid request. Stop
+                    if (response.getStatusLine().getStatusCode() >= 400) {
+                        handle.handleError(instream);
+                    }
+                    else {
+                        handle.handle(instream);
+                    }
+                }
+                finally {
+                    IOUtils.closeQuietly(instream);
+                }
+            }
+        }
+        catch (HttpHostConnectException e) {
+            logger.warn("Steam doesn't like me. Slowing down and sleeping a bit");
+            try {
+                Thread.sleep(30000);
+            }
+            catch (InterruptedException e1) {
+                // No sleep, shutdown
+                return;
+            }
+        }
+        catch (ClientProtocolException e) {
+            logger.error("Error in protocol", e);
+            throw e;
+        }
+        finally {
+            IOUtils.closeQuietly(response);
+            IOUtils.closeQuietly(httpclient);
+        }    
+    }
 }
