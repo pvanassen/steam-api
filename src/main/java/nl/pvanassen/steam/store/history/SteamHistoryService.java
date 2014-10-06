@@ -36,27 +36,26 @@ public class SteamHistoryService implements HistoryService {
 		logger.info("Getting history, up to " + lastSteamId);
 		HistoryHandle handle = new HistoryHandle(lastSteamId, objectMapper);
 		try {
-			int stepSize = 1000;
-			logger.info("Getting first batch of " + stepSize);
+			logger.info("Getting some data");
 			try {
-				http.get(
-						"http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count="
-								+ stepSize, handle);
+				http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=1", handle);
 			}
 			catch (IOException e) {
 				return getHistory(lastSteamId);
 			}
+			int stepSize = 1000;
 			if (handle.isError()) {
 				return getHistory(lastSteamId);
 			}
-			if (handle.isFoundRowId()) {
-				return handle.getHistory();
-			}
-			int totalCount = handle.getTotalCount();
+			// Added extra margin
+			int totalCount = handle.getTotalCount() + (stepSize / 2);
 			logger.info("Need to get a total of " + totalCount);
 			boolean error;
-			for (int start = stepSize; start < totalCount; start += stepSize) {
+			for (int start = totalCount - stepSize; start >= 0; start -= stepSize) {
 				do {
+					if (start < 0) {
+						start = 0;
+					}
 					error = false;
 					logger.info("Getting from " + start + ", with stepsize " + stepSize);
 					Thread.sleep(1000);
