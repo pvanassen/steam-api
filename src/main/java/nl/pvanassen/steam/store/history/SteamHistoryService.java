@@ -33,25 +33,47 @@ public class SteamHistoryService implements HistoryService {
 	
 	@Override
 	public History getHistory(String lastSteamId) {
+		logger.info("Getting history, up to " + lastSteamId);
 		HistoryHandle handle = new HistoryHandle(lastSteamId, objectMapper);
 		try {
-			int stepSize = 100;
-			http.get(
-					"http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count="
-							+ stepSize, handle);
+			int stepSize = 1000;
+			logger.info("Getting first batch of " + stepSize);
+			try {
+				http.get(
+						"http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count="
+								+ stepSize, handle);
+			}
+			catch (IOException e) {
+				return getHistory(lastSteamId);
+			}
 			if (handle.isError()) {
 				return getHistory(lastSteamId);
 			}
+			if (handle.isFoundRowId()) {
+				return handle.getHistory();
+			}
 			int totalCount = handle.getTotalCount();
+			logger.info("Need to get a total of " + totalCount);
+			boolean error;
 			for (int start = stepSize; start < totalCount; start += stepSize) {
 				do {
-					Thread.sleep(2000);
-					http.get(
-							"http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count="
-									+ stepSize + "&start=" + start, handle);
-				} while (handle.isError());
+					error = false;
+					logger.info("Getting from " + start + ", with stepsize " + stepSize);
+					Thread.sleep(1000);
+					try {
+						http.get(
+								"http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count="
+										+ stepSize + "&start=" + start, handle);
+						if (handle.isFoundRowId()) {
+							return handle.getHistory();
+						}
+					}
+					catch (IOException e) {
+						error = true;
+					}
+				} while (handle.isError() || error);
 			}
-		} catch (IOException | RuntimeException | InterruptedException e) {
+		} catch (RuntimeException | InterruptedException e) {
 			logger.error("Error getting data", e);
 		}
 		return handle.getHistory();

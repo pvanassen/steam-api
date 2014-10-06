@@ -6,6 +6,7 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -19,7 +20,6 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.helper.AmountHelper;
 import nl.pvanassen.steam.store.helper.UrlNameHelper;
@@ -120,6 +120,7 @@ class HistoryHandle extends DefaultHandle {
 	@Override
 	public void handle(InputStream stream) throws IOException {
 		error = false;
+		logger.info("Handling stream");
 		JsonNode node = om.readTree(stream);
 		totalCount = node.get("total_count").asInt();
 		String resultHtml = node.get("results_html").asText();
@@ -128,9 +129,11 @@ class HistoryHandle extends DefaultHandle {
 			error = true;
 			return;
 		}
-
 		DOMFragmentParser parser = new DOMFragmentParser();
 		HTMLDocument document = new HTMLDocumentImpl();
+		Calendar now = Calendar.getInstance();
+		Calendar actedCal = Calendar.getInstance();
+		Calendar listedCal = Calendar.getInstance();
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.US);
 			Map<String, Asset> assetMap = getAssetMap(node);
@@ -146,10 +149,11 @@ class HistoryHandle extends DefaultHandle {
 				String rowName = historyRow.getAttributes().getNamedItem("id")
 						.getTextContent();
 				if (!savedFirstRowId) {
-					this.latestRowId = rowName;
+					latestRowId = rowName;
 					savedFirstRowId = true;
 				}
-				if (rowName.equals(lastRowId)) {
+				if (rowName.toLowerCase().equals(lastRowId.toLowerCase())) {
+					logger.info("Found last row, stopping!");
 					foundRowId = true;
 					return;
 				}
@@ -194,33 +198,35 @@ class HistoryHandle extends DefaultHandle {
 						String actedStr = dates.item(1).getTextContent().trim();
 						acted = formatter.parse(actedStr);
 						listed = formatter.parse(listedStr);
+						actedCal.setTime(acted);
+						listedCal.setTime(listed);
+						setYear(now, actedCal);
+						setYear(now, listedCal);
+						acted = actedCal.getTime();
+						listed = listedCal.getTime();
 					}
 					int price = 0;
 					if (!"".equals(priceStr)) {
 						price = AmountHelper.getAmount(priceStr);
 					}
-					boolean added = false;
 					switch (status) {
 						case BOUGHT:
-							added = purchases.add(new Purchase(rowName, asset.appId,
+							purchases.add(new Purchase(rowName, asset.appId,
 									asset.urlName, asset.contextId, listed, acted,
 									price, buyer));
 							break;
 						case CREATED:
-							added = listingsCreated.add(new ListingCreated(rowName, listed,
+							listingsCreated.add(new ListingCreated(rowName, listed,
 									acted, price));
 							break;
 						case REMOVED:
-							added = listingsRemoved.add(new ListingRemoved(rowName, listed,
+							listingsRemoved.add(new ListingRemoved(rowName, listed,
 									acted, price));
 							break;
 						case SOLD:
-							added = sales.add(new Sale(rowName, asset.appId, asset.urlName,
+							sales.add(new Sale(rowName, asset.appId, asset.urlName,
 									asset.contextId, listed, acted, price, buyer));
 							break;
-					}
-					if (!added) {
-						throw new SteamException("Item not added, already present");
 					}
 				} catch (ParseException e) {
 					logger.error("Error parsing date", e);
@@ -228,6 +234,15 @@ class HistoryHandle extends DefaultHandle {
 			}
 		} catch (SAXException | XPathExpressionException e) {
 			logger.error("Error parsing html", e);
+		}
+	}
+
+	private void setYear(Calendar now, Calendar dateLess) {
+		if (dateLess.get(Calendar.MONTH) > now.get(Calendar.MONTH)) {
+			dateLess.set(Calendar.YEAR, now.get(Calendar.YEAR) - 1);
+		}
+		else {
+			dateLess.set(Calendar.YEAR, now.get(Calendar.YEAR));
 		}
 	}
 
