@@ -26,7 +26,7 @@ class BuyHandle extends DefaultHandle {
     public void handle(InputStream stream) throws IOException {
         JsonNode node = om.readTree(stream);
         JsonNode walletInfo = node.get("wallet_info");
-        if (walletInfo != null) {
+        if (walletInfo != null && walletInfo.get("wallet_balance") != null) {
             wallet = walletInfo.get("wallet_balance").asInt();
         }
     }
