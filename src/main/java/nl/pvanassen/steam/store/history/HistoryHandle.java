@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
@@ -41,8 +42,8 @@ import com.google.common.collect.ImmutableList;
 
 class HistoryHandle extends DefaultHandle {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	private final Set<Purchase> purchases = new LinkedHashSet<>();
-	private final Set<Sale> sales = new LinkedHashSet<>();
+	private final Set<Purchase> purchases = new HashSet<>();
+	private final Set<Sale> sales = new HashSet<>();
 	private final Set<ListingCreated> listingsCreated = new LinkedHashSet<>();
 	private final Set<ListingRemoved> listingsRemoved = new LinkedHashSet<>();
 	private final ObjectMapper om;
@@ -271,10 +272,6 @@ class HistoryHandle extends DefaultHandle {
 		for (String hoverStr : hovers.split(";")) {
 			String hover = hoverStr.trim();
 			if (hover.startsWith("CreateItemHoverFromContainer")) {
-				// CreateItemHoverFromContainer( g_rgAssets,
-				// 'history_row_2853334817499652196_2853334817499652205_name',
-				// 753, '6',
-				// '619156810', 0 );
 				String[] items = hover.replaceAll("'", "").split(",");
 				String id = items[4].trim();
 				String rowName = items[1].trim();

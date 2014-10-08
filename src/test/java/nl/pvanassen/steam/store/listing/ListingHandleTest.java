@@ -47,7 +47,6 @@ public class ListingHandleTest {
 		assertEquals(730, listings.get(9).getPublisherFeeApp());
 		assertEquals("2854460461479367720", listings.get(9).getListingId());
 		assertEquals(1, listings.get(9).getSteamFee());
-		assertEquals("76561197971150314", listings.get(9).getSteamIdLister());
 		assertEquals(16, listings.get(9).getSubTotal());
 	}
 

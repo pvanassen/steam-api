@@ -47,14 +47,13 @@ public class ListingItemIterator implements Iterator<Listing>, Iterable<Listing>
                 return getNextItem();
             }
             String listingId = item.get("listingid").asText();
-            String steamIdListing = item.get("steamid_lister").asText();
             int convertedPrice = item.get("converted_price").asInt();
             int convertedFee = item.get("converted_fee").asInt();
             int convertedSteamFee = item.get("converted_steam_fee").asInt();
             int convertedPublisherFee = item.get("converted_publisher_fee").asInt();
             int publisherFeeApp = item.get("publisher_fee_app").asInt();
             double publisherFeePercent = item.get("publisher_fee_percent").asDouble();
-            return new Listing(appId, urlName, listingId, steamIdListing, convertedPrice, convertedFee,
+            return new Listing(appId, urlName, listingId, convertedPrice, convertedFee,
                     convertedSteamFee, convertedPublisherFee, publisherFeeApp, publisherFeePercent, "--");
         }
         catch (RuntimeException e) {

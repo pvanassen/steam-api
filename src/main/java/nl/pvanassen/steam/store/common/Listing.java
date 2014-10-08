@@ -11,8 +11,6 @@ public class Listing extends Item {
 
     private final String listingId;
 
-    private final String steamIdLister;
-
     private final int subTotal;
 
     private final int fee;
@@ -29,11 +27,10 @@ public class Listing extends Item {
 
     private final Date createdDate = new Date();
 
-    public Listing(int appId, String urlName, String listingId, String steamIdLister, int subTotal, int fee,
+    public Listing(int appId, String urlName, String listingId, int subTotal, int fee,
             int steamFee, int publisherFee, int publisherFeeApp, double publisherFeePercent, String country) {
         super(appId, urlName);
         this.listingId = listingId;
-        this.steamIdLister = steamIdLister;
         this.subTotal = subTotal;
         this.fee = fee;
         this.steamFee = steamFee;
@@ -86,13 +83,6 @@ public class Listing extends Item {
     }
 
     /**
-     * @return the steamIdLister
-     */
-    public String getSteamIdLister() {
-        return steamIdLister;
-    }
-
-    /**
      * @return the subTotal
      */
     public int getSubTotal() {
@@ -107,7 +97,7 @@ public class Listing extends Item {
     @Override
     public String toString() {
         return "Listing [appId=" + getAppId() + ", urlName=" + getUrlName() + ", listingId=" + listingId +
-               ", steamIdLister=" + steamIdLister + ", subTotal=" + subTotal + ", fee=" + fee + ", steamFee=" +
+               ", subTotal=" + subTotal + ", fee=" + fee + ", steamFee=" +
                steamFee + ", publisherFee=" + publisherFee + ", publisherFeeApp=" + publisherFeeApp +
                ", publisherFeePercent=" + publisherFeePercent + ", country=" + country + "]";
     }
