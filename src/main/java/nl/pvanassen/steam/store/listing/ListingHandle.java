@@ -55,4 +55,11 @@ class ListingHandle extends DefaultHandle
             }
         }
     }
+    
+    @Override
+    public void handleError(InputStream stream) throws IOException
+    {
+        // Ignore errors
+        return;
+    }
 }
