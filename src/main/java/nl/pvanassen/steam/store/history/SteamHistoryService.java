@@ -41,10 +41,12 @@ public class SteamHistoryService implements HistoryService {
 				http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=1", handle);
 			}
 			catch (IOException e) {
+			    logger.error("IO error", e);
 				return getHistory(lastSteamId);
 			}
 			int stepSize = 1000;
 			if (handle.isError()) {
+			    logger.error("Error in handle");
 				return getHistory(lastSteamId);
 			}
 			// Added extra margin
@@ -68,6 +70,7 @@ public class SteamHistoryService implements HistoryService {
 						}
 					}
 					catch (IOException e) {
+					    logger.error("IOError", e);
 						error = true;
 					}
 				} while (handle.isError() || error);
