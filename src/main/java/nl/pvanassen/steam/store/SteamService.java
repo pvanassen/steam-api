@@ -37,6 +37,7 @@ import nl.pvanassen.steam.store.remove.SteamRemoveService;
 import nl.pvanassen.steam.store.sell.SellService;
 import nl.pvanassen.steam.store.sell.SteamSellService;
 import nl.pvanassen.steam.store.tradeoffer.SteamTradeofferService;
+import nl.pvanassen.steam.store.tradeoffer.Tradeoffer;
 import nl.pvanassen.steam.store.tradeoffer.TradeofferService;
 
 import com.google.common.base.Optional;
@@ -180,6 +181,19 @@ class SteamService implements StoreService {
     public int makeTradeOffer(long partner, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message) {
         return tradeofferService.makeTradeOffer(partner, me, them, message);
     }
+    
+    @Override
+    public List<Tradeoffer> getTradeOffers()
+    {
+        return tradeofferService.getTradeOffers();
+    }
+    
+    @Override
+    public void acceptTradeOffer(Tradeoffer tradeoffer)
+    {
+        tradeofferService.acceptTradeOffer(tradeoffer);
+    }
+    
 
     @Override
     public void cancelBuyOrder(String id) {

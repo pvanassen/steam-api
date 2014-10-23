@@ -14,6 +14,7 @@ import nl.pvanassen.steam.store.item.StatDataPoint;
 import nl.pvanassen.steam.store.listing.ListingDeque;
 import nl.pvanassen.steam.store.login.LoginService;
 import nl.pvanassen.steam.store.marketpage.MarketPage;
+import nl.pvanassen.steam.store.tradeoffer.Tradeoffer;
 
 import com.google.common.base.Optional;
 
@@ -157,6 +158,14 @@ public interface StoreService {
      * @return The trade offer id
      */
     int makeTradeOffer(long partner, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message);
+    
+    /**
+     * @return A list of trade offers
+     */
+    List<Tradeoffer> getTradeOffers();
+    
+    void acceptTradeOffer(Tradeoffer tradeoffer);
+
     
     String createBuyOrder(Item item, int currencyId, int priceTotal, int quantity);
     
