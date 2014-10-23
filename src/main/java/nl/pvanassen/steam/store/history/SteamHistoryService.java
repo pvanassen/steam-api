@@ -33,6 +33,7 @@ public class SteamHistoryService implements HistoryService {
 	
 	@Override
 	public History getHistory(String lastSteamId) {
+	    OptimumStepSize optimumStepSize = new OptimumStepSize();
 		logger.info("Getting history, up to " + lastSteamId);
 		HistoryHandle handle = new HistoryHandle(lastSteamId, objectMapper);
 		try {
@@ -44,7 +45,7 @@ public class SteamHistoryService implements HistoryService {
 			    logger.error("IO error", e);
 				return getHistory(lastSteamId);
 			}
-			int stepSize = 1000;
+			int stepSize = 10;
 			if (handle.isError()) {
 			    logger.error("Error in handle");
 				return getHistory(lastSteamId);
@@ -58,6 +59,7 @@ public class SteamHistoryService implements HistoryService {
 					if (start < 0) {
 						start = 0;
 					}
+					stepSize = optimumStepSize.getStepSize();
 					error = false;
 					logger.info("Getting from " + start + ", with stepsize " + stepSize);
 					Thread.sleep(1000);
@@ -68,8 +70,15 @@ public class SteamHistoryService implements HistoryService {
 						if (handle.isFoundRowId()) {
 							return handle.getHistory();
 						}
+						if (handle.isError()) {
+	                        optimumStepSize.error();
+						}
+						else {
+						    optimumStepSize.success();
+						}
 					}
 					catch (IOException e) {
+					    optimumStepSize.error();
 					    logger.error("IOError", e);
 						error = true;
 					}
