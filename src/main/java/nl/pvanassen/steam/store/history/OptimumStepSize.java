@@ -12,13 +12,21 @@ class OptimumStepSize {
     
     void error() {
         errorCount.add(stepSize);
-        stepSize = stepSize / 2;
+        stepSize = stepSize - Math.max((int)(stepSize * 0.15d), 2);
+        if (stepSize < 10) {
+            stepSize = 10;
+        }
         success = false;
     }
     
     void success() {
         successCount.add(stepSize);
-        stepSize = stepSize + 10;
+        if (stepSize < 1000) {
+            stepSize = stepSize + Math.max((int)(stepSize * 0.10d), 2);
+        }
+        if (stepSize > 1000) {
+            stepSize = 1000;
+        }
         success = true;
     }
     

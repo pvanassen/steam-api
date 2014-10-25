@@ -33,6 +33,7 @@ public class SteamHistoryService implements HistoryService {
 	
 	@Override
 	public History getHistory(String lastSteamId) {
+	    long startTime = System.currentTimeMillis();
 	    OptimumStepSize optimumStepSize = new OptimumStepSize();
 		logger.info("Getting history, up to " + lastSteamId);
 		HistoryHandle handle = new HistoryHandle(lastSteamId, objectMapper);
@@ -54,7 +55,7 @@ public class SteamHistoryService implements HistoryService {
 			int totalCount = handle.getTotalCount() + (stepSize / 2);
 			logger.info("Need to get a total of " + totalCount);
 			boolean error;
-			for (int start = totalCount - stepSize; start >= 0; start -= stepSize) {
+			for (int start = 0; start <= totalCount; start += stepSize) {
 				do {
 					if (start < 0) {
 						start = 0;
@@ -62,7 +63,6 @@ public class SteamHistoryService implements HistoryService {
 					stepSize = optimumStepSize.getStepSize();
 					error = false;
 					logger.info("Getting from " + start + ", with stepsize " + stepSize);
-					Thread.sleep(1000);
 					try {
 						http.get(
 								"http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count="
@@ -79,9 +79,13 @@ public class SteamHistoryService implements HistoryService {
 					}
 					catch (IOException e) {
 					    optimumStepSize.error();
-					    logger.error("IOError", e);
+					    logger.error("IO Exception. Retrying");
+					    Thread.sleep(500);
 						error = true;
 					}
+					long timePast = System.currentTimeMillis() - startTime;
+					double itemsPerTime = (totalCount - start) / (double)timePast;
+					logger.info("Doing " + itemsPerTime + " per " + timePast + ", expected " + (itemsPerTime * start));
 				} while (handle.isError() || error);
 			}
 		} catch (RuntimeException | InterruptedException e) {

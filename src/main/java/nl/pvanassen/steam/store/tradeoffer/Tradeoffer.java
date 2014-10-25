@@ -34,4 +34,9 @@ public class Tradeoffer {
 	public String getPartnerId() {
 		return partnerId;
 	}
+
+    @Override
+    public String toString() {
+        return "Tradeoffer [partnerId=" + partnerId + ", offerId=" + offerId + ", comment=" + comment + ", items=" + items + "]";
+    }
 }
