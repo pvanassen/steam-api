@@ -10,25 +10,25 @@ public class OptimumStepSizeTest {
     public void test() {
         OptimumStepSize optimumStepSize = new OptimumStepSize();
         optimumStepSize.error();
-        assertEquals(500, optimumStepSize.getStepSize());
+        assertEquals(850, optimumStepSize.getStepSize());
         optimumStepSize.error();
-        assertEquals(250, optimumStepSize.getStepSize());
+        assertEquals(723, optimumStepSize.getStepSize());
         optimumStepSize.error();
-        assertEquals(125, optimumStepSize.getStepSize());
+        assertEquals(615, optimumStepSize.getStepSize());
         optimumStepSize.success();
-        assertEquals(135, optimumStepSize.getStepSize());
+        assertEquals(676, optimumStepSize.getStepSize());
         optimumStepSize.success();
-        assertEquals(145, optimumStepSize.getStepSize());
+        assertEquals(743, optimumStepSize.getStepSize());
         optimumStepSize.success();
-        assertEquals(155, optimumStepSize.getStepSize());
+        assertEquals(817, optimumStepSize.getStepSize());
         optimumStepSize.error();
-        assertEquals(77, optimumStepSize.getStepSize());
+        assertEquals(695, optimumStepSize.getStepSize());
         optimumStepSize.success();
-        assertEquals(87, optimumStepSize.getStepSize());
+        assertEquals(764, optimumStepSize.getStepSize());
         optimumStepSize.success();
-        assertEquals(97, optimumStepSize.getStepSize());
+        assertEquals(840, optimumStepSize.getStepSize());
         optimumStepSize.success();
-        assertEquals(107, optimumStepSize.getStepSize());
+        assertEquals(924, optimumStepSize.getStepSize());
     }
 
 }
