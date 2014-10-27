@@ -6,6 +6,7 @@ import nl.pvanassen.steam.store.common.Item;
 
 /**
  * Item listed in the market
+ * 
  * @author Paul van Assen
  *
  */
@@ -16,7 +17,7 @@ public class OutstandingItem extends Item {
     private final int contextId;
     private final int price;
     private final Date listedSince;
-    
+
     OutstandingItem(int appId, String urlName, String listingId, String itemId, int contextId, int price, Date listedSince) {
         super(appId, urlName);
         this.listingId = listingId;
@@ -27,10 +28,10 @@ public class OutstandingItem extends Item {
     }
 
     /**
-     * @return The listing ID
+     * @return Context id
      */
-    public String getListingId() {
-        return listingId;
+    public int getContextId() {
+        return contextId;
     }
 
     /**
@@ -41,10 +42,17 @@ public class OutstandingItem extends Item {
     }
 
     /**
-     * @return Context id
+     * @return Listed since date
      */
-    public int getContextId() {
-        return contextId;
+    public Date getListedSince() {
+        return listedSince;
+    }
+
+    /**
+     * @return The listing ID
+     */
+    public String getListingId() {
+        return listingId;
     }
 
     /**
@@ -53,11 +61,4 @@ public class OutstandingItem extends Item {
     public int getPrice() {
         return price;
     }
-
-    /**
-     * @return Listed since date
-     */
-    public Date getListedSince() {
-		return listedSince;
-	}
 }

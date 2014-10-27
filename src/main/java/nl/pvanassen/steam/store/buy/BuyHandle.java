@@ -9,14 +9,18 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 class BuyHandle extends DefaultHandle {
-	private final ObjectMapper om;
+    private final ObjectMapper om;
     private int wallet;
     private boolean error = false;
     private String message;
-    
+
     BuyHandle(ObjectMapper objectMapper) {
-		this.om = objectMapper;
-	}
+        om = objectMapper;
+    }
+
+    String getMessage() {
+        return message;
+    }
 
     int getWallet() {
         return wallet;
@@ -26,7 +30,7 @@ class BuyHandle extends DefaultHandle {
     public void handle(InputStream stream) throws IOException {
         JsonNode node = om.readTree(stream);
         JsonNode walletInfo = node.get("wallet_info");
-        if (walletInfo != null && walletInfo.get("wallet_balance") != null) {
+        if ((walletInfo != null) && (walletInfo.get("wallet_balance") != null)) {
             wallet = walletInfo.get("wallet_balance").asInt();
         }
     }
@@ -49,9 +53,5 @@ class BuyHandle extends DefaultHandle {
 
     boolean isError() {
         return error;
-    }
-
-    String getMessage() {
-        return message;
     }
 }

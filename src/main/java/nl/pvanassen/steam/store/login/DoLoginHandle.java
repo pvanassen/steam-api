@@ -21,7 +21,7 @@ class DoLoginHandle extends DefaultHandle {
     private String emailDomain;
 
     private String emailSteamId;
-    
+
     private boolean captchaNeeded;
 
     private String captchaGid;
@@ -30,12 +30,28 @@ class DoLoginHandle extends DefaultHandle {
         this.objectMapper = objectMapper;
     }
 
+    String getCaptchaGid() {
+        return captchaGid;
+    }
+
+    String getEmailDomain() {
+        return emailDomain;
+    }
+
+    String getEmailSteamId() {
+        return emailSteamId;
+    }
+
+    String getMessage() {
+        return message;
+    }
+
     @Override
     public void handle(InputStream stream) throws IOException {
         JsonNode node = objectMapper.readTree(stream);
         success = node.get("success").asBoolean();
         if (node.get("message") != null) {
-        	message = node.get("message").asText();
+            message = node.get("message").asText();
         }
         if (node.get("captcha_needed") != null) {
             captchaNeeded = node.get("captcha_needed").asBoolean();
@@ -48,31 +64,15 @@ class DoLoginHandle extends DefaultHandle {
         }
     }
 
-    boolean isSuccess() {
-        return success;
-    }
-
-    String getMessage() {
-        return message;
+    boolean isCaptchaNeeded() {
+        return captchaNeeded;
     }
 
     boolean isEmailAuthNeeded() {
         return emailAuthNeeded;
     }
 
-    String getEmailDomain() {
-        return emailDomain;
-    }
-
-    String getEmailSteamId() {
-        return emailSteamId;
-    }
-
-    boolean isCaptchaNeeded() {
-        return captchaNeeded;
-    }
-    
-    String getCaptchaGid() {
-        return captchaGid;
+    boolean isSuccess() {
+        return success;
     }
 }

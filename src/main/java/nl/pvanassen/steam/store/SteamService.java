@@ -44,11 +44,11 @@ import com.google.common.base.Optional;
 
 /**
  * Interface to the steam store
- * 
+ *
  * @author Paul van Assen
  */
 class SteamService implements StoreService {
-//    private final Logger logger = LoggerFactory.getLogger(getClass());
+    // private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Http http;
     private final Set<Integer> appIds;
     private final BuyService buyService;
@@ -62,13 +62,10 @@ class SteamService implements StoreService {
     private final SellService sellService;
     private final TradeofferService tradeofferService;
     private final RemoveService removeService;
-    
-    SteamService(String cookies, String username) {
-        this(Http.getInstance(cookies, username), username);
-    }
 
     /**
-     * @param http For mocking
+     * @param http
+     *            For mocking
      */
     SteamService(Http http, String username) {
         this.http = http;
@@ -86,80 +83,53 @@ class SteamService implements StoreService {
         inventoryService = new SteamInventoryService(http, username, appIds);
     }
 
+    SteamService(String cookies, String username) {
+        this(Http.getInstance(cookies, username), username);
+    }
+
+    @Override
+    public void acceptTradeOffer(Tradeoffer tradeoffer) {
+        tradeofferService.acceptTradeOffer(tradeoffer);
+    }
+
     @Override
     public BuyResult buy(String listingId, int fee, int subTotal) {
-    	return buyService.buy(new BuyOrder(0, "", listingId, subTotal, fee));
+        return buyService.buy(new BuyOrder(0, "", listingId, subTotal, fee));
+    }
+
+    @Override
+    public void cancelBuyOrder(String id) {
+        buyOrderService.cancelBuyOrder(id);
+    }
+
+    @Override
+    public String createBuyOrder(Item item, int currencyId, int priceTotal, int quantity) {
+        return buyOrderService.createBuyOrder(item, currencyId, priceTotal, quantity);
     }
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see nl.pvanassen.steam.store.StoreService#getAllItems(nl.pvanassen.steam.store.GenericHandle)
      */
     @Override
     public void getAllItems(GenericHandle<OverviewItem> genericHandle) {
         itemService.getAllItems(genericHandle);
     }
-    
-    @Override
-    public List<InventoryItem> getInventory() {
-        return inventoryService.getInventory();
-    }
 
     @Override
-    public List<InventoryItem> getInventory(String username) {
-        return inventoryService.getInventory(username);
-    }
-    
-    @Override
-    public List<InventoryItem> getInventory(int appId) {
-        return inventoryService.getInventory(appId);
-    }
-    
-    @Override
-    public List<InventoryItem> getInventory(String username, int appId) {
-        return inventoryService.getInventory(username, appId);
-    }
-
-    @Override
-    public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle,
-            GenericHandle<Listing> listingHandle) {
-    	itemService.getItem(appId, urlName, dataPointHandle, listingHandle);
-    }
-    
-    @Override
-    public List<Listing> getNewlyListed(int currency, String country) {
-    	return listingService.getNewlyListed(currency, country);
+    public Set<Integer> getAppIds() {
+        return marketPageService.getAppIds();
     }
 
     @Override
     public void getAsyncNewlyListed(int currency, String country, ListingDeque queue) {
-    	listingService.getAsyncNewlyListed(currency, country, queue);
+        listingService.getAsyncNewlyListed(currency, country, queue);
     }
 
     @Override
-    public void sell(String assetId, int appId, String urlName, int contextId, int price) {
-    	sellService.sell(assetId, appId, urlName, contextId, price);
-    }
-
-    @Override
-    public boolean removeListing(String listingId) {
-    	return removeService.removeListing(listingId);
-    }
-    
-    @Override
-    public History getHistory(String lastSteamId) {
-    	return historyService.getHistory(lastSteamId);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see nl.pvanassen.steam.store.StoreService#getOutstandings()
-     */
-    @Override
-    public MarketPage getOutstandings() {
-    	return marketPageService.getOutstandings();
+    public BuyOrderStatus getBuyOrderStatus(String buyOrderId) {
+        return buyOrderService.getBuyOrderStatus(buyOrderId);
     }
 
     /**
@@ -171,43 +141,35 @@ class SteamService implements StoreService {
     public String getCookies() {
         return http.getCookies();
     }
-    
-    @Override
-    public Set<Integer> getAppIds() {
-        return marketPageService.getAppIds();
-    }
-    
-    @Override
-    public int makeTradeOffer(long partner, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message) {
-        return tradeofferService.makeTradeOffer(partner, me, them, message);
-    }
-    
-    @Override
-    public List<Tradeoffer> getTradeOffers()
-    {
-        return tradeofferService.getTradeOffers();
-    }
-    
-    @Override
-    public void acceptTradeOffer(Tradeoffer tradeoffer)
-    {
-        tradeofferService.acceptTradeOffer(tradeoffer);
-    }
-    
 
     @Override
-    public void cancelBuyOrder(String id) {
-    	buyOrderService.cancelBuyOrder(id);
+    public History getHistory(String lastSteamId) {
+        return historyService.getHistory(lastSteamId);
     }
-    
+
     @Override
-    public String createBuyOrder(Item item, int currencyId, int priceTotal, int quantity) {
-    	return buyOrderService.createBuyOrder(item, currencyId, priceTotal, quantity);
+    public List<InventoryItem> getInventory() {
+        return inventoryService.getInventory();
     }
-    
+
     @Override
-    public BuyOrderStatus getBuyOrderStatus(String buyOrderId) {
-    	return buyOrderService.getBuyOrderStatus(buyOrderId);
+    public List<InventoryItem> getInventory(int appId) {
+        return inventoryService.getInventory(appId);
+    }
+
+    @Override
+    public List<InventoryItem> getInventory(String username) {
+        return inventoryService.getInventory(username);
+    }
+
+    @Override
+    public List<InventoryItem> getInventory(String username, int appId) {
+        return inventoryService.getInventory(username, appId);
+    }
+
+    @Override
+    public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle) {
+        itemService.getItem(appId, urlName, dataPointHandle, listingHandle);
     }
 
     /**
@@ -215,6 +177,41 @@ class SteamService implements StoreService {
      */
     @Override
     public LoginService getLoginService() {
-    	return loginService;
+        return loginService;
+    }
+
+    @Override
+    public List<Listing> getNewlyListed(int currency, String country) {
+        return listingService.getNewlyListed(currency, country);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getOutstandings()
+     */
+    @Override
+    public MarketPage getOutstandings() {
+        return marketPageService.getOutstandings();
+    }
+
+    @Override
+    public List<Tradeoffer> getTradeOffers() {
+        return tradeofferService.getTradeOffers();
+    }
+
+    @Override
+    public int makeTradeOffer(long partner, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message) {
+        return tradeofferService.makeTradeOffer(partner, me, them, message);
+    }
+
+    @Override
+    public boolean removeListing(String listingId) {
+        return removeService.removeListing(listingId);
+    }
+
+    @Override
+    public void sell(String assetId, int appId, String urlName, int contextId, int price) {
+        sellService.sell(assetId, appId, urlName, contextId, price);
     }
 }

@@ -20,15 +20,6 @@ class GetRSAHandle extends DefaultHandle {
         this.objectMapper = objectMapper;
     }
 
-    @Override
-    public void handle(InputStream stream) throws IOException {
-        JsonNode node = objectMapper.readTree(stream);
-        success = node.get("success").asBoolean();
-        publicKeyMod = node.get("publickey_mod").asText();
-        publicKeyExp = node.get("publickey_exp").asText();
-        timestamp = node.get("timestamp").asLong();
-    }
-
     String getPublicKeyExp() {
         return publicKeyExp;
     }
@@ -39,6 +30,15 @@ class GetRSAHandle extends DefaultHandle {
 
     long getTimestamp() {
         return timestamp;
+    }
+
+    @Override
+    public void handle(InputStream stream) throws IOException {
+        JsonNode node = objectMapper.readTree(stream);
+        success = node.get("success").asBoolean();
+        publicKeyMod = node.get("publickey_mod").asText();
+        publicKeyExp = node.get("publickey_exp").asText();
+        timestamp = node.get("timestamp").asLong();
     }
 
     boolean isSuccess() {

@@ -3,17 +3,15 @@ package nl.pvanassen.steam.http;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.io.ByteSource;
 import com.google.common.io.ByteStreams;
 
 /**
  * Default stream handle that outputs the stream to the log
- * 
+ *
  * @author Paul van Assen
  */
 public class DefaultHandle implements Handle {

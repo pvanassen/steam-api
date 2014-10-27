@@ -6,17 +6,17 @@ import java.util.Map;
 
 /**
  * Store factory for getting an instance
- * 
+ *
  * @author Paul van Assen
  */
 public class StoreFactory {
-    private static final Map<WeakReference<String>, WeakReference<SteamService>> CACHE_MAP = new HashMap<>();
-
     /**
      * Factory method for getting a store instance
-     * 
-     * @param cookies Cookies to use
-     * @param username Username for the referral
+     *
+     * @param cookies
+     *            Cookies to use
+     * @param username
+     *            Username for the referral
      * @return Instance of the store service
      */
     public static StoreService getSteamStore(String cookies, String username) {
@@ -31,4 +31,6 @@ public class StoreFactory {
             return service.get();
         }
     }
+
+    private static final Map<WeakReference<String>, WeakReference<SteamService>> CACHE_MAP = new HashMap<>();
 }

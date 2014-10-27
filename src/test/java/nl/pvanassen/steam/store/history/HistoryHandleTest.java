@@ -14,7 +14,33 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 
 public class HistoryHandleTest {
-	@Test
+    static class Action {
+        private final String action;
+        private final int price;
+        private final Date date;
+
+        Action(String action, int price, Date date) {
+            super();
+            this.action = action;
+            this.price = price;
+            this.date = date;
+        }
+
+        String getAction() {
+            return action;
+        }
+
+        Date getDate() {
+            return date;
+        }
+
+        int getPrice() {
+            return price;
+        }
+
+    }
+
+    @Test
     public void testHandle() throws IOException {
         HistoryHandle handle = new HistoryHandle(null, new ObjectMapper());
         handle.handle(getClass().getResourceAsStream("/markethistory.json"));
@@ -35,84 +61,54 @@ public class HistoryHandleTest {
         // 4. Map listing created + removed to purchased
         Map<String, Item> itemMap = new HashMap<>();
         for (Sale sale : sales) {
-        	itemMap.put(sale.getSteamId1(), sale.getItem());
+            itemMap.put(sale.getSteamId1(), sale.getItem());
         }
 
         for (ListingCreated row : listingsCreated) {
-        	for (Sale sale : sales) {
-        		if (row.getSteamId1().equals(sale.getSteamId1())) {
-        			System.out.println("Sale match id1");
-        		}
-        		if (row.getSteamId1().equals(sale.getSteamId2())) {
-        			System.out.println("Sale match id2");
-        		}
-        	}
-        	for (ListingRemoved listingRemoved : listingsRemoved) {
-        		if (row.getSteamId1().equals(listingRemoved.getSteamId1())) {
-        			System.out.println("ListingRemoved match id1");
-        		}
-        	}
-        	for (Purchase purchase : purchases) {
-        		if (row.getSteamId1().equals(purchase.getSteamId1())) {
-        			System.out.println("Purchase match id1");
-        		}
-        		if (row.getSteamId1().equals(purchase.getSteamId2())) {
-        			System.out.println("Purchase match id2");
-        		}
-        	}
+            for (Sale sale : sales) {
+                if (row.getSteamId1().equals(sale.getSteamId1())) {
+                    System.out.println("Sale match id1");
+                }
+                if (row.getSteamId1().equals(sale.getSteamId2())) {
+                    System.out.println("Sale match id2");
+                }
+            }
+            for (ListingRemoved listingRemoved : listingsRemoved) {
+                if (row.getSteamId1().equals(listingRemoved.getSteamId1())) {
+                    System.out.println("ListingRemoved match id1");
+                }
+            }
+            for (Purchase purchase : purchases) {
+                if (row.getSteamId1().equals(purchase.getSteamId1())) {
+                    System.out.println("Purchase match id1");
+                }
+                if (row.getSteamId1().equals(purchase.getSteamId2())) {
+                    System.out.println("Purchase match id2");
+                }
+            }
         }
         /**
-        Map<Item,HistoryRow> createdItemØMapping = Maps.uniqueIndex(listingsCreated, new Function<HistoryRow, Item>() {
-        	@Override
-        	public Item apply(HistoryRow row) {
-        		return row.
-        	}
-        });
-
-        Map<String,HistoryRow> createdMapping = Maps.uniqueIndex(listingsCreated, new Function<HistoryRow, String>() {
-        	@Override
-        	public String apply(HistoryRow row) {
-        		return row.getSteamId();
-        	}
-        });
-        Map<String,HistoryRow> removedMapping = Maps.uniqueIndex(listingsCreated, new Function<HistoryRow, String>() {
-        	@Override
-        	public String apply(HistoryRow row) {
-        		return row.getSteamId();
-        	}
-        });
-        Map<String,Sale> soldMapping = Maps.uniqueIndex(sales, new Function<Sale, String>() {
-        	@Override
-        	public String apply(Sale row) {
-        		return row.getSteamId();
-        	}
-        });
-
-        Map<Purchase,List<Action>> actionMap = new HashMap<>();
-        for (Purchase purchase : purchases) {
-        	// Find first listing created based on the same item
-        }*/
+         * Map<Item,HistoryRow> createdItemØMapping =
+         * Maps.uniqueIndex(listingsCreated, new Function<HistoryRow, Item>() {
+         * 
+         * @Override public Item apply(HistoryRow row) { return row. } });
+         * 
+         *           Map<String,HistoryRow> createdMapping =
+         *           Maps.uniqueIndex(listingsCreated, new Function<HistoryRow,
+         *           String>() {
+         * @Override public String apply(HistoryRow row) { return
+         *           row.getSteamId(); } }); Map<String,HistoryRow>
+         *           removedMapping = Maps.uniqueIndex(listingsCreated, new
+         *           Function<HistoryRow, String>() {
+         * @Override public String apply(HistoryRow row) { return
+         *           row.getSteamId(); } }); Map<String,Sale> soldMapping =
+         *           Maps.uniqueIndex(sales, new Function<Sale, String>() {
+         * @Override public String apply(Sale row) { return row.getSteamId(); }
+         *           });
+         * 
+         *           Map<Purchase,List<Action>> actionMap = new HashMap<>(); for
+         *           (Purchase purchase : purchases) { // Find first listing
+         *           created based on the same item }
+         */
     }
-	
-	static class Action {
-		private final String action;
-		private final int price;
-		private final Date date;
-		Action(String action, int price, Date date) {
-			super();
-			this.action = action;
-			this.price = price;
-			this.date = date;
-		}
-		String getAction() {
-			return action;
-		}
-		int getPrice() {
-			return price;
-		}
-		Date getDate() {
-			return date;
-		}
-		
-	}
 }

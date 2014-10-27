@@ -17,25 +17,26 @@ public class SteamBuyService implements BuyService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Http http;
     private final String username;
-    
-    public SteamBuyService(String cookies, String username) {
-        http = Http.getInstance(cookies, username);
-        this.username = username;
-    }
 
     /**
-     * @param http For mocking
+     * @param http
+     *            For mocking
      */
     public SteamBuyService(Http http, String username) {
         this.http = http;
         this.username = username;
     }
-    
+
+    public SteamBuyService(String cookies, String username) {
+        http = Http.getInstance(cookies, username);
+        this.username = username;
+    }
+
     @Override
     public BuyResult buy(BuyOrder buyOrder) {
-    	int fee = buyOrder.getFee();
-    	int subTotal = buyOrder.getPrice();
-    	String listingId = buyOrder.getListingId();
+        int fee = buyOrder.getFee();
+        int subTotal = buyOrder.getPrice();
+        String listingId = buyOrder.getListingId();
         Map<String, String> params = new HashMap<>();
         params.put("currency", "3");
         params.put("fee", Integer.toString(fee));

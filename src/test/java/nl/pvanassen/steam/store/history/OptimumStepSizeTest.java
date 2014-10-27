@@ -1,6 +1,6 @@
 package nl.pvanassen.steam.store.history;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package nl.pvanassen.steam.store.remove;
 
@@ -8,11 +8,12 @@ package nl.pvanassen.steam.store.remove;
  *
  */
 public interface RemoveService {
-    
+
     /**
      * Remove an active listing
-     * 
-     * @param listingId Listing to remove
+     *
+     * @param listingId
+     *            Listing to remove
      * @return True if succesful removed
      */
     boolean removeListing(String listingId);

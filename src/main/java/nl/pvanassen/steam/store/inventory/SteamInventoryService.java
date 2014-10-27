@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package nl.pvanassen.steam.store.inventory;
 
@@ -26,13 +26,10 @@ public class SteamInventoryService implements InventoryService {
     private final Set<Integer> appIds;
     private final Http http;
     private final String username;
-    
-    public SteamInventoryService(String cookies, String username, Set<Integer> appIds) {
-        this(Http.getInstance(cookies, username), username, appIds);
-    }
 
     /**
-     * @param http For mocking
+     * @param http
+     *            For mocking
      */
     public SteamInventoryService(Http http, String username, Set<Integer> appIds) {
         this.http = http;
@@ -40,31 +37,35 @@ public class SteamInventoryService implements InventoryService {
         this.appIds = appIds;
     }
 
-	/**
-	 * 
-	 * {@inheritDoc}
-	 *
-	 * @see nl.pvanassen.steam.store.inventory.InventoryService#getInventory()
-	 */
+    public SteamInventoryService(String cookies, String username, Set<Integer> appIds) {
+        this(Http.getInstance(cookies, username), username, appIds);
+    }
+
+    /**
+     * 
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.inventory.InventoryService#getInventory()
+     */
     @Override
     public List<InventoryItem> getInventory() {
         return getInventory(username);
     }
 
     @Override
-    public List<InventoryItem> getInventory(String username) {
-        List<InventoryItem> inventoryItems = new LinkedList<>();
-        for (int appId : appIds) {
-        	inventoryItems.addAll(getInventory(username, appId));
-        }
-        return ImmutableList.copyOf(inventoryItems);
-    }
-    
-    @Override
     public List<InventoryItem> getInventory(int appId) {
         return getInventory(username, appId);
     }
-    
+
+    @Override
+    public List<InventoryItem> getInventory(String username) {
+        List<InventoryItem> inventoryItems = new LinkedList<>();
+        for (int appId : appIds) {
+            inventoryItems.addAll(getInventory(username, appId));
+        }
+        return ImmutableList.copyOf(inventoryItems);
+    }
+
     @Override
     public List<InventoryItem> getInventory(String username, int appId) {
         List<InventoryItem> inventoryItems = new LinkedList<>();
@@ -75,8 +76,7 @@ public class SteamInventoryService implements InventoryService {
         logger.info("Getting inventory for app id " + appId);
         InventoryHandle handle = new InventoryHandle(objectMapper, contextId, inventoryItems);
         try {
-            http.get("http://steamcommunity.com/id/" + username + "/inventory/json/" + appId + "/" +
-                     contextId + "/", handle);
+            http.get("http://steamcommunity.com/id/" + username + "/inventory/json/" + appId + "/" + contextId + "/", handle);
         }
         catch (IOException e) {
             logger.error("Error fetching inventory data", e);

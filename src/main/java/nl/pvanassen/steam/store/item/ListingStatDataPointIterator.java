@@ -46,7 +46,7 @@ class ListingStatDataPointIterator implements Iterator<StatDataPoint>, Iterable<
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see java.util.Iterator#hasNext()
      */
     @Override
@@ -60,7 +60,7 @@ class ListingStatDataPointIterator implements Iterator<StatDataPoint>, Iterable<
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see java.lang.Iterable#iterator()
      */
     @Override
@@ -70,7 +70,7 @@ class ListingStatDataPointIterator implements Iterator<StatDataPoint>, Iterable<
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see java.util.Iterator#next()
      */
     @Override
@@ -86,7 +86,7 @@ class ListingStatDataPointIterator implements Iterator<StatDataPoint>, Iterable<
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see java.util.Iterator#remove()
      */
     @Override

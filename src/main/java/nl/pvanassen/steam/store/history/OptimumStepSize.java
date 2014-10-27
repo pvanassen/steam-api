@@ -9,27 +9,16 @@ class OptimumStepSize {
     private Multiset<Integer> successCount = HashMultiset.create();
     private Multiset<Integer> errorCount = HashMultiset.create();
     private boolean success;
-    
+
     void error() {
         errorCount.add(stepSize);
-        stepSize = stepSize - Math.max((int)(stepSize * 0.15d), 2);
+        stepSize = stepSize - Math.max((int) (stepSize * 0.15d), 2);
         if (stepSize < 10) {
             stepSize = 10;
         }
         success = false;
     }
-    
-    void success() {
-        successCount.add(stepSize);
-        if (stepSize < 1000) {
-            stepSize = stepSize + Math.max((int)(stepSize * 0.10d), 2);
-        }
-        if (stepSize > 1000) {
-            stepSize = 1000;
-        }
-        success = true;
-    }
-    
+
     int getStepSize() {
         if (success) {
             return stepSize;
@@ -49,5 +38,16 @@ class OptimumStepSize {
         }
         return stepSize;
     }
-    
+
+    void success() {
+        successCount.add(stepSize);
+        if (stepSize < 1000) {
+            stepSize = stepSize + Math.max((int) (stepSize * 0.10d), 2);
+        }
+        if (stepSize > 1000) {
+            stepSize = 1000;
+        }
+        success = true;
+    }
+
 }

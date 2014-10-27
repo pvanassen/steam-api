@@ -2,6 +2,7 @@ package nl.pvanassen.steam.store.buyorder;
 
 /**
  * Status of a previously made buy order
+ * 
  * @author Paul van Assen
  *
  */
@@ -19,20 +20,6 @@ public class BuyOrderStatus {
         this.purchased = purchased;
         this.quantity = quantity;
         this.quantityRemaining = quantityRemaining;
-    }
-
-    /**
-     * @return the success
-     */
-    public boolean isSuccess() {
-        return success;
-    }
-
-    /**
-     * @return the active
-     */
-    public boolean isActive() {
-        return active;
     }
 
     /**
@@ -54,6 +41,20 @@ public class BuyOrderStatus {
      */
     public int getQuantityRemaining() {
         return quantityRemaining;
+    }
+
+    /**
+     * @return the active
+     */
+    public boolean isActive() {
+        return active;
+    }
+
+    /**
+     * @return the success
+     */
+    public boolean isSuccess() {
+        return success;
     }
 
 }

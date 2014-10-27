@@ -2,7 +2,7 @@ package nl.pvanassen.steam.store.common;
 
 /**
  * Base class for any item related stuff
- * 
+ *
  * @author Paul van Assen
  */
 public abstract class Item {
@@ -11,9 +11,11 @@ public abstract class Item {
 
     /**
      * Constructor
-     * 
-     * @param appId App id of the item
-     * @param urlName Url name of the item
+     *
+     * @param appId
+     *            App id of the item
+     * @param urlName
+     *            Url name of the item
      */
     protected Item(int appId, String urlName) {
         this.appId = appId;
@@ -21,36 +23,8 @@ public abstract class Item {
     }
 
     /**
-     * @return Steam application id
-     */
-    public int getAppId() {
-        return appId;
-    }
-
-	/**
-     * @return Steam URL name
-     */
-    public String getUrlName() {
-        return urlName;
-    }
-
-    /**
      * {@inheritDoc}
-     * 
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = (prime * result) + appId;
-        result = (prime * result) + ((urlName == null) ? 0 : urlName.hashCode());
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -79,15 +53,43 @@ public abstract class Item {
         return true;
     }
 
-    @Override
-	public String toString() {
-		return "Item [appId=" + appId + ", urlName=" + urlName + "]";
-	}
+    /**
+     * @return Steam application id
+     */
+    public int getAppId() {
+        return appId;
+    }
 
     /**
      * @return A url for debugging
      */
     public String getUrl() {
         return "http://steamcommunity.com/market/listings/" + appId + "/" + urlName;
+    }
+
+    /**
+     * @return Steam URL name
+     */
+    public String getUrlName() {
+        return urlName;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = (prime * result) + appId;
+        result = (prime * result) + ((urlName == null) ? 0 : urlName.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Item [appId=" + appId + ", urlName=" + urlName + "]";
     }
 }

@@ -2,7 +2,9 @@ package nl.pvanassen.steam.store.inventory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.helper.UrlNameHelper;
@@ -11,8 +13,23 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 class InventoryHandle extends DefaultHandle {
+    private static final class Description {
+        private final int appId;
+        private final String urlName;
+        private final boolean marketable;
+
+        Description(int appId, String urlName, boolean marketable) {
+            super();
+            this.appId = appId;
+            this.urlName = urlName;
+            this.marketable = marketable;
+        }
+
+    }
+
     private final ObjectMapper objectMapper;
     private final List<InventoryItem> inventoryItemList;
+
     private final int contextId;
 
     InventoryHandle(ObjectMapper objectMapper, int contextId, List<InventoryItem> inventoryItemList) {
@@ -32,16 +49,17 @@ class InventoryHandle extends DefaultHandle {
             return;
         }
         for (JsonNode item : descriptions) {
-        	String urlName;
+            String urlName;
             // Fix for steam sending crap
             if (!item.has("market_hash_name")) {
-            	// Unprefered fallback
-            	urlName = UrlNameHelper.getUrlName(item.get("name").asText());
+                // Unprefered fallback
+                urlName = UrlNameHelper.getUrlName(item.get("name").asText());
             }
             else {
-            	urlName = UrlNameHelper.getUrlName(item.get("market_hash_name").asText());
+                urlName = UrlNameHelper.getUrlName(item.get("market_hash_name").asText());
             }
-            descriptionMap.put(item.get("classid").asText() + "-" + item.get("instanceid").asText(), new Description(item.get("appid").asInt(), urlName, item.get("marketable").asBoolean()));
+            descriptionMap.put(item.get("classid").asText() + "-" + item.get("instanceid").asText(), new Description(item.get("appid").asInt(), urlName, item.get("marketable")
+                    .asBoolean()));
         }
 
         JsonNode inventory = node.get("rgInventory");
@@ -50,21 +68,8 @@ class InventoryHandle extends DefaultHandle {
             if (descroption == null) {
                 continue;
             }
-            inventoryItemList.add(new InventoryItem(item.get("id").asText(), contextId, item.get("instanceid").asText(), descroption.appId, descroption.urlName, descroption.marketable));
+            inventoryItemList.add(new InventoryItem(item.get("id").asText(), contextId, item.get("instanceid").asText(), descroption.appId, descroption.urlName,
+                    descroption.marketable));
         }
-    }
-
-    private static final class Description {
-        private final int appId;
-        private final String urlName;
-        private final boolean marketable;
-
-        Description(int appId, String urlName, boolean marketable) {
-            super();
-            this.appId = appId;
-            this.urlName = urlName;
-            this.marketable = marketable;
-        }
-
     }
 }

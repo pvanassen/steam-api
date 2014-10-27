@@ -3,24 +3,32 @@ package nl.pvanassen.steam.store.buyorder;
 import java.io.IOException;
 import java.io.InputStream;
 
+import nl.pvanassen.steam.http.DefaultHandle;
+
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-
-import nl.pvanassen.steam.http.DefaultHandle;
 
 class BuyOrderHandle extends DefaultHandle {
     private final ObjectMapper objectMapper;
     private boolean error;
     private String message;
     private String buyOrderId;
-    
+
     BuyOrderHandle(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
-    
+
+    String getBuyOrderId() {
+        return buyOrderId;
+    }
+
+    String getMessage() {
+        return message;
+    }
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see nl.pvanassen.steam.http.DefaultHandle#handle(java.io.InputStream)
      */
     @Override
@@ -30,11 +38,11 @@ class BuyOrderHandle extends DefaultHandle {
             error = true;
             message = "Unknown";
         }
-        else if (node.get("buy_orderid") != null){
+        else if (node.get("buy_orderid") != null) {
             buyOrderId = node.get("buy_orderid").asText();
         }
     }
-    
+
     @Override
     public void handleError(InputStream stream) throws IOException {
         error = true;
@@ -49,14 +57,8 @@ class BuyOrderHandle extends DefaultHandle {
             message = "Unknown";
         }
     }
-    
+
     boolean isError() {
         return error;
-    }
-    String getMessage() {
-        return message;
-    }
-    String getBuyOrderId() {
-        return buyOrderId;
     }
 }

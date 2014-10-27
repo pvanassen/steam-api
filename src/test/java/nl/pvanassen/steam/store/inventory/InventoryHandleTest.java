@@ -11,12 +11,12 @@ import org.junit.Test;
 
 public class InventoryHandleTest {
 
-	@Test
+    @Test
     public void testHandle() throws IOException {
-		List<InventoryItem> items = new LinkedList<>();
+        List<InventoryItem> items = new LinkedList<>();
         InventoryHandle handle = new InventoryHandle(new ObjectMapper(), 1, items);
         handle.handle(getClass().getResourceAsStream("/inventory.json"));
-        
+
         assertEquals(2, items.size());
     }
 

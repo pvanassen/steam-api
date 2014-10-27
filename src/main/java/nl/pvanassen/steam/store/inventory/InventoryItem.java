@@ -4,7 +4,7 @@ import nl.pvanassen.steam.store.common.Item;
 
 /**
  * Representation of an item in the inventory
- * 
+ *
  * @author Paul van Assen
  */
 public class InventoryItem extends Item {
@@ -38,7 +38,7 @@ public class InventoryItem extends Item {
 
     /**
      * Steam instance id of an item
-     * 
+     *
      * @return Instance id
      */
     public String getInstanceId() {
@@ -54,7 +54,6 @@ public class InventoryItem extends Item {
 
     @Override
     public String toString() {
-        return "InventoryItem [assetId=" + assetId + ", contextId=" + contextId + ", instanceId=" + instanceId +
-               ", appId=" + getAppId() + ", urlName=" + getUrlName() + "]";
+        return "InventoryItem [assetId=" + assetId + ", contextId=" + contextId + ", instanceId=" + instanceId + ", appId=" + getAppId() + ", urlName=" + getUrlName() + "]";
     }
 }

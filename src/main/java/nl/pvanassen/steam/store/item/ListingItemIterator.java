@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Iterator to get all listings
- * 
+ *
  * @author Paul van Assen
  */
 public class ListingItemIterator implements Iterator<Listing>, Iterable<Listing> {
@@ -53,8 +53,7 @@ public class ListingItemIterator implements Iterator<Listing>, Iterable<Listing>
             int convertedPublisherFee = item.get("converted_publisher_fee").asInt();
             int publisherFeeApp = item.get("publisher_fee_app").asInt();
             double publisherFeePercent = item.get("publisher_fee_percent").asDouble();
-            return new Listing(appId, urlName, listingId, convertedPrice, convertedFee,
-                    convertedSteamFee, convertedPublisherFee, publisherFeeApp, publisherFeePercent, "--");
+            return new Listing(appId, urlName, listingId, convertedPrice, convertedFee, convertedSteamFee, convertedPublisherFee, publisherFeeApp, publisherFeePercent, "--");
         }
         catch (RuntimeException e) {
             logger.info("Error getting item " + item, e);
@@ -64,7 +63,7 @@ public class ListingItemIterator implements Iterator<Listing>, Iterable<Listing>
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see java.util.Iterator#hasNext()
      */
     @Override
@@ -78,7 +77,7 @@ public class ListingItemIterator implements Iterator<Listing>, Iterable<Listing>
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see java.lang.Iterable#iterator()
      */
     @Override
@@ -88,7 +87,7 @@ public class ListingItemIterator implements Iterator<Listing>, Iterable<Listing>
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see java.util.Iterator#next()
      */
     @Override
@@ -104,7 +103,7 @@ public class ListingItemIterator implements Iterator<Listing>, Iterable<Listing>
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see java.util.Iterator#remove()
      */
     @Override

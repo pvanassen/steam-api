@@ -11,17 +11,17 @@ import org.junit.Test;
 
 public class ListingStatDataPointIteratorTest {
 
-	@Test
-	public void testBrokenListing() throws IOException {
-		ListingPageScriptHandle handle = new ListingPageScriptHandle(new ObjectMapper());
-		try (InputStream stream = getClass().getResourceAsStream("/broken-listing.html")) {
-			handle.handle(stream);
-		}
+    @Test
+    public void testBrokenListing() throws IOException {
+        ListingPageScriptHandle handle = new ListingPageScriptHandle(new ObjectMapper());
+        try (InputStream stream = getClass().getResourceAsStream("/broken-listing.html")) {
+            handle.handle(stream);
+        }
         JsonNode priceHistoryInfo = handle.getPriceHistoryInfo();
         for (StatDataPoint point : new ListingStatDataPointIterator(priceHistoryInfo)) {
             assertNotNull(point);
         }
 
-	}
+    }
 
 }

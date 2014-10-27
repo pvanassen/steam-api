@@ -4,17 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.*;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.helper.AmountHelper;
@@ -50,7 +42,7 @@ class MarketPageHandle extends DefaultHandle {
         XPathExpression linkXpath = null;
         XPathExpression walletXpath = null;
         XPathExpression appIdsXpath = null;
-        
+
         try {
             itemsDivXpath = XPATH.compile("//DIV[@class='market_content_block my_listing_section market_home_listing_table']");
             priceXpath = XPATH.compile(".//SPAN[@class='market_listing_price']");
@@ -72,6 +64,14 @@ class MarketPageHandle extends DefaultHandle {
         APPIDS_XPATH = appIdsXpath;
     }
 
+    public List<OutstandingItem> getItems() {
+        return items;
+    }
+
+    public MarketPage getOutstandings() {
+        return outstandings;
+    }
+
     @Override
     public void handle(InputStream stream) throws IOException {
         int wallet = 0;
@@ -79,18 +79,18 @@ class MarketPageHandle extends DefaultHandle {
         int items = 0;
         DOMParser parser = new DOMParser();
         try {
-        	SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.US);
+            SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.US);
             parser.parse(new InputSource(stream));
             Document document = parser.getDocument();
             Node walletNode = (Node) WALLET_XPATH.evaluate(document, XPathConstants.NODE);
             if (walletNode != null) {
-            	wallet = AmountHelper.getAmount(walletNode.getTextContent().trim());
+                wallet = AmountHelper.getAmount(walletNode.getTextContent().trim());
             }
             else {
-            	logger.error("Wallet node is null!");
+                logger.error("Wallet node is null!");
             }
             if (wallet == 0) {
-            	logger.error("No cash in this account, that's weird?");
+                logger.error("No cash in this account, that's weird?");
             }
             Node node = (Node) ITEMS_DIV_XPATH.evaluate(document, XPathConstants.NODE);
             for (int i = 0; i < node.getChildNodes().getLength(); i++) {
@@ -102,32 +102,28 @@ class MarketPageHandle extends DefaultHandle {
                 if (!clz.contains("market_recent_listing_row")) {
                     continue;
                 }
-                String priceStr = ((Node) PRICE_XPATH.evaluate(outstandingRow, XPathConstants.NODE))
-                        .getTextContent().trim();
+                String priceStr = ((Node) PRICE_XPATH.evaluate(outstandingRow, XPathConstants.NODE)).getTextContent().trim();
                 // Skip sold items
                 if (priceStr.contains("Sold")) {
-                	continue;
+                    continue;
                 }
-                int price = AmountHelper.getAmount(priceStr); 
-                String removeScript = ((Node) REMOVE_XPATH.evaluate(outstandingRow, XPathConstants.NODE))
-                        .getAttributes().getNamedItem("href").getTextContent();
+                int price = AmountHelper.getAmount(priceStr);
+                String removeScript = ((Node) REMOVE_XPATH.evaluate(outstandingRow, XPathConstants.NODE)).getAttributes().getNamedItem("href").getTextContent();
                 String[] scriptParts = removeScript.replace("'", "").split(",");
                 String listingId = scriptParts[1].trim();
                 int appId = Integer.parseInt(scriptParts[2].trim());
                 int contextId = Integer.parseInt(scriptParts[3].trim());
-                String link = ((Node) LINK_XPATH.evaluate(outstandingRow, XPathConstants.NODE)).getAttributes()
-                        .getNamedItem("href").getTextContent();
+                String link = ((Node) LINK_XPATH.evaluate(outstandingRow, XPathConstants.NODE)).getAttributes().getNamedItem("href").getTextContent();
                 String urlName = link.substring(link.lastIndexOf('/') + 1).trim();
-                String date = ((Node)DATE_XPATH.evaluate(outstandingRow, XPathConstants.NODE)).getTextContent().trim();
-                
-                this.items.add(new OutstandingItem(appId, urlName, listingId, scriptParts[4].trim(), contextId,
-                        price, formatter.parse(date)));
+                String date = ((Node) DATE_XPATH.evaluate(outstandingRow, XPathConstants.NODE)).getTextContent().trim();
+
+                this.items.add(new OutstandingItem(appId, urlName, listingId, scriptParts[4].trim(), contextId, price, formatter.parse(date)));
                 amount += price;
                 items++;
             }
             Set<Integer> appIds = new HashSet<>();
-            NodeList appIdsNodes = (NodeList)APPIDS_XPATH.evaluate(document, XPathConstants.NODESET);
-            for (int i=0;i!=appIdsNodes.getLength();i++) {
+            NodeList appIdsNodes = (NodeList) APPIDS_XPATH.evaluate(document, XPathConstants.NODESET);
+            for (int i = 0; i != appIdsNodes.getLength(); i++) {
                 Node appIdNode = appIdsNodes.item(i);
                 String appIdStr = appIdNode.getAttributes().getNamedItem("href").getTextContent().split("=")[1];
                 appIds.add(Integer.parseInt(appIdStr));
@@ -139,14 +135,6 @@ class MarketPageHandle extends DefaultHandle {
         }
         catch (SAXException | XPathExpressionException e) {
             logger.error("Error getting outstanding items", e);
-		}
-    }
-
-    public MarketPage getOutstandings() {
-        return outstandings;
-    }
-
-    public List<OutstandingItem> getItems() {
-        return items;
+        }
     }
 }

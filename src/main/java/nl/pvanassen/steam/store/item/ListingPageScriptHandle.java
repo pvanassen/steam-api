@@ -12,7 +12,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Handler to parse the listing page
- * 
+ *
  * @author Paul van Assen
  */
 public class ListingPageScriptHandle extends DefaultHandle {
@@ -21,7 +21,7 @@ public class ListingPageScriptHandle extends DefaultHandle {
     private JsonNode listingInfo;
     private JsonNode priceHistoryInfo;
     private boolean error;
-    
+
     ListingPageScriptHandle(ObjectMapper om) {
         this.om = om;
         error = false;
@@ -33,11 +33,6 @@ public class ListingPageScriptHandle extends DefaultHandle {
 
     JsonNode getPriceHistoryInfo() {
         return priceHistoryInfo;
-    }
-    
-    @Override
-    public void handleError(InputStream stream) throws IOException {
-    	error = true;
     }
 
     @Override
@@ -71,7 +66,12 @@ public class ListingPageScriptHandle extends DefaultHandle {
         }
     }
 
+    @Override
+    public void handleError(InputStream stream) throws IOException {
+        error = true;
+    }
+
     boolean isError() {
-		return error;
-	}
+        return error;
+    }
 }

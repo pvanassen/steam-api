@@ -12,20 +12,20 @@ import org.junit.Test;
 
 public class BuyHandleTest {
 
-	@Test
-	public void testSuccess() throws IOException {
-		BuyHandle handle = new BuyHandle(new ObjectMapper());
-		handle.handle(getClass().getResourceAsStream("/buyhandle-success.json"));
-		assertFalse(handle.isError());
-		assertNull(handle.getMessage());
-		assertEquals(27485, handle.getWallet());
-	}
+    @Test
+    public void testError() throws IOException {
+        BuyHandle handle = new BuyHandle(new ObjectMapper());
+        handle.handleError(getClass().getResourceAsStream("/buyhandle-error.json"));
+        assertTrue(handle.isError());
+        assertEquals("Testmessage", handle.getMessage());
+    }
 
-	@Test
-	public void testError() throws IOException {
-		BuyHandle handle = new BuyHandle(new ObjectMapper());
-		handle.handleError(getClass().getResourceAsStream("/buyhandle-error.json"));
-		assertTrue(handle.isError());
-		assertEquals("Testmessage", handle.getMessage());
-	}
+    @Test
+    public void testSuccess() throws IOException {
+        BuyHandle handle = new BuyHandle(new ObjectMapper());
+        handle.handle(getClass().getResourceAsStream("/buyhandle-success.json"));
+        assertFalse(handle.isError());
+        assertNull(handle.getMessage());
+        assertEquals(27485, handle.getWallet());
+    }
 }

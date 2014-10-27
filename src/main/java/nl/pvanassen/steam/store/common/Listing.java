@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * Listing item 
- * 
+ *
  * @author Paul van Assen
  */
 public class Listing extends Item {
@@ -22,13 +22,13 @@ public class Listing extends Item {
     private final int publisherFeeApp;
 
     private final double publisherFeePercent;
-    
+
     private final String country;
 
     private final Date createdDate = new Date();
 
-    public Listing(int appId, String urlName, String listingId, int subTotal, int fee,
-            int steamFee, int publisherFee, int publisherFeeApp, double publisherFeePercent, String country) {
+    public Listing(int appId, String urlName, String listingId, int subTotal, int fee, int steamFee, int publisherFee, int publisherFeeApp, double publisherFeePercent,
+            String country) {
         super(appId, urlName);
         this.listingId = listingId;
         this.subTotal = subTotal;
@@ -38,6 +38,46 @@ public class Listing extends Item {
         this.publisherFeeApp = publisherFeeApp;
         this.publisherFeePercent = publisherFeePercent;
         this.country = country;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof Listing)) {
+            return false;
+        }
+        Listing other = (Listing) obj;
+        if (listingId == null) {
+            if (other.listingId != null) {
+                return false;
+            }
+        }
+        else if (!listingId.equals(other.listingId)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return Country string for this listing
+     */
+    public String getCountry() {
+        return country;
+    }
+
+    /**
+     * @return Date when this item was created
+     */
+    public Date getCreatedDate() {
+        return createdDate;
     }
 
     /**
@@ -90,66 +130,24 @@ public class Listing extends Item {
     }
 
     /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = (prime * result) + ((listingId == null) ? 0 : listingId.hashCode());
+        return result;
+    }
+
+    /**
      * {@inheritDoc}
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        return "Listing [appId=" + getAppId() + ", urlName=" + getUrlName() + ", listingId=" + listingId +
-               ", subTotal=" + subTotal + ", fee=" + fee + ", steamFee=" +
-               steamFee + ", publisherFee=" + publisherFee + ", publisherFeeApp=" + publisherFeeApp +
-               ", publisherFeePercent=" + publisherFeePercent + ", country=" + country + "]";
+        return "Listing [appId=" + getAppId() + ", urlName=" + getUrlName() + ", listingId=" + listingId + ", subTotal=" + subTotal + ", fee=" + fee + ", steamFee=" + steamFee
+                + ", publisherFee=" + publisherFee + ", publisherFeeApp=" + publisherFeeApp + ", publisherFeePercent=" + publisherFeePercent + ", country=" + country + "]";
     }
-
-    /**
-     * @return Date when this item was created
-     */
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-    
-    /**
-     * @return Country string for this listing
-     */
-    public String getCountry() {
-		return country;
-	}
-
-	/**
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result
-				+ ((listingId == null) ? 0 : listingId.hashCode());
-		return result;
-	}
-
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (!(obj instanceof Listing)) {
-			return false;
-		}
-		Listing other = (Listing) obj;
-		if (listingId == null) {
-			if (other.listingId != null) {
-				return false;
-			}
-		} else if (!listingId.equals(other.listingId)) {
-			return false;
-		}
-		return true;
-	}
 }

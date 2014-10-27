@@ -4,11 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.*;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.GenericHandle;
@@ -45,14 +41,10 @@ class OverviewHandle extends DefaultHandle {
         XPathExpression gameNameXpath = null;
         try {
             rowXpath = XPATH.compile("//A[@class='market_listing_row_link']");
-            priceXpath = XPATH
-                    .compile(".//DIV[@class='market_listing_right_cell market_listing_their_price']/SPAN/SPAN");
-            offeringsXpath = XPATH
-                    .compile(".//DIV[@class='market_listing_right_cell market_listing_num_listings']/SPAN/SPAN");
-            nameXpath = XPATH
-                    .compile(".//DIV[@class='market_listing_item_name_block']/SPAN[@class='market_listing_item_name']");
-            gameNameXpath = XPATH
-                    .compile(".//DIV[@class='market_listing_item_name_block']/SPAN[@class='market_listing_game_name']");
+            priceXpath = XPATH.compile(".//DIV[@class='market_listing_right_cell market_listing_their_price']/SPAN/SPAN");
+            offeringsXpath = XPATH.compile(".//DIV[@class='market_listing_right_cell market_listing_num_listings']/SPAN/SPAN");
+            nameXpath = XPATH.compile(".//DIV[@class='market_listing_item_name_block']/SPAN[@class='market_listing_item_name']");
+            gameNameXpath = XPATH.compile(".//DIV[@class='market_listing_item_name_block']/SPAN[@class='market_listing_game_name']");
         }
         catch (XPathExpressionException e) {
             LoggerFactory.getLogger(OverviewHandle.class).error("Error instantiating XPATH", e);
@@ -77,6 +69,10 @@ class OverviewHandle extends DefaultHandle {
     public OverviewHandle(GenericHandle<OverviewItem> genericHandle, ObjectMapper om) {
         this.genericHandle = genericHandle;
         this.om = om;
+    }
+
+    int getTotalCount() {
+        return totalCount;
     }
 
     @Override
@@ -123,8 +119,7 @@ class OverviewHandle extends DefaultHandle {
                 String name = nameSpan.getTextContent();
                 Node gameNameSpan = (Node) GAMENAME_XPATH.evaluate(node, XPathConstants.NODE);
                 String gameName = gameNameSpan.getTextContent();
-                genericHandle.handle(new OverviewItem(appId, name, urlName, currentOffers, currentPrice, gameName,
-                        steamId));
+                genericHandle.handle(new OverviewItem(appId, name, urlName, currentOffers, currentPrice, gameName, steamId));
             }
 
         }
@@ -144,9 +139,5 @@ class OverviewHandle extends DefaultHandle {
 
     boolean isLastPage() {
         return lastPage;
-    }
-
-    int getTotalCount() {
-        return totalCount;
     }
 }

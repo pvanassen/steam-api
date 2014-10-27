@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package nl.pvanassen.steam.store.sell;
 
@@ -17,28 +17,29 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class SteamSellService implements SellService {
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Http http;
     private final String username;
-    
-    public SteamSellService(String cookies, String username) {
-        this(Http.getInstance(cookies, username), username);
-    }
 
     /**
-     * @param http For mocking
+     * @param http
+     *            For mocking
      */
     public SteamSellService(Http http, String username) {
         this.http = http;
         this.username = username;
     }
-    
+
+    public SteamSellService(String cookies, String username) {
+        this(Http.getInstance(cookies, username), username);
+    }
+
     @Override
     public void sell(String assetId, int appId, String urlName, int contextId, int price) {
         try {
-        	if (price < 1) {
-        		throw new SellException("Error, price is too low: " + price);
-        	}
+            if (price < 1) {
+                throw new SellException("Error, price is too low: " + price);
+            }
             Map<String, String> params = new HashMap<>();
             params.put("amount", "1");
             params.put("appid", Integer.toString(appId));

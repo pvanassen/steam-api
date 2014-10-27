@@ -15,12 +15,16 @@ class SellHandle extends DefaultHandle {
     private boolean error = false;
     private String message;
 
+    String getMessage() {
+        return message;
+    }
+
     @Override
     public void handleError(InputStream stream) throws IOException {
         error = true;
         ObjectMapper om = new ObjectMapper();
         JsonNode node = om.readTree(stream);
-        if (node == null || node.get("message") == null) {
+        if ((node == null) || (node.get("message") == null)) {
             logger.error("Error could not sell item: unknown error");
             message = "unknown error";
             return;
@@ -31,9 +35,5 @@ class SellHandle extends DefaultHandle {
 
     boolean isError() {
         return error;
-    }
-
-    String getMessage() {
-        return message;
     }
 }

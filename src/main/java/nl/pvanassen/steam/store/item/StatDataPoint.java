@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * Object defining data points
- * 
+ *
  * @author Paul van Assen
  */
 public class StatDataPoint {

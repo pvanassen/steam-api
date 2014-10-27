@@ -2,7 +2,7 @@ package nl.pvanassen.steam.store.buy;
 
 /**
  * Result of a purchase attempt
- * 
+ *
  * @author Paul van Assen
  */
 public class BuyResult {
@@ -16,6 +16,13 @@ public class BuyResult {
         this.success = success;
         this.wallet = wallet;
         this.message = message;
+    }
+
+    /**
+     * @return The error message
+     */
+    public String getMessage() {
+        return message;
     }
 
     /**
@@ -33,15 +40,8 @@ public class BuyResult {
     }
 
     /**
-     * @return The error message
-     */
-    public String getMessage() {
-        return message;
-    }
-
-    /**
      * {@inheritDoc}
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override

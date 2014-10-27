@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableSet;
 
 /**
  * Outstanding items
- * 
+ *
  * @author Paul van Assen
  */
 public class MarketPage {
@@ -34,10 +34,10 @@ public class MarketPage {
     }
 
     /**
-     * @return Number of items
+     * @return App ids
      */
-    public int getItems() {
-        return items;
+    public Set<Integer> getAppIds() {
+        return appIds;
     }
 
     /**
@@ -46,18 +46,18 @@ public class MarketPage {
     public List<OutstandingItem> getItemList() {
         return itemList;
     }
-    
+
+    /**
+     * @return Number of items
+     */
+    public int getItems() {
+        return items;
+    }
+
     /**
      * @return Amount of money in the wallet
      */
     public int getWallet() {
         return wallet;
-    }
-
-    /**
-     * @return App ids
-     */
-    public Set<Integer> getAppIds() {
-        return appIds;
     }
 }

@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * Class for tracking lising created/removed
- * 
+ *
  * @author Paul van Assen
  */
 public class HistoryPart {
@@ -16,8 +16,7 @@ public class HistoryPart {
     private final int price;
     private final HistoryStatus status;
 
-    HistoryPart(String steamId, String name, String gameName, Date listed, Date acted, int price,
-            HistoryStatus status) {
+    HistoryPart(String steamId, String name, String gameName, Date listed, Date acted, int price, HistoryStatus status) {
         super();
         this.steamId = steamId;
         this.name = name;
@@ -29,17 +28,10 @@ public class HistoryPart {
     }
 
     /**
-     * @return the steamId
+     * @return the acted
      */
-    public String getSteamId() {
-        return steamId;
-    }
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
+    public Date getActed() {
+        return acted;
     }
 
     /**
@@ -57,10 +49,10 @@ public class HistoryPart {
     }
 
     /**
-     * @return the acted
+     * @return the name
      */
-    public Date getActed() {
-        return acted;
+    public String getName() {
+        return name;
     }
 
     /**
@@ -75,6 +67,13 @@ public class HistoryPart {
      */
     public HistoryStatus getStatus() {
         return status;
+    }
+
+    /**
+     * @return the steamId
+     */
+    public String getSteamId() {
+        return steamId;
     }
 
 }
