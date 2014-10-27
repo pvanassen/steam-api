@@ -1,12 +1,15 @@
 package nl.pvanassen.steam.http;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.io.ByteSource;
+import com.google.common.io.ByteStreams;
 
 /**
  * Default stream handle that outputs the stream to the log
@@ -18,16 +21,16 @@ public class DefaultHandle implements Handle {
 
     @Override
     public void handle(InputStream stream) throws IOException {
-        StringWriter writer = new StringWriter();
-        IOUtils.copy(stream, writer);
-        logger.info(writer.toString());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ByteStreams.copy(stream, baos);
+        logger.info(new String(baos.toByteArray()));
     }
 
     @Override
     public void handleError(InputStream stream) throws IOException {
-        StringWriter writer = new StringWriter();
-        IOUtils.copy(stream, writer);
-        logger.error(writer.toString());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ByteStreams.copy(stream, baos);
+        logger.error(new String(baos.toByteArray()));
     }
 
 }

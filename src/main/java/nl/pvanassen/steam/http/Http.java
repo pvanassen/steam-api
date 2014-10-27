@@ -8,17 +8,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.AbstractExecutionAwareRequest;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.cookie.Cookie;
@@ -31,6 +26,8 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.AbstractHttpMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.io.Closeables;
 
 /**
  * Http connection helper
@@ -245,7 +242,7 @@ public class Http {
                     }
                 }
                 finally {
-                    IOUtils.closeQuietly(instream);
+                    Closeables.close(instream, true);
                 }
             }
         }
@@ -264,8 +261,8 @@ public class Http {
             throw e;
         }
         finally {
-            IOUtils.closeQuietly(response);
-            IOUtils.closeQuietly(httpclient);
-        }    
+            Closeables.close(response, true);
+            Closeables.close(httpclient, true);
+        }
     }
 }
