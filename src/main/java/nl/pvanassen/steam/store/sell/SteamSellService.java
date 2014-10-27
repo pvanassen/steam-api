@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.http.Http;
 
 import org.slf4j.Logger;
@@ -35,10 +34,10 @@ public class SteamSellService implements SellService {
     }
     
     @Override
-    public boolean sell(String assetId, int appId, String urlName, int contextId, int price) {
+    public void sell(String assetId, int appId, String urlName, int contextId, int price) {
         try {
         	if (price < 1) {
-        		throw new SteamException("Error, price is too low: " + price);
+        		throw new SellException("Error, price is too low: " + price);
         	}
             Map<String, String> params = new HashMap<>();
             params.put("amount", "1");
@@ -49,11 +48,13 @@ public class SteamSellService implements SellService {
             logger.info(params.toString());
             SellHandle sellHandle = new SellHandle();
             http.post("https://steamcommunity.com/market/sellitem/", params, sellHandle, "http://steamcommunity.com/id/" + username + "/inventory/");
-            return !sellHandle.isError();
+            if (sellHandle.isError()) {
+                throw new SellException(sellHandle.getMessage());
+            }
         }
         catch (IOException | RuntimeException e) {
             logger.error("Error posting data", e);
-            return false;
+            throw new SellException("Error posting data", e);
         }
     }
 

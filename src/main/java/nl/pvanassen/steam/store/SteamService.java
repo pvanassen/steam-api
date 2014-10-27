@@ -138,8 +138,8 @@ class SteamService implements StoreService {
     }
 
     @Override
-    public boolean sell(String assetId, int appId, String urlName, int contextId, int price) {
-    	return sellService.sell(assetId, appId, urlName, contextId, price);
+    public void sell(String assetId, int appId, String urlName, int contextId, int price) {
+    	sellService.sell(assetId, appId, urlName, contextId, price);
     }
 
     @Override

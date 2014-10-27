@@ -18,5 +18,5 @@ public interface SellService {
      * @param price Price to use
      * @return True if successful, false if not
      */
-    boolean sell(String assetId, int appId, String urlName, int contextId, int price);
+    void sell(String assetId, int appId, String urlName, int contextId, int price) throws SellException;
 }

@@ -14,6 +14,7 @@ import nl.pvanassen.steam.store.item.StatDataPoint;
 import nl.pvanassen.steam.store.listing.ListingDeque;
 import nl.pvanassen.steam.store.login.LoginService;
 import nl.pvanassen.steam.store.marketpage.MarketPage;
+import nl.pvanassen.steam.store.sell.SellException;
 import nl.pvanassen.steam.store.tradeoffer.Tradeoffer;
 
 import com.google.common.base.Optional;
@@ -111,7 +112,7 @@ public interface StoreService {
      * @param price Price to use
      * @return True if successful, false if not
      */
-    boolean sell(String assetId, int appId, String urlName, int contextId, int price);
+    void sell(String assetId, int appId, String urlName, int contextId, int price) throws SellException;
 
     /**
      * Get sold items currently offered
