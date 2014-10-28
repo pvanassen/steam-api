@@ -27,8 +27,6 @@ import org.apache.http.message.AbstractHttpMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.io.Closeables;
-
 /**
  * Http connection helper
  *
@@ -166,29 +164,24 @@ public class Http {
     }
 
     private void handleConnection(HttpRequestBase httpget, Handle handle) throws IOException {
-        CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
-        CloseableHttpResponse response = null;
-        try {
-            if (logger.isInfoEnabled()) {
-                logger.info("Executing request with cookies: " + getCookies());
-            }
-            connectionsToWatch.put(httpget, System.currentTimeMillis() + TIMEOUT);
-            response = httpclient.execute(httpget, context);
+        if (logger.isInfoEnabled()) {
+            logger.info("Executing request with cookies: " + getCookies());
+        }
+        connectionsToWatch.put(httpget, System.currentTimeMillis() + TIMEOUT);
+        try (CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build(); 
+                CloseableHttpResponse response = httpclient.execute(httpget, context)) {
             connectionsToWatch.remove(httpget);
             HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                InputStream instream = entity.getContent();
-                try {
-                    // Forbidden, 404, invalid request. Stop
-                    if (response.getStatusLine().getStatusCode() >= 400) {
-                        handle.handleError(instream);
-                    }
-                    else {
-                        handle.handle(instream);
-                    }
+            if (entity == null) {
+                return;
+            }
+            try (InputStream instream = entity.getContent()) {
+                // Forbidden, 404, invalid request. Stop
+                if (response.getStatusLine().getStatusCode() >= 400) {
+                    handle.handleError(instream);
                 }
-                finally {
-                    Closeables.close(instream, true);
+                else {
+                    handle.handle(instream);
                 }
             }
         }
@@ -205,10 +198,6 @@ public class Http {
         catch (ClientProtocolException e) {
             logger.error("Error in protocol", e);
             throw e;
-        }
-        finally {
-            Closeables.close(response, true);
-            Closeables.close(httpclient, true);
         }
     }
 
