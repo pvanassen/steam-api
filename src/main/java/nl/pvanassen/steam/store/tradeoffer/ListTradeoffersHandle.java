@@ -21,8 +21,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.google.common.collect.ImmutableList;
-
 class ListTradeoffersHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final List<Tradeoffer> tradeoffers = new LinkedList<>();
@@ -33,21 +31,18 @@ class ListTradeoffersHandle extends DefaultHandle {
     private static final XPathExpression PARTNERID_XPATH;
     private static final XPathExpression OFFER_XPATH;
     private static final XPathExpression QUOTE_XPATH;
-    private static final XPathExpression TRADEOFFERITEMLIST_XPATH;
 
     static {
         XPathExpression tradeOffers = null;
         XPathExpression partnerId = null;
         XPathExpression offerId = null;
         XPathExpression quote = null;
-        XPathExpression tradeOfferItemList = null;
 
         try {
             tradeOffers = XPATH.compile("//DIV[@class='tradeoffer']");
             partnerId = XPATH.compile("//DIV[@class='tradeoffer_partner']/DIV");
             offerId = XPATH.compile("//DIV[@class='link_overlay']");
             quote = XPATH.compile("//DIV[@class='quote']");
-            tradeOfferItemList = XPATH.compile("//DIV[@class='tradeoffer_item_list']/DIV");
         }
         catch (XPathExpressionException e) {
             LoggerFactory.getLogger(ListTradeoffersHandle.class).error("Error instantiating XPATH", e);
@@ -56,7 +51,6 @@ class ListTradeoffersHandle extends DefaultHandle {
         PARTNERID_XPATH = partnerId;
         OFFER_XPATH = offerId;
         QUOTE_XPATH = quote;
-        TRADEOFFERITEMLIST_XPATH = tradeOfferItemList;
     }
 
     ListTradeoffersHandle() {
@@ -88,14 +82,7 @@ class ListTradeoffersHandle extends DefaultHandle {
                 int quoteEnd = onClick.indexOf('\'', quoteStart);
                 String offerId = onClick.substring(quoteStart, quoteEnd);
                 String quote = ((Node) QUOTE_XPATH.evaluate(tradeofferNode, XPathConstants.NODE)).getFirstChild().getTextContent().trim();
-                NodeList items = (NodeList) TRADEOFFERITEMLIST_XPATH.evaluate(tradeofferNode, XPathConstants.NODESET);
-                Map<String, String> dataToImageMap = new HashMap<>();
-                for (int j = 0; j != items.getLength(); j++) {
-                    Node item = items.item(i);
-                    dataToImageMap.put(item.getAttributes().getNamedItem("data-economy-item").getTextContent(), item.getChildNodes().item(1).getAttributes().getNamedItem("src")
-                            .getTextContent());
-                }
-                tradeoffers.add(new Tradeoffer(partnerId, offerId, quote, ImmutableList.<Item> of()));
+                tradeoffers.add(new Tradeoffer(partnerId, offerId, quote));
             }
         }
         catch (SAXException | XPathExpressionException e) {
