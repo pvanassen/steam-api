@@ -10,7 +10,6 @@ import nl.pvanassen.steam.store.item.ItemService;
 import nl.pvanassen.steam.store.listing.ListingService;
 import nl.pvanassen.steam.store.login.LoginService;
 import nl.pvanassen.steam.store.marketpage.MarketPageService;
-import nl.pvanassen.steam.store.remove.RemoveService;
 import nl.pvanassen.steam.store.sell.SellService;
 import nl.pvanassen.steam.store.tradeoffer.TradeofferService;
 
@@ -41,8 +40,6 @@ public interface StoreService {
     SellService getSellService();
 
     TradeofferService getTradeofferService();
-
-    RemoveService getRemoveService();
 
     /**
      * Retrieve the current cookies from the HTTP session

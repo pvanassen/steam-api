@@ -20,8 +20,6 @@ import nl.pvanassen.steam.store.login.SteamLoginService;
 import nl.pvanassen.steam.store.marketpage.AppIds;
 import nl.pvanassen.steam.store.marketpage.MarketPageService;
 import nl.pvanassen.steam.store.marketpage.SteamMarketPageService;
-import nl.pvanassen.steam.store.remove.RemoveService;
-import nl.pvanassen.steam.store.remove.SteamRemoveService;
 import nl.pvanassen.steam.store.sell.SellService;
 import nl.pvanassen.steam.store.sell.SteamSellService;
 import nl.pvanassen.steam.store.tradeoffer.SteamTradeofferService;
@@ -47,7 +45,6 @@ class SteamService implements StoreService {
     private final MarketPageService marketPageService;
     private final SellService sellService;
     private final TradeofferService tradeofferService;
-    private final RemoveService removeService;
 
     /**
      * @param http
@@ -65,7 +62,6 @@ class SteamService implements StoreService {
         itemService = new SteamItemService(http);
         sellService = new SteamSellService(http, username);
         tradeofferService = new SteamTradeofferService(http);
-        removeService = new SteamRemoveService(http, username);
         inventoryService = new SteamInventoryService(http, username, appIds);
     }
 
@@ -115,10 +111,6 @@ class SteamService implements StoreService {
 
     public TradeofferService getTradeofferService() {
         return tradeofferService;
-    }
-
-    public RemoveService getRemoveService() {
-        return removeService;
     }
     
     @Override

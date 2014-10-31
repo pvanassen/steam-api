@@ -4,6 +4,7 @@
 package nl.pvanassen.steam.store.marketpage;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Set;
 
 import nl.pvanassen.steam.http.Http;
@@ -62,5 +63,24 @@ public class SteamMarketPageService implements MarketPageService {
             logger.error("Error getting outstanding listings", e);
         }
         return handle.getOutstandings();
+    }
+    
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.marketpage.MarketPageService#removeListing(java.lang.String)
+     */
+    @Override
+    public boolean removeListing(String listingId) {
+        try {
+            RemoveHandle removeHandle = new RemoveHandle();
+            http.post("http://steamcommunity.com/market/removelisting/" + listingId, new HashMap<String, String>(), removeHandle, "http://steamcommunity.com/id/" + username
+                    + "/inventory/");
+            return !removeHandle.isError();
+        }
+        catch (IOException | RuntimeException e) {
+            logger.error("Error posting data", e);
+            return false;
+        }
     }
 }

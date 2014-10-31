@@ -24,4 +24,14 @@ public interface MarketPageService {
      * @return Outstanding items
      */
     MarketPage getOutstandings();
+    
+    /**
+     * Remove an active listing
+     *
+     * @param listingId
+     *            Listing to remove
+     * @return True if succesful removed
+     */
+    boolean removeListing(String listingId);
+
 }
