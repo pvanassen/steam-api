@@ -1,8 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>jar</packaging>
-	<name>Store interface</name>
-	<url>http://maven.apache.org</url>
+	<name>Steam store interface</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -11,7 +11,7 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
-			<version>4.12-beta-2</version>
+			<version>4.11</version>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
@@ -76,4 +76,41 @@
 	<artifactId>steam-api</artifactId>
 	<groupId>nl.pvanassen.steam</groupId>
 	<version>0.0.1-SNAPSHOT</version>
+	<description>A Java API to access the Steam community market through the HTTP interface. This may be against the TOS so be careful using it!</description>
+	<url>http://www.pvanassen.nl</url>
+	<organization>
+		<name>Paul van Assen</name>
+		<url>http://www.pvanassen.nl</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>pvanassen</id>
+			<name>Paul van Assen</name>
+			<email>source@pvanassen.nl</email>
+		</developer>
+	</developers>
+	<prerequisites>
+		<maven>3.0.4</maven>
+	</prerequisites>
+	<scm>
+		<connection>scm:git:git@github.com:pvanassen/steam-api.git</connection>
+		<developerConnection>scm:git:git@github.com:pvanassen/steam-api.git</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/pvanassen/steam-api</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/pvanassen/steam-api/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://build.pvanassen.nl</url>
+	</ciManagement>
 </project>
