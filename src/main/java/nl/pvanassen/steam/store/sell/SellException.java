@@ -12,12 +12,12 @@ public class SellException extends SteamException {
 
     SellException(String error) {
         super(error);
-        itemNotInInventory = ((error != null) && error.contains("found in inventory"));
+        itemNotInInventory = ((error != null) && error.contains("is no longer in your inventory"));
     }
 
     SellException(String error, Throwable cause) {
         super(error, cause);
-        itemNotInInventory = ((error != null) && error.contains("found in inventory"));
+        itemNotInInventory = ((error != null) && error.contains("is no longer in your inventory"));
     }
 
     /**
