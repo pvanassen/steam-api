@@ -12,10 +12,8 @@ public abstract class Item {
     /**
      * Constructor
      *
-     * @param appId
-     *            App id of the item
-     * @param urlName
-     *            Url name of the item
+     * @param appId App id of the item
+     * @param urlName Url name of the item
      */
     protected Item(int appId, String urlName) {
         this.appId = appId;

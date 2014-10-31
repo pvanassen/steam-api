@@ -1,6 +1,10 @@
 package nl.pvanassen.steam.store.tradeoffer;
 
-
+/**
+ * Trade offer class representing a trade offer
+ * 
+ * @author Paul van Assen
+ */
 public class Tradeoffer {
     private final String partnerId;
     private final String offerId;

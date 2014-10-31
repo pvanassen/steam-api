@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Paul van Assen
- *
  */
 public class SteamItemService implements ItemService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -25,21 +24,16 @@ public class SteamItemService implements ItemService {
     private final Http http;
 
     /**
-     * @param http
-     *            For mocking
+     * @param http For mocking
      */
     public SteamItemService(Http http) {
         this.http = http;
     }
 
-    public SteamItemService(String cookies, String username) {
-        this(Http.getInstance(cookies, username));
-    }
-
     /**
      * {@inheritDoc}
      *
-     * @see nl.pvanassen.steam.store.StoreService#getAllItems(nl.pvanassen.steam.store.GenericHandle)
+     * @see nl.pvanassen.steam.store.item.ItemService#getAllItems(nl.pvanassen.steam.store.GenericHandle)
      */
     @Override
     public void getAllItems(GenericHandle<OverviewItem> genericHandle) {
@@ -65,10 +59,9 @@ public class SteamItemService implements ItemService {
     }
 
     /**
-     *
      * {@inheritDoc}
      *
-     * @see nl.pvanassen.steam.store.listing.ListingService#getItem(int,
+     * @see nl.pvanassen.steam.store.item.ItemService#getItem(int,
      *      java.lang.String, nl.pvanassen.steam.store.GenericHandle,
      *      nl.pvanassen.steam.store.GenericHandle)
      */

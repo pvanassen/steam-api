@@ -18,7 +18,6 @@ import com.google.common.collect.ImmutableList;
 
 /**
  * @author Paul van Assen
- *
  */
 public class SteamInventoryService implements InventoryService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -28,8 +27,9 @@ public class SteamInventoryService implements InventoryService {
     private final String username;
 
     /**
-     * @param http
-     *            For mocking
+     * @param http For mocking
+     * @param username Username for referals
+     * @param appIds The known app ids
      */
     public SteamInventoryService(Http http, String username, Set<Integer> appIds) {
         this.http = http;
@@ -37,12 +37,7 @@ public class SteamInventoryService implements InventoryService {
         this.appIds = appIds;
     }
 
-    public SteamInventoryService(String cookies, String username, Set<Integer> appIds) {
-        this(Http.getInstance(cookies, username), username, appIds);
-    }
-
     /**
-     * 
      * {@inheritDoc}
      *
      * @see nl.pvanassen.steam.store.inventory.InventoryService#getInventory()

@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Paul van Assen
- *
  */
 public class SteamLoginService implements LoginService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -23,8 +22,7 @@ public class SteamLoginService implements LoginService {
     private final Http http;
 
     /**
-     * @param http
-     *            For mocking
+     * @param http For mocking
      */
     public SteamLoginService(Http http) {
         this.http = http;

@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
  * Steam implementation
  *
  * @author Paul van Assen
- *
  */
 public class SteamHistoryService implements HistoryService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -20,17 +19,17 @@ public class SteamHistoryService implements HistoryService {
     private final Http http;
 
     /**
-     * @param http
-     *            For mocking
+     * @param http For mocking
      */
     public SteamHistoryService(Http http) {
         this.http = http;
     }
 
-    public SteamHistoryService(String cookies, String username) {
-        this(Http.getInstance(cookies, username));
-    }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.history.HistoryService#getHistory(java.lang.String)
+     */
     @Override
     public History getHistory(String lastSteamId) {
         long startTime = System.currentTimeMillis();

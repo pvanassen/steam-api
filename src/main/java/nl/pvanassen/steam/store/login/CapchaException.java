@@ -6,7 +6,6 @@ import nl.pvanassen.steam.error.SteamException;
  * You are not human. Go do capcha
  * 
  * @author Paul van Assen
- *
  */
 public class CapchaException extends SteamException {
     private final String capchaUrl;
@@ -19,7 +18,6 @@ public class CapchaException extends SteamException {
     }
 
     /**
-     *
      * @return The capcha GID needed for ansering the question
      */
     public String getCapchaGid() {
@@ -27,7 +25,6 @@ public class CapchaException extends SteamException {
     }
 
     /**
-     *
      * @return The capcha url to go to
      */
     public String getCapchaUrl() {

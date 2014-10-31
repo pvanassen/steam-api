@@ -42,11 +42,9 @@ public class Http {
     private final String username;
 
     /**
-     * @param cookies
-     *            Cookies to use for the request. This is just a simple string
-     *            send out to the server in the most unsafe way possible
-     * @param username
-     *            Username for the referer
+     * @param cookies Cookies to use for the request. This is just a simple
+     *            string send out to the server in the most unsafe way possible
+     * @param username Username for the referer
      * @return Returns an instance of the helper
      */
     public static Http getInstance(String cookies, String username) {
@@ -79,12 +77,9 @@ public class Http {
     /**
      * Make a get call to the url using the provided handle
      *
-     * @param url
-     *            The url to call
-     * @param handle
-     *            The handle to use
-     * @throws IOException
-     *             In case of an error
+     * @param url The url to call
+     * @param handle The handle to use
+     * @throws IOException In case of an error
      */
     public void get(String url, Handle handle) throws IOException {
         HttpGet httpget = new HttpGet(url);
@@ -114,6 +109,9 @@ public class Http {
         return cookies.toString();
     }
 
+    /**
+     * @return Returns the current session id
+     */
     public String getSessionId() {
         for (Cookie cookie : context.getCookieStore().getCookies()) {
             if (cookie.getName().equals("sessionid")) {
@@ -127,7 +125,7 @@ public class Http {
         if (logger.isInfoEnabled()) {
             logger.info("Executing request with cookies: " + getCookies());
         }
-        try (CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build(); 
+        try (CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
                 CloseableHttpResponse response = httpclient.execute(httpget, context)) {
             HttpEntity entity = response.getEntity();
             if (entity == null) {
@@ -176,28 +174,24 @@ public class Http {
     }
 
     /**
-     * @param url
-     *            Url to call
-     * @param params
-     *            Parameters to send with the request
-     * @param handle
-     *            Handle to use
-     * @throws IOException
-     *             if a network error occurs
+     * @param url Url to call
+     * @param params Parameters to send with the request
+     * @param handle Handle to use
+     * @param referer Referer to pass to the server
+     * @throws IOException if a network error occurs
      */
     public void post(String url, Map<String, String> params, Handle handle, String referer) throws IOException {
         post(url, params, handle, referer, true);
     }
 
     /**
-     * @param url
-     *            Url to call
-     * @param params
-     *            Parameters to send with the request
-     * @param handle
-     *            Handle to use
-     * @throws IOException
-     *             if a network error occurs
+     * @param url Url to call
+     * @param params Parameters to send with the request
+     * @param handle Handle to use
+     * @param referer Referer to pass to the server
+     * @param sessionRequired Does this request require a session? If not, like
+     *            in the case of login, don't fail on it not being present
+     * @throws IOException if a network error occurs
      */
     public void post(String url, Map<String, String> params, Handle handle, String referer, boolean sessionRequired) throws IOException {
         HttpPost httpPost = new HttpPost(url);

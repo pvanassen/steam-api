@@ -32,15 +32,10 @@ public class SteamTradeofferService implements TradeofferService {
     private final Http http;
 
     /**
-     * @param http
-     *            For mocking
+     * @param http For mocking
      */
     public SteamTradeofferService(Http http) {
         this.http = http;
-    }
-
-    public SteamTradeofferService(String cookies, String username) {
-        this(Http.getInstance(cookies, username));
     }
 
     @Override

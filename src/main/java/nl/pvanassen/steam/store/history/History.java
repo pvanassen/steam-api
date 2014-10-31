@@ -2,6 +2,12 @@ package nl.pvanassen.steam.store.history;
 
 import java.util.List;
 
+/**
+ * Bean object containing information about the history of sales and purchases
+ * of a user
+ * 
+ * @author Paul van Assen
+ */
 public class History {
     private final List<Purchase> purchases;
     private final List<Sale> sales;

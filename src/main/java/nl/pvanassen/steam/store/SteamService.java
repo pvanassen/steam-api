@@ -47,8 +47,7 @@ class SteamService implements StoreService {
     private final TradeofferService tradeofferService;
 
     /**
-     * @param http
-     *            For mocking
+     * @param http For mocking
      */
     SteamService(Http http, String username) {
         appIds = ImmutableSet.copyOf(AppIds.getAppids());
@@ -112,7 +111,7 @@ class SteamService implements StoreService {
     public TradeofferService getTradeofferService() {
         return tradeofferService;
     }
-    
+
     @Override
     public String getCookies() {
         return http.getCookies();

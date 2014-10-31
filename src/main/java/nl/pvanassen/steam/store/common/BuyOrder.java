@@ -4,7 +4,6 @@ package nl.pvanassen.steam.store.common;
  * Buy order class
  * 
  * @author Paul van Assen
- *
  */
 public class BuyOrder extends Item {
     private final String listingId;
@@ -14,12 +13,11 @@ public class BuyOrder extends Item {
     /**
      * Construct a buy order
      * 
-     * @param listingId
-     *            Listing to purchase
-     * @param price
-     *            Price without fees
-     * @param fee
-     *            Fees that need to be paid.
+     * @param appId The appId to purchase
+     * @param urlName The url name of the item to purchase
+     * @param listingId Listing to purchase
+     * @param price Price without fees
+     * @param fee Fees that need to be paid.
      */
     public BuyOrder(int appId, String urlName, String listingId, int price, int fee) {
         super(appId, urlName);

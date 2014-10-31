@@ -7,7 +7,6 @@ import java.util.Set;
 
 /**
  * @author Paul van Assen
- *
  */
 public interface MarketPageService {
 
@@ -24,12 +23,11 @@ public interface MarketPageService {
      * @return Outstanding items
      */
     MarketPage getOutstandings();
-    
+
     /**
      * Remove an active listing
      *
-     * @param listingId
-     *            Listing to remove
+     * @param listingId Listing to remove
      * @return True if succesful removed
      */
     boolean removeListing(String listingId);

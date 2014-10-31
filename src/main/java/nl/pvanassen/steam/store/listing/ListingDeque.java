@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
  * A fifo buffer for listings that will filter out any duplicates.
  * 
  * @author Paul van Assen
- *
  */
 public class ListingDeque implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -24,8 +23,7 @@ public class ListingDeque implements Runnable {
     /**
      * Constructor with a time to keep items in a map to prevent duplicates
      * 
-     * @param keepTime
-     *            Time in miliseconds
+     * @param keepTime Time in miliseconds
      */
     public ListingDeque(int keepTime) {
         Thread thread = new Thread(this, "ListingDeque-cleanup");
@@ -77,8 +75,7 @@ public class ListingDeque implements Runnable {
      * Takes first item
      * 
      * @return The first element in the fifo deque.
-     * @throws InterruptedException
-     *             If during the wait the thread is interupted.
+     * @throws InterruptedException If during the wait the thread is interupted.
      */
     public Listing takeFirst() throws InterruptedException {
         Listing listing = deque.takeFirst();

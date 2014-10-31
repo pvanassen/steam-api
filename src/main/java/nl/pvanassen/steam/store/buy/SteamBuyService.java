@@ -12,6 +12,11 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Service for buying items on steam
+ * 
+ * @author Paul van Assen
+ */
 public class SteamBuyService implements BuyService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -19,16 +24,11 @@ public class SteamBuyService implements BuyService {
     private final String username;
 
     /**
-     * @param http
-     *            For mocking
+     * @param http For mocking
+     * @param username The username
      */
     public SteamBuyService(Http http, String username) {
         this.http = http;
-        this.username = username;
-    }
-
-    public SteamBuyService(String cookies, String username) {
-        http = Http.getInstance(cookies, username);
         this.username = username;
     }
 

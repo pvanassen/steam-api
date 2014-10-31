@@ -6,7 +6,6 @@ import nl.pvanassen.steam.error.SteamException;
  * Exception while trying to sell the item
  * 
  * @author Paul van Assen
- *
  */
 public class SellException extends SteamException {
     private final boolean itemNotInInventory;
@@ -21,6 +20,9 @@ public class SellException extends SteamException {
         itemNotInInventory = ((error != null) && error.contains("found in inventory"));
     }
 
+    /**
+     * @return True if the item is missing from the inventory
+     */
     public boolean isItemNotInInventory() {
         return itemNotInInventory;
     }

@@ -8,7 +8,6 @@ import nl.pvanassen.steam.store.common.Item;
  * Item listed in the market
  * 
  * @author Paul van Assen
- *
  */
 public class OutstandingItem extends Item {
 

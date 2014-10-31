@@ -4,6 +4,11 @@ import java.util.Date;
 
 import nl.pvanassen.steam.store.common.Item;
 
+/**
+ * Represents a sales row in the steam history
+ * 
+ * @author Paul van Assen
+ */
 public class Sale extends HistoryRow {
     private final Item item;
     private final int contextId;

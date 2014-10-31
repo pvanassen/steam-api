@@ -13,8 +13,7 @@ public final class AmountHelper {
     /**
      * Convert the html amount string to the amount in cents
      *
-     * @param html
-     *            Html text
+     * @param html Html text
      * @return Amount in cents
      */
     public static int getAmount(String html) {

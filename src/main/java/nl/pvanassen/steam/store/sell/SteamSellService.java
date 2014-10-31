@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Paul van Assen
- *
  */
 public class SteamSellService implements SellService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -22,16 +21,12 @@ public class SteamSellService implements SellService {
     private final String username;
 
     /**
-     * @param http
-     *            For mocking
+     * @param http For mocking
+     * @param username Username for referals
      */
     public SteamSellService(Http http, String username) {
         this.http = http;
         this.username = username;
-    }
-
-    public SteamSellService(String cookies, String username) {
-        this(Http.getInstance(cookies, username), username);
     }
 
     @Override

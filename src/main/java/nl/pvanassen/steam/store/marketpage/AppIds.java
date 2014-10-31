@@ -6,7 +6,17 @@ import nl.pvanassen.steam.http.Http;
 
 import com.google.common.collect.ImmutableSet;
 
+/**
+ * Holder for known app ids
+ * 
+ * @author Paul van Assen
+ */
 public final class AppIds {
+    /**
+     * Getter for the known app ids
+     * 
+     * @return An unsorted set of known app ids
+     */
     public static Set<Integer> getAppids() {
         return APP_IDS.ids;
     }

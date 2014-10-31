@@ -14,8 +14,7 @@ public final class UrlNameHelper {
     /**
      * Make sure urlName is uniform
      * 
-     * @param urlName
-     *            Url name, encoded or not.
+     * @param urlName Url name, encoded or not.
      * @return Uniform url
      */
     public static String getUrlName(String urlName) {

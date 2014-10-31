@@ -4,7 +4,6 @@ package nl.pvanassen.steam.store.buyorder;
  * Status of a previously made buy order
  * 
  * @author Paul van Assen
- *
  */
 public class BuyOrderStatus {
     private final boolean success;

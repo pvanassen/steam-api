@@ -2,6 +2,11 @@ package nl.pvanassen.steam.store.history;
 
 import java.util.Date;
 
+/**
+ * A row in the steam history
+ * 
+ * @author Paul van Assen
+ */
 public class HistoryRow {
     private final String rowName;
     private final Date listed;

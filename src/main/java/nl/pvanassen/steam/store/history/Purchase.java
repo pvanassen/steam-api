@@ -4,6 +4,11 @@ import java.util.Date;
 
 import nl.pvanassen.steam.store.common.Item;
 
+/**
+ * The purchase of an item
+ * 
+ * @author Paul van Assen
+ */
 public class Purchase extends HistoryRow {
     private final Item item;
     private final int contextId;

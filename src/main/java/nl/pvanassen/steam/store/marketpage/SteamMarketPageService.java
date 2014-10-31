@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Paul van Assen
- *
  */
 public class SteamMarketPageService implements MarketPageService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -22,16 +21,13 @@ public class SteamMarketPageService implements MarketPageService {
     private final String username;
 
     /**
-     * @param http
-     *            For mocking
+     * @param http For mocking
+     * @param username The username of the owner of this service. This is used
+     *            to calculate the referer
      */
     public SteamMarketPageService(Http http, String username) {
         this.http = http;
         this.username = username;
-    }
-
-    public SteamMarketPageService(String cookies, String username) {
-        this(Http.getInstance(cookies, username), username);
     }
 
     @Override
@@ -50,7 +46,7 @@ public class SteamMarketPageService implements MarketPageService {
     /**
      * {@inheritDoc}
      *
-     * @see nl.pvanassen.steam.store.StoreService#getOutstandings()
+     * @see nl.pvanassen.steam.store.marketpage.MarketPageService#getOutstandings()
      */
     @Override
     public MarketPage getOutstandings() {
@@ -64,7 +60,7 @@ public class SteamMarketPageService implements MarketPageService {
         }
         return handle.getOutstandings();
     }
-    
+
     /**
      * {@inheritDoc}
      *
