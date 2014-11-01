@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Paul van Assen
  */
-public class ListingDeque implements Runnable {
+public final class ListingDeque implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final BlockingDeque<Listing> deque = new LinkedBlockingDeque<>();
     private final Map<String, Long> processedMap = new HashMap<>();
