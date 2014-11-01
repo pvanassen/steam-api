@@ -101,7 +101,7 @@
 	<scm>
 		<connection>scm:git:git@github.com:pvanassen/steam-api.git</connection>
 		<developerConnection>scm:git:git@github.com:pvanassen/steam-api.git</developerConnection>
-		<tag>steam-api-1.0.2</tag>
+		<tag>HEAD</tag>
 		<url>https://github.com/pvanassen/steam-api</url>
 	</scm>
 	<issueManagement>
