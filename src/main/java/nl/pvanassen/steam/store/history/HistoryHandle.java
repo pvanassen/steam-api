@@ -231,6 +231,9 @@ class HistoryHandle extends DefaultHandle {
                     if (!"".equals(priceStr)) {
                         price = AmountHelper.getAmount(priceStr);
                     }
+                    if (status == null) {
+                        continue;
+                    }
                     switch (status) {
                         case BOUGHT:
                             purchases.add(new Purchase(rowName, asset.appId, asset.urlName, asset.contextId, listed, acted, price, buyer));

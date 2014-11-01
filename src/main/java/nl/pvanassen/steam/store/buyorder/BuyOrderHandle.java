@@ -50,7 +50,7 @@ class BuyOrderHandle extends DefaultHandle {
         if (node == null) {
             message = "No result";
         }
-        if (node.get("message") != null) {
+        else if (node.get("message") != null) {
             message = node.get("message").asText();
         }
         else {

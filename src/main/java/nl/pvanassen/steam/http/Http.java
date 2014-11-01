@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
@@ -12,10 +13,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.cookie.Cookie;
@@ -35,6 +33,9 @@ import org.slf4j.LoggerFactory;
  * @author Paul van Assen
  */
 public class Http {
+
+    private static final int TIMEOUT = 15000;
+    private final Map<AbstractExecutionAwareRequest, Long> connectionsToWatch = new HashMap<>();
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final RequestConfig globalConfig;
     private final HttpClientContext context;
@@ -57,6 +58,11 @@ public class Http {
         context = HttpClientContext.create();
         this.username = username;
         init();
+        WatchDog watchDog = new WatchDog(connectionsToWatch);
+        Thread watchDogThread = new Thread(watchDog, "watchDog-Thread-" + username);
+        watchDogThread.setPriority(Thread.MIN_PRIORITY);
+        watchDogThread.setDaemon(true);
+        watchDogThread.start();
     }
 
     private void addHeaders(AbstractHttpMessage httpMessage, String referer) {
@@ -125,8 +131,10 @@ public class Http {
         if (logger.isInfoEnabled()) {
             logger.info("Executing request with cookies: " + getCookies());
         }
-        try (CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
+        connectionsToWatch.put(httpget, System.currentTimeMillis() + TIMEOUT);
+        try (CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build(); 
                 CloseableHttpResponse response = httpclient.execute(httpget, context)) {
+            connectionsToWatch.remove(httpget);
             HttpEntity entity = response.getEntity();
             if (entity == null) {
                 return;
