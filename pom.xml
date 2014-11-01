@@ -74,7 +74,7 @@
 	</parent>
 	<artifactId>steam-api</artifactId>
 	<groupId>nl.pvanassen.steam</groupId>
-	<version>1.0.3-SNAPSHOT</version>
+	<version>1.0.2</version>
 	<description>A Java API to access the Steam community market through the HTTP interface. This may be against the TOS so be careful using it!</description>
 	<url>http://www.pvanassen.nl</url>
 	<organization>
@@ -101,7 +101,7 @@
 	<scm>
 		<connection>scm:git:git@github.com:pvanassen/steam-api.git</connection>
 		<developerConnection>scm:git:git@github.com:pvanassen/steam-api.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>steam-api-1.0.2</tag>
 		<url>https://github.com/pvanassen/steam-api</url>
 	</scm>
 	<issueManagement>
