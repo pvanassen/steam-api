@@ -49,7 +49,7 @@ class SteamService implements StoreService {
     /**
      * @param http For mocking
      */
-    SteamService(Http http, String username) {
+    private SteamService(Http http, String username) {
         appIds = ImmutableSet.copyOf(AppIds.getAppids());
         this.http = http;
         loginService = new SteamLoginService(http);
