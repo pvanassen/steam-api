@@ -35,7 +35,7 @@ public class SteamBuyService implements BuyService {
     @Override
     public BuyResult buy(BuyOrder buyOrder) {
         int fee = buyOrder.getFee();
-        int subTotal = buyOrder.getPrice();
+        int subTotal = buyOrder.getSubTotal();
         String listingId = buyOrder.getListingId();
         Map<String, String> params = new HashMap<>();
         params.put("currency", "3");

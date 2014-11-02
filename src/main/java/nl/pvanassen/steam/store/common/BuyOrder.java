@@ -7,7 +7,7 @@ package nl.pvanassen.steam.store.common;
  */
 public class BuyOrder extends Item {
     private final String listingId;
-    private final int price;
+    private final int subTotal;
     private final int fee;
 
     /**
@@ -16,13 +16,13 @@ public class BuyOrder extends Item {
      * @param appId The appId to purchase
      * @param urlName The url name of the item to purchase
      * @param listingId Listing to purchase
-     * @param price Price without fees
+     * @param subTotal Price without fees
      * @param fee Fees that need to be paid.
      */
-    public BuyOrder(int appId, String urlName, String listingId, int price, int fee) {
+    public BuyOrder(int appId, String urlName, String listingId, int subTotal, int fee) {
         super(appId, urlName);
         this.listingId = listingId;
-        this.price = price;
+        this.subTotal = subTotal;
         this.fee = fee;
     }
 
@@ -41,9 +41,9 @@ public class BuyOrder extends Item {
     }
 
     /**
-     * @return The price to pay
+     * @return The price without fee
      */
-    public int getPrice() {
-        return price;
+    public int getSubTotal() {
+        return subTotal;
     }
 }
