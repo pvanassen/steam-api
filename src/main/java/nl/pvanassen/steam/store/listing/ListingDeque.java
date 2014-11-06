@@ -40,12 +40,12 @@ public final class ListingDeque implements Runnable {
     void offerFirst(Listing listing) {
         logger.info("Adding " + listing.getListingId());
         if (processedMap.containsKey(listing.getListingId())) {
-            logger.info("Listing already known. " + listing.getListingId());
+            logger.debug("Listing already known. " + listing.getListingId());
             return;
         }
-        processedMap.put(listing.getListingId(), System.currentTimeMillis());
         deque.offerFirst(listing);
-        logger.info("Added " + listing.getListingId());
+        processedMap.put(listing.getListingId(), System.currentTimeMillis());
+        logger.debug("Added " + listing.getListingId());
     }
 
     @Override
