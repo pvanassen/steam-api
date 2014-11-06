@@ -1,7 +1,9 @@
 package nl.pvanassen.steam.store.listing;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.common.Listing;
@@ -12,21 +14,31 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.io.ByteStreams;
+
 class ListingHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ObjectMapper objectMapper;
     private final ListingDeque listings;
     private final String country;
-
+    private final Charset charset;
+    
     ListingHandle(ObjectMapper objectMapper, ListingDeque listings, String country) {
         this.objectMapper = objectMapper;
         this.listings = listings;
         this.country = country;
+        this.charset = Charset.forName("UTF-8");
     }
 
     @Override
     public void handle(InputStream stream) throws IOException {
-        JsonNode node = objectMapper.readTree(stream);
+        stream.skip(25000L);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(40000);
+        ByteStreams.copy(stream, baos);
+        String content = new String(baos.toByteArray(), charset);
+        int start = content.indexOf("\"listinginfo\"");
+        String contentToRead = "{".concat(content.substring(start));
+        JsonNode node = objectMapper.readTree(contentToRead);
         JsonNode assets = node.get("assets");
         for (JsonNode listing : node.get("listinginfo")) {
             int appId = listing.get("asset").get("appid").asInt();
