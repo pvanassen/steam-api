@@ -38,7 +38,6 @@ class ListingHandle extends DefaultHandle {
                     logger.warn("Sometimes Steam send 0 price. Skipping");
                     continue;
                 }
-                // {"listingid":"433794590119727101","price":4189,"fee":627,"publisher_fee_app":570,"publisher_fee_percent":"0.10000000149011612","currencyid":"2005","steam_fee":209,"publisher_fee":418,"converted_price":83,"converted_fee":12,"converted_currencyid":"2003","converted_steam_fee":4,"converted_publisher_fee":8,"asset":{"currency":0,"appid":570,"contextid":"2","id":"4777283634","amount":"1"}},
                 listings.offerFirst(new Listing(appId, urlName, listing.get("listingid").asText(), listing.get("converted_price").asInt(), listing.get("converted_fee").asInt(),
                         listing.get("converted_steam_fee").asInt(), listing.get("converted_publisher_fee").asInt(), listing.get("publisher_fee_app").asInt(), listing.get(
                                 "publisher_fee_percent").asDouble(), country));
