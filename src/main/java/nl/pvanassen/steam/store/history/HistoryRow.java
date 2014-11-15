@@ -70,14 +70,14 @@ public class HistoryRow {
      * @return the acted
      */
     public final Date getActed() {
-        return acted;
+        return new Date(acted.getTime());
     }
 
     /**
      * @return the listed
      */
     public final Date getListed() {
-        return listed;
+        return new Date(listed.getTime());
     }
 
     /**
