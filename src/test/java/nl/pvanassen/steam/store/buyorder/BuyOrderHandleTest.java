@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;

@@ -21,10 +21,12 @@ public class ListingPageScriptHandle extends DefaultHandle {
     private JsonNode listingInfo;
     private JsonNode priceHistoryInfo;
     private boolean error;
+    private boolean buyOrders;
 
     ListingPageScriptHandle(ObjectMapper om) {
         this.om = om;
         error = false;
+        buyOrders = false;
     }
 
     JsonNode getListingInfo() {
@@ -40,8 +42,15 @@ public class ListingPageScriptHandle extends DefaultHandle {
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         boolean listingFound = false;
         boolean salesFound = false;
+        boolean buyOrdersFound = false;
         String line;
         while ((line = reader.readLine()) != null) {
+            if (!buyOrdersFound) {
+                if (line.indexOf("market_commodity_order_block") > -1) {
+                    buyOrders = true;
+                    buyOrdersFound = true;
+                }
+            }
             if (!listingFound) {
                 int listingStart = line.indexOf("g_rgListingInfo");
                 if (listingStart > -1) {
@@ -73,5 +82,9 @@ public class ListingPageScriptHandle extends DefaultHandle {
 
     boolean isError() {
         return error;
+    }
+    
+    public boolean isBuyOrders() {
+        return buyOrders;
     }
 }

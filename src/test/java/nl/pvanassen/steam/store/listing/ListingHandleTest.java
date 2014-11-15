@@ -28,13 +28,13 @@ public class ListingHandleTest {
         List<Listing> listings = new ArrayList<>(listingQueue.getDeque());
         assertEquals(10, listings.size());
         assertEquals(730, listings.get(9).getAppId());
-        assertEquals("eSports%20Case", listings.get(9).getUrlName());
+        assertEquals("eSports%202014%20Summer%20Case", listings.get(9).getUrlName());
         assertEquals(2, listings.get(9).getFee());
         assertEquals(1, listings.get(9).getPublisherFee());
         assertEquals(730, listings.get(9).getPublisherFeeApp());
-        assertEquals("2854460461479367720", listings.get(9).getListingId());
+        assertEquals("443930322874172198", listings.get(9).getListingId());
         assertEquals(1, listings.get(9).getSteamFee());
-        assertEquals(16, listings.get(9).getSubTotal());
+        assertEquals(4, listings.get(9).getSubTotal());
     }
 
     public void testPerformance() throws IOException {

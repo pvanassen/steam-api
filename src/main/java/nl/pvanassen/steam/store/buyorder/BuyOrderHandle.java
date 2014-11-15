@@ -7,8 +7,11 @@ import nl.pvanassen.steam.http.DefaultHandle;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class BuyOrderHandle extends DefaultHandle {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ObjectMapper objectMapper;
     private boolean error;
     private String message;
@@ -34,7 +37,8 @@ class BuyOrderHandle extends DefaultHandle {
     @Override
     public void handle(InputStream stream) throws IOException {
         JsonNode node = objectMapper.readTree(stream);
-        if (!node.get("success").asBoolean()) {
+        logger.info(node.toString());
+        if (node.get("success").asInt() != 1) {
             error = true;
             message = "Unknown";
         }

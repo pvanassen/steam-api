@@ -2,7 +2,6 @@ package nl.pvanassen.steam.store.marketpage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -17,8 +16,7 @@ public class MarketPageHandleTest {
         assertNotNull("Expected object", handle.getOutstandings());
         assertEquals("Expected 0", 0, handle.getOutstandings().getAmount());
         assertEquals("Expected 0", 0, handle.getOutstandings().getItems());
-        assertNotNull(handle.getItems());
-        assertNotNull(handle.getOutstandings().getAppIds());
+        assertNotNull(handle.getOutstandings().getItemList());
     }
 
     @Test
@@ -28,16 +26,15 @@ public class MarketPageHandleTest {
         assertNotNull("Expected object", handle.getOutstandings());
         assertEquals("Expected 155", 155, handle.getOutstandings().getAmount());
         assertEquals("Expected 1", 1, handle.getOutstandings().getItems());
-        assertNotNull(handle.getItems());
-        assertEquals(1, handle.getItems().size());
-        assertNotNull(handle.getOutstandings().getAppIds());
-        assertTrue(handle.getOutstandings().getAppIds().contains(238460));
-        assertTrue(handle.getOutstandings().getAppIds().contains(730));
-        assertTrue(handle.getOutstandings().getAppIds().contains(570));
-        assertTrue(handle.getOutstandings().getAppIds().contains(238960));
-        assertTrue(handle.getOutstandings().getAppIds().contains(753));
-        assertTrue(handle.getOutstandings().getAppIds().contains(440));
-        assertTrue(handle.getOutstandings().getAppIds().contains(230410));
+        assertNotNull(handle.getOutstandings().getItemList());
+        assertEquals(1, handle.getOutstandings().getItemList().size());
     }
 
+    @Test
+    public void testBuyOrders() throws IOException {
+        MarketPageHandle handle = new MarketPageHandle();
+        handle.handle(getClass().getResourceAsStream("/market-page-with-buy-orders.html"));
+        assertNotNull("Expected object", handle.getOutstandings().getMarketPageBuyOrders());
+        assertEquals("Expected 198", 198, handle.getOutstandings().getMarketPageBuyOrders().size());
+    }
 }

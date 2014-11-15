@@ -119,7 +119,7 @@ class OverviewHandle extends DefaultHandle {
                 String name = nameSpan.getTextContent();
                 Node gameNameSpan = (Node) GAMENAME_XPATH.evaluate(node, XPathConstants.NODE);
                 String gameName = gameNameSpan.getTextContent();
-                genericHandle.handle(new OverviewItem(appId, name, urlName, currentOffers, currentPrice, gameName, steamId));
+                genericHandle.handle(new OverviewItem(appId, name, urlName, currentOffers, currentPrice, gameName, steamId, false));
             }
 
         }

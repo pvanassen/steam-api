@@ -66,7 +66,7 @@ public class SteamItemService implements ItemService {
      *      nl.pvanassen.steam.store.GenericHandle)
      */
     @Override
-    public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle) {
+    public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle, GenericHandle<Boolean> buyOrders) {
         String url = "http://steamcommunity.com/market/listings/" + appId + "/" + urlName;
         ListingPageScriptHandle handle = new ListingPageScriptHandle(objectMapper);
         try {
@@ -79,6 +79,7 @@ public class SteamItemService implements ItemService {
         if (handle.isError()) {
             throw new SteamException("Error getting data for url: " + url);
         }
+        buyOrders.handle(handle.isBuyOrders());
         JsonNode priceHistoryInfo = handle.getPriceHistoryInfo();
         for (StatDataPoint point : new ListingStatDataPointIterator(priceHistoryInfo)) {
             dataPointHandle.handle(point);

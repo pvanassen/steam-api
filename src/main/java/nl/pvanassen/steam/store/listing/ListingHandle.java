@@ -32,11 +32,14 @@ class ListingHandle extends DefaultHandle {
 
     @Override
     public void handle(InputStream stream) throws IOException {
-        stream.skip(25000L);
+        stream.skip(2500L);
         ByteArrayOutputStream baos = new ByteArrayOutputStream(40000);
         ByteStreams.copy(stream, baos);
         String content = new String(baos.toByteArray(), charset);
         int start = content.indexOf("\"listinginfo\"");
+        if (start == -1) {
+            return;
+        }
         String contentToRead = "{".concat(content.substring(start));
         JsonNode node = objectMapper.readTree(contentToRead);
         JsonNode assets = node.get("assets");

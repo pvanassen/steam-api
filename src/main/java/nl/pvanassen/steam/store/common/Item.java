@@ -5,7 +5,7 @@ package nl.pvanassen.steam.store.common;
  *
  * @author Paul van Assen
  */
-public abstract class Item {
+public class Item {
     private final int appId;
     private final String urlName;
 
@@ -15,7 +15,7 @@ public abstract class Item {
      * @param appId App id of the item
      * @param urlName Url name of the item
      */
-    protected Item(int appId, String urlName) {
+    public Item(int appId, String urlName) {
         this.appId = appId;
         this.urlName = urlName;
     }

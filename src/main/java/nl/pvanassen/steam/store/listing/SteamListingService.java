@@ -39,7 +39,7 @@ public class SteamListingService implements ListingService {
     public void getAsyncNewlyListed(int currency, String country, ListingDeque queue) {
         try {
             ListingHandle handle = new ListingHandle(objectMapper, queue, country);
-            http.get("http://steamcommunity.com/market/recent?currency=" + currency + "&country=" + country + "&language=english", handle);
+            http.get("http://steamcommunity.com/market/recent?currency=" + System.currentTimeMillis() + "&currency=" + currency + "&country=" + country + "&language=english", handle);
         }
         catch (IOException e) {
             logger.error("Error getting inventory", e);
@@ -58,7 +58,7 @@ public class SteamListingService implements ListingService {
         try {
             ListingDeque listing = new ListingDeque(60000);
             ListingHandle handle = new ListingHandle(objectMapper, listing, country);
-            http.get("http://steamcommunity.com/market/recent?currency=" + currency + "&country=" + country + "&language=english", handle);
+            http.get("http://steamcommunity.com/market/recent?currency=" + System.currentTimeMillis() + "&currency=" + currency + "&country=" + country + "&language=english", handle);
             return listing.getDeque();
         }
         catch (IOException e) {

@@ -1,10 +1,8 @@
 package nl.pvanassen.steam.store.marketpage;
 
 import java.util.List;
-import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Outstanding items
@@ -16,14 +14,19 @@ public class MarketPage {
     private final int items;
     private final int amount;
     private final List<OutstandingItem> itemList;
-    private final Set<Integer> appIds;
+    private final List<MarketPageBuyOrder> marketPageBuyOrders;
 
-    MarketPage(int wallet, int items, int amount, List<OutstandingItem> itemList, Set<Integer> appIds) {
+    MarketPage(int wallet, int items, int amount, List<OutstandingItem> itemList, List<MarketPageBuyOrder> marketPageBuyOrders) {
         this.wallet = wallet;
         this.items = items;
         this.amount = amount;
         this.itemList = ImmutableList.copyOf(itemList);
-        this.appIds = ImmutableSet.copyOf(appIds);
+        if (marketPageBuyOrders == null) {
+            this.marketPageBuyOrders = ImmutableList.of();
+        }
+        else {
+            this.marketPageBuyOrders = ImmutableList.copyOf(marketPageBuyOrders);
+        }
     }
 
     /**
@@ -31,13 +34,6 @@ public class MarketPage {
      */
     public int getAmount() {
         return amount;
-    }
-
-    /**
-     * @return App ids
-     */
-    public Set<Integer> getAppIds() {
-        return appIds;
     }
 
     /**
@@ -59,5 +55,12 @@ public class MarketPage {
      */
     public int getWallet() {
         return wallet;
+    }
+    
+    /**
+     * @return Status of the buy orders on the market page
+     */
+    public List<MarketPageBuyOrder> getMarketPageBuyOrders() {
+        return marketPageBuyOrders;
     }
 }

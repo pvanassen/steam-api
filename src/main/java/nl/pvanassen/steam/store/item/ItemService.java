@@ -26,6 +26,6 @@ public interface ItemService {
      * @param listingHandle If all datapoints have been processed, the listings
      *            are handled through this call
      */
-    void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle);
+    void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle, GenericHandle<Boolean> buyOrders);
 
 }

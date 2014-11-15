@@ -2,6 +2,7 @@ package nl.pvanassen.steam.http;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Date;
@@ -128,8 +129,8 @@ public class Http {
     }
 
     private void handleConnection(HttpRequestBase httpget, Handle handle) throws IOException {
-        if (logger.isInfoEnabled()) {
-            logger.info("Executing request with cookies: " + getCookies());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Executing request with cookies: " + getCookies());
         }
         connectionsToWatch.put(httpget, System.currentTimeMillis() + TIMEOUT);
         try (CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build(); 
@@ -189,7 +190,7 @@ public class Http {
      * @throws IOException if a network error occurs
      */
     public void post(String url, Map<String, String> params, Handle handle, String referer) throws IOException {
-        post(url, params, handle, referer, true);
+        post(url, params, handle, referer, true, false);
     }
 
     /**
@@ -201,13 +202,18 @@ public class Http {
      *            in the case of login, don't fail on it not being present
      * @throws IOException if a network error occurs
      */
-    public void post(String url, Map<String, String> params, Handle handle, String referer, boolean sessionRequired) throws IOException {
+    public void post(String url, Map<String, String> params, Handle handle, String referer, boolean sessionRequired, boolean reencode) throws IOException {
         HttpPost httpPost = new HttpPost(url);
         addHeaders(httpPost, referer);
         String sessionid = getSessionId();
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : params.entrySet()) {
-            sb.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), "UTF-8")).append("&");
+            if (reencode) {
+                sb.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), "UTF-8")).append("&");
+            }
+            else {
+                sb.append(entry.getKey()).append("=").append(URLDecoder.decode(entry.getValue(), "UTF-8").replaceAll(" ", "+")).append("&");
+            }
         }
         if (sessionRequired) {
             sb.append("sessionid").append("=").append(sessionid);
@@ -215,6 +221,9 @@ public class Http {
                 logger.error("Error, sessionid empty");
                 return;
             }
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("Sending POST to " + url + " with parameters " + sb.toString());
         }
         httpPost.setEntity(new StringEntity(sb.toString(), ContentType.create("application/x-www-form-urlencoded", "UTF-8")));
         handleConnection(httpPost, handle);

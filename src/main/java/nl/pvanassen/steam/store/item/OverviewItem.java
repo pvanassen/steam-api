@@ -14,14 +14,16 @@ public class OverviewItem extends Item {
     private final int currentPrice;
     private final String gameName;
     private final String steamId;
+    private final boolean buyOrders;
 
-    OverviewItem(int appId, String itemName, String urlName, int currentOffers, int currentPrice, String gameName, String steamId) {
+    OverviewItem(int appId, String itemName, String urlName, int currentOffers, int currentPrice, String gameName, String steamId, boolean buyOrders) {
         super(appId, urlName);
         this.itemName = itemName;
         this.currentOffers = currentOffers;
         this.currentPrice = currentPrice;
         this.gameName = gameName;
         this.steamId = steamId;
+        this.buyOrders = buyOrders;
     }
 
     /**
@@ -57,5 +59,9 @@ public class OverviewItem extends Item {
      */
     public String getSteamId() {
         return steamId;
+    }
+    
+    public boolean isBuyOrders() {
+        return buyOrders;
     }
 }
