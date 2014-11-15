@@ -68,50 +68,121 @@ class SteamService implements StoreService {
         this(Http.getInstance(cookies, username), username);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getAppIds()
+     */
+    @Override
     public Set<Integer> getAppIds() {
         return appIds;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getBuyService()
+     */
+    @Override
     public BuyService getBuyService() {
         return buyService;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getBuyOrderService()
+     */
+    @Override
     public BuyOrderService getBuyOrderService() {
         return buyOrderService;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getHistoryService()
+     */
+    @Override
     public HistoryService getHistoryService() {
         return historyService;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getInventoryService()
+     */
+    @Override
     public InventoryService getInventoryService() {
         return inventoryService;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getListingService()
+     */
+    @Override
     public ListingService getListingService() {
         return listingService;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getItemService()
+     */
+    @Override
     public ItemService getItemService() {
         return itemService;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getLoginService()
+     */
+    @Override
     public LoginService getLoginService() {
         return loginService;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getMarketPageService()
+     */
+    @Override
     public MarketPageService getMarketPageService() {
         return marketPageService;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getSellService()
+     */
+    @Override
     public SellService getSellService() {
         return sellService;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getTradeofferService()
+     */
+    @Override
     public TradeofferService getTradeofferService() {
         return tradeofferService;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getCookies()
+     */
     @Override
     public String getCookies() {
         return http.getCookies();
