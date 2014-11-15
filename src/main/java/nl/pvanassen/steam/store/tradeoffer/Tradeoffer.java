@@ -16,15 +16,24 @@ public class Tradeoffer {
         this.offerId = offerId;
         this.comment = comment;
     }
-
+    
+    /**
+     * @return Comment supplied with the trade offer
+     */
     public String getComment() {
         return comment;
     }
 
+    /**
+     * @return The offer id
+     */
     public String getOfferId() {
         return offerId;
     }
 
+    /**
+     * @return Partner involved
+     */
     public String getPartnerId() {
         return partnerId;
     }
