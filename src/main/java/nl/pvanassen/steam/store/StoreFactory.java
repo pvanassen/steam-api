@@ -10,6 +10,11 @@ import java.util.Map;
  * @author Paul van Assen
  */
 public class StoreFactory {
+    
+    private StoreFactory() {
+        super();
+    }
+    
     /**
      * Factory method for getting a store instance
      *

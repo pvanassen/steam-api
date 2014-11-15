@@ -16,6 +16,10 @@ public class XPathHelper {
     private static final XPathFactory XPATH_FACTORY = XPathFactory.newInstance();
     private static final XPath XPATH = XPATH_FACTORY.newXPath();
     
+    private XPathHelper() {
+        super();
+    }
+    
     /**
      * Generate xpath expression from string
      * @param xpath Xpath
