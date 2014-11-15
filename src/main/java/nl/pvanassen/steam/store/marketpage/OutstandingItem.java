@@ -44,7 +44,7 @@ public class OutstandingItem extends Item {
      * @return Listed since date
      */
     public Date getListedSince() {
-        return listedSince;
+        return new Date(listedSince.getTime());
     }
 
     /**
