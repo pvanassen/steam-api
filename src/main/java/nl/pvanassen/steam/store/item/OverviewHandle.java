@@ -9,6 +9,7 @@ import javax.xml.xpath.*;
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.GenericHandle;
 import nl.pvanassen.steam.store.helper.AmountHelper;
+import nl.pvanassen.steam.store.xpath.XPathHelper;
 
 import org.apache.html.dom.HTMLDocumentImpl;
 import org.codehaus.jackson.JsonNode;
@@ -25,45 +26,17 @@ import org.xml.sax.SAXException;
 
 class OverviewHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private static final XPathFactory XPATH_FACTORY = XPathFactory.newInstance();
-    private static final XPath XPATH = XPATH_FACTORY.newXPath();
-    private static final XPathExpression ROW_XPATH;
-    private static final XPathExpression PRICE_XPATH;
-    private static final XPathExpression OFFERINGS_XPATH;
-    private static final XPathExpression NAME_XPATH;
-    private static final XPathExpression GAMENAME_XPATH;
 
-    static {
-        XPathExpression rowXpath = null;
-        XPathExpression priceXpath = null;
-        XPathExpression offeringsXpath = null;
-        XPathExpression nameXpath = null;
-        XPathExpression gameNameXpath = null;
-        try {
-            rowXpath = XPATH.compile("//A[@class='market_listing_row_link']");
-            priceXpath = XPATH.compile(".//DIV[@class='market_listing_right_cell market_listing_their_price']/SPAN/SPAN");
-            offeringsXpath = XPATH.compile(".//DIV[@class='market_listing_right_cell market_listing_num_listings']/SPAN/SPAN");
-            nameXpath = XPATH.compile(".//DIV[@class='market_listing_item_name_block']/SPAN[@class='market_listing_item_name']");
-            gameNameXpath = XPATH.compile(".//DIV[@class='market_listing_item_name_block']/SPAN[@class='market_listing_game_name']");
-        }
-        catch (XPathExpressionException e) {
-            LoggerFactory.getLogger(OverviewHandle.class).error("Error instantiating XPATH", e);
-        }
-        ROW_XPATH = rowXpath;
-        PRICE_XPATH = priceXpath;
-        OFFERINGS_XPATH = offeringsXpath;
-        NAME_XPATH = nameXpath;
-        GAMENAME_XPATH = gameNameXpath;
-    }
+    private static final XPathExpression ROW_XPATH = XPathHelper.getXpathExpression("//A[@class='market_listing_row_link']");
+    private static final XPathExpression PRICE_XPATH = XPathHelper.getXpathExpression(".//DIV[@class='market_listing_right_cell market_listing_their_price']/SPAN/SPAN");
+    private static final XPathExpression OFFERINGS_XPATH = XPathHelper.getXpathExpression(".//DIV[@class='market_listing_right_cell market_listing_num_listings']/SPAN/SPAN");
+    private static final XPathExpression NAME_XPATH = XPathHelper.getXpathExpression(".//DIV[@class='market_listing_item_name_block']/SPAN[@class='market_listing_item_name']");
+    private static final XPathExpression GAMENAME_XPATH = XPathHelper.getXpathExpression(".//DIV[@class='market_listing_item_name_block']/SPAN[@class='market_listing_game_name']");
 
     private final GenericHandle<OverviewItem> genericHandle;
-
     private final ObjectMapper om;
-
     private int totalCount;
-
     private boolean error = false;
-
     private boolean lastPage = false;
 
     public OverviewHandle(GenericHandle<OverviewItem> genericHandle, ObjectMapper om) {
@@ -75,6 +48,11 @@ class OverviewHandle extends DefaultHandle {
         return totalCount;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.http.DefaultHandle#handle(java.io.InputStream)
+     */
     @Override
     public void handle(InputStream stream) throws IOException {
         error = false;

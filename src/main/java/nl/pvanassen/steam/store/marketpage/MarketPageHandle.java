@@ -24,6 +24,11 @@ class MarketPageHandle extends DefaultHandle {
         return outstandings;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.http.DefaultHandle#handle(java.io.InputStream)
+     */
     @Override
     public void handle(InputStream stream) throws IOException {
         DOMParser parser = new DOMParser();

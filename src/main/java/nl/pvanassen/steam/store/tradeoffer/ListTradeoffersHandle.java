@@ -11,6 +11,7 @@ import javax.xml.xpath.*;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.common.Item;
+import nl.pvanassen.steam.store.xpath.XPathHelper;
 
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
@@ -25,33 +26,10 @@ class ListTradeoffersHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final List<Tradeoffer> tradeoffers = new LinkedList<>();
     private final Map<String, Item> imageToItemMapping = new HashMap<>();
-    private static final XPathFactory XPATH_FACTORY = XPathFactory.newInstance();
-    private static final XPath XPATH = XPATH_FACTORY.newXPath();
-    private static final XPathExpression TRADE_OFFERS_XPATH;
-    private static final XPathExpression PARTNERID_XPATH;
-    private static final XPathExpression OFFER_XPATH;
-    private static final XPathExpression QUOTE_XPATH;
-
-    static {
-        XPathExpression tradeOffers = null;
-        XPathExpression partnerId = null;
-        XPathExpression offerId = null;
-        XPathExpression quote = null;
-
-        try {
-            tradeOffers = XPATH.compile("//DIV[@class='tradeoffer']");
-            partnerId = XPATH.compile("//DIV[@class='tradeoffer_partner']/DIV");
-            offerId = XPATH.compile("//DIV[@class='link_overlay']");
-            quote = XPATH.compile("//DIV[@class='quote']");
-        }
-        catch (XPathExpressionException e) {
-            LoggerFactory.getLogger(ListTradeoffersHandle.class).error("Error instantiating XPATH", e);
-        }
-        TRADE_OFFERS_XPATH = tradeOffers;
-        PARTNERID_XPATH = partnerId;
-        OFFER_XPATH = offerId;
-        QUOTE_XPATH = quote;
-    }
+    private static final XPathExpression TRADE_OFFERS_XPATH = XPathHelper.getXpathExpression("//DIV[@class='tradeoffer']");
+    private static final XPathExpression PARTNERID_XPATH = XPathHelper.getXpathExpression("//DIV[@class='tradeoffer_partner']/DIV");
+    private static final XPathExpression OFFER_XPATH = XPathHelper.getXpathExpression("//DIV[@class='link_overlay']");
+    private static final XPathExpression QUOTE_XPATH = XPathHelper.getXpathExpression("//DIV[@class='quote']");
 
     ListTradeoffersHandle() {
         super();
@@ -65,6 +43,11 @@ class ListTradeoffersHandle extends DefaultHandle {
         return tradeoffers;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.http.DefaultHandle#handle(java.io.InputStream)
+     */
     @Override
     public void handle(InputStream stream) throws IOException {
         DOMParser parser = new DOMParser();
