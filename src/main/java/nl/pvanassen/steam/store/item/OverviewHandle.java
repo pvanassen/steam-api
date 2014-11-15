@@ -39,7 +39,7 @@ class OverviewHandle extends DefaultHandle {
     private boolean error = false;
     private boolean lastPage = false;
 
-    public OverviewHandle(GenericHandle<OverviewItem> genericHandle, ObjectMapper om) {
+    OverviewHandle(GenericHandle<OverviewItem> genericHandle, ObjectMapper om) {
         this.genericHandle = genericHandle;
         this.om = om;
     }

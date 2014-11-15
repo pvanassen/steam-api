@@ -20,7 +20,7 @@ class MarketPageHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private MarketPage outstandings;
 
-    public MarketPage getOutstandings() {
+    MarketPage getOutstandings() {
         return outstandings;
     }
 

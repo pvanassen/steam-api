@@ -35,7 +35,7 @@ class ListTradeoffersHandle extends DefaultHandle {
         super();
     }
 
-    public Map<String, Item> getImageToItemMapping() {
+    Map<String, Item> getImageToItemMapping() {
         return imageToItemMapping;
     }
 
