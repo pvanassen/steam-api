@@ -8,7 +8,12 @@ import nl.pvanassen.steam.store.common.Item;
  * @author Paul van Assen
  */
 public class HistoryItem extends Item {
-    HistoryItem(int appId, String urlName) {
+    /**
+     * Base class for history items
+     * @param appId App id
+     * @param urlName Url name
+     */
+    protected HistoryItem(int appId, String urlName) {
         super(appId, urlName);
     }
 }

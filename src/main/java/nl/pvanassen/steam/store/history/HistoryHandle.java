@@ -13,6 +13,7 @@ import javax.xml.xpath.*;
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.helper.AmountHelper;
 import nl.pvanassen.steam.store.helper.UrlNameHelper;
+import nl.pvanassen.steam.store.xpath.XPathHelper;
 
 import org.apache.html.dom.HTMLDocumentImpl;
 import org.codehaus.jackson.JsonNode;
@@ -48,48 +49,19 @@ class HistoryHandle extends DefaultHandle {
     private final Set<ListingCreated> listingsCreated = new LinkedHashSet<>();
     private final Set<ListingRemoved> listingsRemoved = new LinkedHashSet<>();
     private final ObjectMapper om;
-    private static final XPathFactory XPATH_FACTORY = XPathFactory.newInstance();
-    private static final XPath XPATH = XPATH_FACTORY.newXPath();
-    private static final XPathExpression HISTORY_ROW_XPATH;
-    private static final XPathExpression GAIN_LOSS_XPATH;
-    private static final XPathExpression DATE_XPATH;
-    private static final XPathExpression PRICE_XPATH;
-    private static final XPathExpression BUYER_XPATH;
-
-    private static final XPathExpression ACTED_XPATH;
+    private static final XPathExpression HISTORY_ROW_XPATH = XPathHelper.getXpathExpression("//DIV[@class='market_listing_row market_recent_listing_row']");
+    private static final XPathExpression GAIN_LOSS_XPATH = XPathHelper.getXpathExpression("./DIV[@class='market_listing_left_cell market_listing_gainorloss']");
+    private static final XPathExpression DATE_XPATH = XPathHelper.getXpathExpression("./DIV[@class='market_listing_right_cell market_listing_listed_date']");
+    private static final XPathExpression PRICE_XPATH = XPathHelper.getXpathExpression("./DIV/SPAN/SPAN[@class='market_listing_price']");
+    private static final XPathExpression BUYER_XPATH = XPathHelper.getXpathExpression("./DIV/DIV[@class='market_listing_whoactedwith_name_block']");
+    private static final XPathExpression ACTED_XPATH = XPathHelper.getXpathExpression("./DIV[@class='market_listing_right_cell market_listing_whoactedwith']");
+    
     private final String lastRowId;
     private boolean error = false;
     private boolean foundRowId;
     private String latestRowId;
     private boolean savedFirstRowId = false;
-
     private int totalCount;
-
-    static {
-        XPathExpression historyRowXpath = null;
-        XPathExpression gainLossXpath = null;
-        XPathExpression dateXpath = null;
-        XPathExpression priceXpath = null;
-        XPathExpression buyerXpath = null;
-        XPathExpression actedXpath = null;
-        try {
-            historyRowXpath = XPATH.compile("//DIV[@class='market_listing_row market_recent_listing_row']");
-            gainLossXpath = XPATH.compile("./DIV[@class='market_listing_left_cell market_listing_gainorloss']");
-            dateXpath = XPATH.compile("./DIV[@class='market_listing_right_cell market_listing_listed_date']");
-            priceXpath = XPATH.compile("./DIV/SPAN/SPAN[@class='market_listing_price']");
-            buyerXpath = XPATH.compile("./DIV/DIV[@class='market_listing_whoactedwith_name_block']");
-            actedXpath = XPATH.compile("./DIV[@class='market_listing_right_cell market_listing_whoactedwith']");
-        }
-        catch (XPathExpressionException e) {
-            LoggerFactory.getLogger(HistoryHandle.class).error("Error instantiating XPATH", e);
-        }
-        HISTORY_ROW_XPATH = historyRowXpath;
-        GAIN_LOSS_XPATH = gainLossXpath;
-        DATE_XPATH = dateXpath;
-        PRICE_XPATH = priceXpath;
-        BUYER_XPATH = buyerXpath;
-        ACTED_XPATH = actedXpath;
-    }
 
     HistoryHandle(String lastRowId, ObjectMapper om) {
         super();

@@ -5,7 +5,7 @@ package nl.pvanassen.steam.store.history;
  *
  * @author Paul van Assen
  */
-public enum HistoryStatus {
+enum HistoryStatus {
     /**
      * Purchase of an item
      */

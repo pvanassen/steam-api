@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableList;
 
 class BuyOrder {
     private static final XPathExpression SECTION = XPathHelper.getXpathExpression("//DIV[@class='my_listing_section market_content_block market_home_listing_table']");
-    private static final XPathExpression BUYORDER = XPathHelper.getXpathExpression(".//DIV[@class='market_listing_row market_recent_listing_row']");
+    private static final XPathExpression BUYORDER = XPathHelper.getXpathExpression("./DIV[@class='market_listing_row market_recent_listing_row']");
     private static final XPathExpression LINK = XPathHelper.getXpathExpression(".//A[@class='market_listing_item_name_link']");
     private static final XPathExpression PRICE = XPathHelper.getXpathExpression(".//SPAN[@class='market_listing_price']");
 
