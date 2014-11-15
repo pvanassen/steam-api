@@ -200,6 +200,7 @@ public class Http {
      * @param referer Referer to pass to the server
      * @param sessionRequired Does this request require a session? If not, like
      *            in the case of login, don't fail on it not being present
+     * @param reencode Re-encode the parameter
      * @throws IOException if a network error occurs
      */
     public void post(String url, Map<String, String> params, Handle handle, String referer, boolean sessionRequired, boolean reencode) throws IOException {

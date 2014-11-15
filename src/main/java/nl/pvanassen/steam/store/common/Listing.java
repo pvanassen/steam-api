@@ -27,6 +27,19 @@ public class Listing extends Item {
 
     private final Date createdDate = new Date();
 
+    /**
+     * Listing constructor
+     * @param appId App id
+     * @param urlName Url name
+     * @param listingId Listing id (or steam id)
+     * @param subTotal Sub total of the item
+     * @param fee Total fee to pay
+     * @param steamFee Fee for steam
+     * @param publisherFee Fee for the publisher
+     * @param publisherFeeApp Who is the publisher
+     * @param publisherFeePercent Publisher fee percentage
+     * @param country Country of the listing, if known
+     */
     public Listing(int appId, String urlName, String listingId, int subTotal, int fee, int steamFee, int publisherFee, int publisherFeeApp, double publisherFeePercent,
             String country) {
         super(appId, urlName);

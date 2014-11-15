@@ -46,4 +46,63 @@ public class BuyOrder extends Item {
     public int getSubTotal() {
         return subTotal;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + fee;
+        result = prime * result + ((listingId == null) ? 0 : listingId.hashCode());
+        result = prime * result + subTotal;
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof BuyOrder)) {
+            return false;
+        }
+        BuyOrder other = (BuyOrder) obj;
+        if (fee != other.fee) {
+            return false;
+        }
+        if (listingId == null) {
+            if (other.listingId != null) {
+                return false;
+            }
+        }
+        else if (!listingId.equals(other.listingId)) {
+            return false;
+        }
+        if (subTotal != other.subTotal) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "BuyOrder [listingId=" + listingId + ", subTotal=" + subTotal + ", fee=" + fee + "]";
+    }
 }

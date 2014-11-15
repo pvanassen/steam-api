@@ -87,10 +87,16 @@ public class Purchase extends HistoryRow {
         return seller;
     }
 
+    /**
+     * @return First part of the ID
+     */
     public String getSteamId1() {
         return steamId1;
     }
 
+    /**
+     * @return Second part of the ID
+     */
     public String getSteamId2() {
         return steamId2;
     }
