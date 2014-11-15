@@ -84,7 +84,10 @@ public class ListingPageScriptHandle extends DefaultHandle {
         return error;
     }
     
-    public boolean isBuyOrders() {
+    /**
+     * @return Does this item support buy orders?
+     */
+    boolean isBuyOrders() {
         return buyOrders;
     }
 }

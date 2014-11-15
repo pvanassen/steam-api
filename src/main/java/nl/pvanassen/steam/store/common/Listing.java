@@ -90,7 +90,7 @@ public class Listing extends Item {
      * @return Date when this item was created
      */
     public Date getCreatedDate() {
-        return createdDate;
+        return new Date(createdDate.getTime());
     }
 
     /**

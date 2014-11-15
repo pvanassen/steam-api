@@ -63,6 +63,7 @@ public class SteamItemService implements ItemService {
      *
      * @see nl.pvanassen.steam.store.item.ItemService#getItem(int,
      *      java.lang.String, nl.pvanassen.steam.store.GenericHandle,
+     *      nl.pvanassen.steam.store.GenericHandle,
      *      nl.pvanassen.steam.store.GenericHandle)
      */
     @Override
