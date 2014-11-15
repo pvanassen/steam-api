@@ -45,7 +45,7 @@ public class SteamHistoryService implements HistoryService {
                 logger.error("IO error", e);
                 return getHistory(lastSteamId);
             }
-            int stepSize = 10;
+            int stepSize = optimumStepSize.getStepSize();
             if (handle.isError()) {
                 logger.error("Error in handle");
                 return getHistory(lastSteamId);
@@ -55,10 +55,10 @@ public class SteamHistoryService implements HistoryService {
             logger.info("Need to get a total of " + totalCount);
             boolean error;
             for (int start = 0; start <= totalCount; start += stepSize) {
+                if (start < 0) {
+                    start = 0;
+                }
                 do {
-                    if (start < 0) {
-                        start = 0;
-                    }
                     stepSize = optimumStepSize.getStepSize();
                     error = false;
                     logger.info("Getting from " + start + ", with stepsize " + stepSize);

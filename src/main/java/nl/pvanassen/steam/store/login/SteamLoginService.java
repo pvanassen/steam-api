@@ -28,10 +28,6 @@ public class SteamLoginService implements LoginService {
         this.http = http;
     }
 
-    public SteamLoginService(String cookies, String username) {
-        this(Http.getInstance(cookies, username));
-    }
-
     /**
      * {@inheritDoc}
      *
@@ -64,10 +60,10 @@ public class SteamLoginService implements LoginService {
             params.put("emailauth", code);
             params.put("emailsteamid", emailSteamId);
             params.put("loginfriendlyname", friendlyName);
-
             params.put("password", encryptedPasswordBase64);
             params.put("remember_login", "true");
             params.put("rsatimestamp", Long.toString(rsaHandle.getTimestamp()));
+
             http.post("https://steamcommunity.com/login/dologin/", params, doLoginHandle, "http://steamcommunity.com/id/" + user + "/inventory/", false, true);
             if (doLoginHandle.isSuccess()) {
                 // logged in
