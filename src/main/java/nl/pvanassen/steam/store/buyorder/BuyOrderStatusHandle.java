@@ -25,7 +25,6 @@ class BuyOrderStatusHandle extends DefaultHandle {
 
     @Override
     public void handle(InputStream stream) throws IOException {
-        // {"success":1,"active":1,"purchased":0,"quantity":"3","quantity_remaining":"3","purchases":[]}
         JsonNode node = objectMapper.readTree(stream);
         try {
             if (node.get("success").asInt() != 1) {

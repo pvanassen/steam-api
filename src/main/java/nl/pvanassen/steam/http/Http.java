@@ -66,7 +66,7 @@ public class Http {
         watchDogThread.start();
     }
 
-    private void addHeaders(AbstractHttpMessage httpMessage, String referer) {
+    private void addHeaders(AbstractHttpMessage httpMessage, String referer, boolean ajax) {
         httpMessage.addHeader("Accept", "*/*");
         httpMessage.addHeader("Accept-Encoding", "gzip, deflate");
         httpMessage.addHeader("Accept-Language", "en-US,en;q=0.5");
@@ -77,8 +77,10 @@ public class Http {
         httpMessage.addHeader("Pragma", "no-cache");
         httpMessage.addHeader("Referer", referer);
         httpMessage.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0");
-        // httpMessage.addHeader("X-Prototype-Version", "1.7");
-        // httpMessage.addHeader("X-Requested-With", "XMLHttpRequest");
+        if (ajax) {
+            httpMessage.addHeader("X-Prototype-Version", "1.7");
+            httpMessage.addHeader("X-Requested-With", "XMLHttpRequest");
+        }
     }
 
     /**
@@ -90,7 +92,7 @@ public class Http {
      */
     public void get(String url, Handle handle) throws IOException {
         HttpGet httpget = new HttpGet(url);
-        addHeaders(httpget, "http://steamcommunity.com/id/" + username + "/inventory/");
+        addHeaders(httpget, "http://steamcommunity.com/id/" + username + "/inventory/", false);
         handleConnection(httpget, handle);
     }
 
@@ -205,7 +207,7 @@ public class Http {
      */
     public void post(String url, Map<String, String> params, Handle handle, String referer, boolean sessionRequired, boolean reencode) throws IOException {
         HttpPost httpPost = new HttpPost(url);
-        addHeaders(httpPost, referer);
+        addHeaders(httpPost, referer, true);
         String sessionid = getSessionId();
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : params.entrySet()) {
