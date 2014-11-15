@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 
@@ -16,7 +17,7 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @author Paul van Assen
  */
 public class ListingPageScriptHandle extends DefaultHandle {
-
+    private final Charset charset = Charset.forName("UTF-8");
     private final ObjectMapper om;
     private JsonNode listingInfo;
     private JsonNode priceHistoryInfo;
@@ -39,7 +40,7 @@ public class ListingPageScriptHandle extends DefaultHandle {
 
     @Override
     public void handle(InputStream stream) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream, charset));
         boolean listingFound = false;
         boolean salesFound = false;
         boolean buyOrdersFound = false;

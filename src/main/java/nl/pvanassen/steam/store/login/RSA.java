@@ -1,20 +1,22 @@
 package nl.pvanassen.steam.store.login;
 
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 
 import org.apache.commons.codec.binary.Base64;
 
-public class RSA {
+class RSA {
     private final BigInteger modulus;
     private final BigInteger exponent;
+    private final Charset charset = Charset.forName("ISO-8859-1");
 
-    public RSA(String modHex, String expHex) {
+    RSA(String modHex, String expHex) {
         modulus = new BigInteger(modHex, 16);
         exponent = new BigInteger(expHex, 16);
     }
 
-    public String encrypt(String password) {
-        BigInteger data = pkcs1pad2(password.getBytes(), (modulus.bitLength() + 7) >> 3);
+    String encrypt(String password) {
+        BigInteger data = pkcs1pad2(password.getBytes(charset), (modulus.bitLength() + 7) >> 3);
         BigInteger d2 = data.modPow(exponent, modulus);
         String dataHex = d2.toString(16);
         if ((dataHex.length() & 1) == 1) {
