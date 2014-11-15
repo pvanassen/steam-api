@@ -19,26 +19,60 @@ import nl.pvanassen.steam.store.tradeoffer.TradeofferService;
  * @author Paul van Assen
  */
 public interface StoreService {
+    /**
+     * @return The app ids in the market
+     */
     Set<Integer> getAppIds();
 
+    /**
+     * @return Buy service
+     */
     BuyService getBuyService();
 
+    /**
+     * @return Buy order handler
+     */
     BuyOrderService getBuyOrderService();
 
+    /**
+     * @return History service
+     */
     HistoryService getHistoryService();
-
+    
+    /**
+     * @return Inventory service for querying inventories
+     */
     InventoryService getInventoryService();
 
+    /**
+     * @return Listing service for getting new listings
+     */
     ListingService getListingService();
 
+    
+    /**
+     * @return Service for getting information about items
+     */
     ItemService getItemService();
 
+    /**
+     * @return Service for logging in to Steam
+     */
     LoginService getLoginService();
 
+    /**
+     * @return All information about the market page
+     */
     MarketPageService getMarketPageService();
 
+    /**
+     * @return Service for selling stuff
+     */
     SellService getSellService();
 
+    /**
+     * @return Handles trade offers
+     */
     TradeofferService getTradeofferService();
 
     /**
