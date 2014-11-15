@@ -16,6 +16,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.google.common.collect.ImmutableList;
+
 class BuyOrder {
     private static final XPathExpression SECTION = XPathHelper.getXpathExpression("//DIV[@class='my_listing_section market_content_block market_home_listing_table']");
     private static final XPathExpression BUYORDER = XPathHelper.getXpathExpression(".//DIV[@class='market_listing_row market_recent_listing_row']");
@@ -29,6 +31,9 @@ class BuyOrder {
     static List<MarketPageBuyOrder> getBuyOrders(Document document) {
         try {
             Node node = (Node)SECTION.evaluate(document, XPathConstants.NODE);
+            if (node == null) {
+                return ImmutableList.of();
+            }
             NodeList nodeList = (NodeList)BUYORDER.evaluate(node, XPathConstants.NODESET);
             List<MarketPageBuyOrder> buyOrders = new ArrayList<>(nodeList.getLength());
             for (int i = 0; i < nodeList.getLength(); i++) {
@@ -52,6 +57,6 @@ class BuyOrder {
         catch (XPathExpressionException e) {
             LoggerFactory.getLogger(BuyOrder.class).error("Error getting buy orders", e);
         }
-        return null;
+        return ImmutableList.of();
     }
 }
