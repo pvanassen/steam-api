@@ -40,7 +40,7 @@ class BuyOrderHandle extends DefaultHandle {
         logger.info(node.toString());
         if (node.get("success").asInt() != 1) {
             error = true;
-            message = "Unknown";
+            message = "Unknown: " + node.toString();
         }
         else if (node.get("buy_orderid") != null) {
             buyOrderId = node.get("buy_orderid").asText();

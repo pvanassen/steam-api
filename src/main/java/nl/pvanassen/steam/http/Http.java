@@ -88,6 +88,20 @@ public class Http {
      *
      * @param url The url to call
      * @param handle The handle to use
+     * @param ajax Is this an ajax call
+     * @throws IOException In case of an error
+     */
+    public void get(String url, Handle handle, boolean ajax) throws IOException {
+        HttpGet httpget = new HttpGet(url);
+        addHeaders(httpget, "http://steamcommunity.com/id/" + username + "/inventory/", ajax);
+        handleConnection(httpget, handle);
+    }
+
+    /**
+     * Make a get call to the url using the provided handle
+     *
+     * @param url The url to call
+     * @param handle The handle to use
      * @throws IOException In case of an error
      */
     public void get(String url, Handle handle) throws IOException {
