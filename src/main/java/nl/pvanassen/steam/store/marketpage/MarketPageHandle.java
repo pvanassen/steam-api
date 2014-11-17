@@ -19,10 +19,7 @@ import org.xml.sax.SAXException;
 class MarketPageHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private MarketPage outstandings;
-
-    MarketPage getOutstandings() {
-        return outstandings;
-    }
+    private boolean error;
 
     /**
      * {@inheritDoc}
@@ -44,10 +41,30 @@ class MarketPageHandle extends DefaultHandle {
         }
         catch (ParseException | RuntimeException e) {
             logger.error("Error getting outstanding items", e);
+            error = true;
         }
         catch (SAXException | XPathExpressionException e) {
             logger.error("Error getting outstanding items", e);
+            error = true;
         }
     }
+    
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.http.DefaultHandle#handleError(java.io.InputStream)
+     */
+    @Override
+    public void handleError(InputStream stream) {
+        logger.error("Error getting outstanding items, error unknown");
+        error = true;
+    }
 
+    MarketPage getOutstandings() {
+        return outstandings;
+    }
+    
+    boolean isError() {
+        return error;
+    }
 }

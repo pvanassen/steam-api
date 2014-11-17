@@ -29,8 +29,8 @@ class InventoryHandle extends DefaultHandle {
 
     private final ObjectMapper objectMapper;
     private final List<InventoryItem> inventoryItemList;
-
     private final int contextId;
+    private boolean error;
 
     InventoryHandle(ObjectMapper objectMapper, int contextId, List<InventoryItem> inventoryItemList) {
         this.objectMapper = objectMapper;
@@ -71,5 +71,15 @@ class InventoryHandle extends DefaultHandle {
             inventoryItemList.add(new InventoryItem(item.get("id").asText(), contextId, item.get("instanceid").asText(), descroption.appId, descroption.urlName,
                     descroption.marketable));
         }
+        error = false;
+    }
+    
+    @Override
+    public void handleError(InputStream stream) throws IOException {
+        error = true;
+    }
+    
+    boolean isError() {
+        return error;
     }
 }

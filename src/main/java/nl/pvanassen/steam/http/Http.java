@@ -23,6 +23,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.AbstractHttpMessage;
 import org.slf4j.Logger;
@@ -37,11 +38,20 @@ public class Http {
 
     private static final int TIMEOUT = 15000;
     private final Map<AbstractExecutionAwareRequest, Long> connectionsToWatch = new HashMap<>();
+    private static final PoolingHttpClientConnectionManager CM_HIGH = new PoolingHttpClientConnectionManager();
+    private static final PoolingHttpClientConnectionManager CM_LOW = new PoolingHttpClientConnectionManager();
+    private final CloseableHttpClient httpclientHigh;
+    private final CloseableHttpClient httpclientLow;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final RequestConfig globalConfig;
     private final HttpClientContext context;
     private final String cookies;
     private final String username;
+
+    static {
+        CM_HIGH.setDefaultMaxPerRoute(4);
+        CM_LOW.setDefaultMaxPerRoute(3);
+    }
 
     /**
      * @param cookies Cookies to use for the request. This is just a simple
@@ -58,6 +68,8 @@ public class Http {
         globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BEST_MATCH).setSocketTimeout(10000).build();
         context = HttpClientContext.create();
         this.username = username;
+        this.httpclientHigh = HttpClients.custom().setDefaultRequestConfig(globalConfig).setConnectionManager(CM_HIGH).build();
+        this.httpclientLow = HttpClients.custom().setDefaultRequestConfig(globalConfig).setConnectionManager(CM_LOW).build();
         init();
         WatchDog watchDog = new WatchDog(connectionsToWatch);
         Thread watchDogThread = new Thread(watchDog, "watchDog-Thread-" + username);
@@ -76,6 +88,7 @@ public class Http {
         httpMessage.addHeader("Origin", "http://steamcommunity.com");
         httpMessage.addHeader("Pragma", "no-cache");
         httpMessage.addHeader("Referer", referer);
+        httpMessage.addHeader("If-Modified-Since", "Wed, 1 Jan 2014 12:00:00 GMT");
         httpMessage.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0");
         if (ajax) {
             httpMessage.addHeader("X-Prototype-Version", "1.7");
@@ -89,12 +102,13 @@ public class Http {
      * @param url The url to call
      * @param handle The handle to use
      * @param ajax Is this an ajax call
+     * @param high USe the high prio buffer
      * @throws IOException In case of an error
      */
-    public void get(String url, Handle handle, boolean ajax) throws IOException {
+    public void get(String url, Handle handle, boolean ajax, boolean high) throws IOException {
         HttpGet httpget = new HttpGet(url);
         addHeaders(httpget, "http://steamcommunity.com/id/" + username + "/inventory/", ajax);
-        handleConnection(httpget, handle);
+        handleConnection(httpget, handle, high);
     }
 
     /**
@@ -105,9 +119,7 @@ public class Http {
      * @throws IOException In case of an error
      */
     public void get(String url, Handle handle) throws IOException {
-        HttpGet httpget = new HttpGet(url);
-        addHeaders(httpget, "http://steamcommunity.com/id/" + username + "/inventory/", false);
-        handleConnection(httpget, handle);
+        get(url, handle, false, false);
     }
 
     private final Cookie getCookie(String name, String value) {
@@ -144,13 +156,16 @@ public class Http {
         return null;
     }
 
-    private void handleConnection(HttpRequestBase httpget, Handle handle) throws IOException {
+    private void handleConnection(HttpRequestBase httpget, Handle handle, boolean highPrio) throws IOException {
         if (logger.isDebugEnabled()) {
             logger.debug("Executing request with cookies: " + getCookies());
         }
         connectionsToWatch.put(httpget, System.currentTimeMillis() + TIMEOUT);
-        try (CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build(); 
-                CloseableHttpResponse response = httpclient.execute(httpget, context)) {
+        CloseableHttpClient httpclient = httpclientLow;
+        if (highPrio) {
+            httpclient = httpclientHigh;
+        }
+        try (CloseableHttpResponse response = httpclient.execute(httpget, context)) {
             connectionsToWatch.remove(httpget);
             HttpEntity entity = response.getEntity();
             if (entity == null) {
@@ -206,7 +221,7 @@ public class Http {
      * @throws IOException if a network error occurs
      */
     public void post(String url, Map<String, String> params, Handle handle, String referer) throws IOException {
-        post(url, params, handle, referer, true, false);
+        post(url, params, handle, referer, true, false, false);
     }
 
     /**
@@ -217,9 +232,10 @@ public class Http {
      * @param sessionRequired Does this request require a session? If not, like
      *            in the case of login, don't fail on it not being present
      * @param reencode Re-encode the parameter
+     * @param high Use high prio buffer
      * @throws IOException if a network error occurs
      */
-    public void post(String url, Map<String, String> params, Handle handle, String referer, boolean sessionRequired, boolean reencode) throws IOException {
+    public void post(String url, Map<String, String> params, Handle handle, String referer, boolean sessionRequired, boolean reencode, boolean high) throws IOException {
         HttpPost httpPost = new HttpPost(url);
         addHeaders(httpPost, referer, true);
         String sessionid = getSessionId();
@@ -243,6 +259,6 @@ public class Http {
             logger.debug("Sending POST to " + url + " with parameters " + sb.toString());
         }
         httpPost.setEntity(new StringEntity(sb.toString(), ContentType.create("application/x-www-form-urlencoded", "UTF-8")));
-        handleConnection(httpPost, handle);
+        handleConnection(httpPost, handle, high);
     }
 }

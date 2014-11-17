@@ -30,7 +30,7 @@ public class DefaultHandle implements Handle {
     public void handleError(InputStream stream) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ByteStreams.copy(stream, baos);
-        logger.error(new String(baos.toByteArray(), charset));
+        logger.error(new String(baos.toByteArray(), charset), new Exception());
     }
 
 }

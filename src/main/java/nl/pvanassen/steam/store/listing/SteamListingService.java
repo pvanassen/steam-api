@@ -28,6 +28,22 @@ public class SteamListingService implements ListingService {
     public SteamListingService(Http http) {
         this.http = http;
     }
+    
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.listing.ListingService#getAsyncNewlyListed(java.lang.String, int, java.lang.String, nl.pvanassen.steam.store.listing.ListingDeque)
+     */
+    @Override
+    public void getAsyncNewlyListed(String host, int currency, String country, ListingDeque queue) {
+        try {
+            ListingHandle handle = new ListingHandle(objectMapper, queue, country);
+            http.get("http://".concat(host).concat("/market/recent?currency=") + currency + "&country=" + country + "&language=english", handle, true, true);
+        }
+        catch (IOException e) {
+            logger.error("Error getting inventory", e);
+        }
+    }
 
     /**
      * {@inheritDoc}
@@ -37,14 +53,7 @@ public class SteamListingService implements ListingService {
      */
     @Override
     public void getAsyncNewlyListed(int currency, String country, ListingDeque queue) {
-        try {
-            ListingHandle handle = new ListingHandle(objectMapper, queue, country);
-            http.get("http://steamcommunity.com/market/recent?currency=" + currency + "&country=" + country + "&language=english", handle, true);
-        }
-        catch (IOException e) {
-            logger.error("Error getting inventory", e);
-        }
-
+        getAsyncNewlyListed("steamcommunity.com", currency, country, queue);
     }
 
     /**
@@ -58,7 +67,7 @@ public class SteamListingService implements ListingService {
         try {
             ListingDeque listing = new ListingDeque(60000);
             ListingHandle handle = new ListingHandle(objectMapper, listing, country);
-            http.get("http://steamcommunity.com/market/recent?currency=" + currency + "&country=" + country + "&language=english", handle, true);
+            http.get("http://steamcommunity.com/market/recent?currency=" + currency + "&country=" + country + "&language=english", handle, true, true);
             return listing.getDeque();
         }
         catch (IOException e) {

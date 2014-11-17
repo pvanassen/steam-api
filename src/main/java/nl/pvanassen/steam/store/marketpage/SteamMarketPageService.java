@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 
+import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.http.Http;
 
 import org.slf4j.Logger;
@@ -46,17 +47,21 @@ public class SteamMarketPageService implements MarketPageService {
     /**
      * {@inheritDoc}
      *
-     * @see nl.pvanassen.steam.store.marketpage.MarketPageService#getOutstandings()
+     * @see nl.pvanassen.steam.store.marketpage.MarketPageService#getMarketPage()
      */
     @Override
-    public MarketPage getOutstandings() {
+    public MarketPage getMarketPage() {
         logger.info("Getting market page for " + username);
         MarketPageHandle handle = new MarketPageHandle();
         try {
             http.get("http://steamcommunity.com/market/", handle);
         }
         catch (IOException e) {
-            logger.error("Error getting outstanding listings", e);
+            logger.error("Error getting the market page", e);
+            throw new SteamException("Error getting the market page", e);
+        }
+        if (handle.isError()) {
+            throw new SteamException("Error getting the market page, unknown error");
         }
         return handle.getOutstandings();
     }

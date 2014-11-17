@@ -15,6 +15,16 @@ public interface ListingService {
      * Retrieve all newly listed
      * 
      * @param currency Currency to retrieve
+     * @param host Host to connect
+     * @param country Country to get listings for
+     * @param queue Queue to add the items to
+     */
+    void getAsyncNewlyListed(String host, int currency, String country, ListingDeque queue);
+
+    /**
+     * Retrieve all newly listed
+     * 
+     * @param currency Currency to retrieve
      * @param country Country to get listings for
      * @param queue Queue to add the items to
      */

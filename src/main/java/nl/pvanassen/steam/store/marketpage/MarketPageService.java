@@ -22,7 +22,7 @@ public interface MarketPageService {
      *
      * @return Outstanding items
      */
-    MarketPage getOutstandings();
+    MarketPage getMarketPage();
 
     /**
      * Remove an active listing

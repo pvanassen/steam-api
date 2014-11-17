@@ -48,7 +48,7 @@ public class SteamSellService implements SellService {
                 throw new SellException(sellHandle.getMessage());
             }
         }
-        catch (IOException | RuntimeException e) {
+        catch (IOException e) {
             logger.error("Error posting data", e);
             throw new SellException("Error posting data", e);
         }

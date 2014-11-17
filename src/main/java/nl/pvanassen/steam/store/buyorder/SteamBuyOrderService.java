@@ -59,7 +59,7 @@ public class SteamBuyOrderService implements BuyOrderService {
         params.put("quantity", Integer.toString(quantity));
         BuyOrderHandle handle = new BuyOrderHandle(objectMapper);
         try {
-            http.post("https://steamcommunity.com/market/createbuyorder/", params, handle, item.getUrl(), true, false);
+            http.post("https://steamcommunity.com/market/createbuyorder/", params, handle, item.getUrl(), true, false, false);
         }
         catch (IOException e) {
             logger.error("Error creating a buy order", e);

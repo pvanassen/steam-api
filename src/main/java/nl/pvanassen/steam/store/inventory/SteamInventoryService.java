@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.http.Http;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -75,7 +76,11 @@ public class SteamInventoryService implements InventoryService {
         }
         catch (IOException e) {
             logger.error("Error fetching inventory data", e);
-
+            throw new SteamException("Error fetching inventory data", e);
+        }
+        if (handle.isError()) {
+            logger.error("Error fetching inventory data");
+            throw new SteamException("Error fetching inventory data");
         }
         return ImmutableList.copyOf(inventoryItems);
     }
