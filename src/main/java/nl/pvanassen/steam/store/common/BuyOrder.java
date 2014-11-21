@@ -27,6 +27,33 @@ public class BuyOrder extends Item {
     }
 
     /**
+     * Construct a buy order
+     * 
+     * @param item Item to buy
+     * @param listingId Listing to purchase
+     * @param subTotal Price without fees
+     * @param fee Fees that need to be paid.
+     */
+    public BuyOrder(Item item, String listingId, int subTotal, int fee) {
+        super(item);
+        this.listingId = listingId;
+        this.subTotal = subTotal;
+        this.fee = fee;
+    }
+
+    /**
+     * Construct a buy order
+     * 
+     * @param listing Listing to buy
+     */
+    public BuyOrder(Listing listing) {
+        super(listing.getAppId(), listing.getUrlName());
+        this.listingId = listing.getListingId();
+        this.subTotal = listing.getSubTotal();
+        this.fee = listing.getFee();
+    }
+
+    /**
      * @return The fees to pay
      */
     public int getFee() {

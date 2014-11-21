@@ -57,18 +57,10 @@ public class SteamItemService implements ItemService {
             logger.error("Error handling item", e);
         }
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see nl.pvanassen.steam.store.item.ItemService#getItem(int,
-     *      java.lang.String, nl.pvanassen.steam.store.GenericHandle,
-     *      nl.pvanassen.steam.store.GenericHandle,
-     *      nl.pvanassen.steam.store.GenericHandle)
-     */
+    
     @Override
-    public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle, GenericHandle<Boolean> buyOrders) {
-        String url = "http://steamcommunity.com/market/listings/" + appId + "/" + urlName;
+    public void getItem(String host, int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle, GenericHandle<Boolean> buyOrders) {
+        String url = "http://" + host + "/market/listings/" + appId + "/" + urlName;
         ListingPageScriptHandle handle = new ListingPageScriptHandle(objectMapper);
         try {
             http.get(url, handle);
@@ -91,6 +83,19 @@ public class SteamItemService implements ItemService {
         JsonNode listingInfo = handle.getListingInfo();
         for (Listing item : new ListingItemIterator(appId, urlName, listingInfo)) {
             listingHandle.handle(item);
-        }
+        }        
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.item.ItemService#getItem(int,
+     *      java.lang.String, nl.pvanassen.steam.store.GenericHandle,
+     *      nl.pvanassen.steam.store.GenericHandle,
+     *      nl.pvanassen.steam.store.GenericHandle)
+     */
+    @Override
+    public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle, GenericHandle<Boolean> buyOrders) {
+        getItem("steamcommunity.com", appId, urlName, dataPointHandle, listingHandle, buyOrders);
     }
 }

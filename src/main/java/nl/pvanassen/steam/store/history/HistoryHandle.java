@@ -121,7 +121,7 @@ class HistoryHandle extends DefaultHandle {
         totalCount = node.get("total_count").asInt();
         String resultHtml = node.get("results_html").asText();
         if (resultHtml.contains("market_listing_table_message")) {
-            logger.error("There was an error: " + resultHtml);
+            logger.error("There was an error: " + resultHtml.trim());
             error = true;
             return;
         }

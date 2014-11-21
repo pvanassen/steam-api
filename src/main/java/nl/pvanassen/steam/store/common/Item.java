@@ -21,6 +21,16 @@ public class Item {
     }
 
     /**
+     * Copy constructor
+     *
+     * @param item Item to copy
+     */
+    protected Item(Item item) {
+        this.appId = item.appId;
+        this.urlName = item.urlName;
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @see java.lang.Object#equals(java.lang.Object)
