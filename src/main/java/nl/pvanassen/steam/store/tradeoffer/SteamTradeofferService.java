@@ -81,7 +81,7 @@ public class SteamTradeofferService implements TradeofferService {
     public int makeTradeOffer(long steamId, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message) {
         ObjectNode tradeOffer = objectMapper.createObjectNode();
         tradeOffer.put("newversion", true);
-        tradeOffer.put("version", 3);
+        tradeOffer.put("version", 2);
         ObjectNode meNode = tradeOffer.putObject("me");
         fillTradeNode(me, meNode);
         ObjectNode themNode = tradeOffer.putObject("them");
@@ -91,6 +91,7 @@ public class SteamTradeofferService implements TradeofferService {
         params.put("partner", Long.toString(steamId));
         params.put("trade_offer_create_params", "{}");
         params.put("tradeoffermessage", message.or(""));
+        params.put("serverid", "1");
         logger.info("Sending: " + params.toString());
         try {
             TradeofferHandle handle = new TradeofferHandle(objectMapper);
