@@ -1,6 +1,9 @@
 package nl.pvanassen.steam.store.common;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Listing item 
@@ -8,24 +11,16 @@ import java.util.Date;
  * @author Paul van Assen
  */
 public class Listing extends Item {
-
     private final String listingId;
-
     private final int subTotal;
-
     private final int fee;
-
     private final int steamFee;
-
     private final int publisherFee;
-
     private final int publisherFeeApp;
-
     private final double publisherFeePercent;
-
     private final String country;
-
     private final Date createdDate = new Date();
+    private final Map<String,Date> speedLog = new LinkedHashMap<>();
 
     /**
      * Listing constructor
@@ -51,6 +46,7 @@ public class Listing extends Item {
         this.publisherFeeApp = publisherFeeApp;
         this.publisherFeePercent = publisherFeePercent;
         this.country = country;
+        speedLog.put("Created", createdDate);
     }
 
     /**
@@ -162,5 +158,18 @@ public class Listing extends Item {
     public String toString() {
         return "Listing [appId=" + getAppId() + ", urlName=" + getUrlName() + ", listingId=" + listingId + ", subTotal=" + subTotal + ", fee=" + fee + ", steamFee=" + steamFee
                 + ", publisherFee=" + publisherFee + ", publisherFeeApp=" + publisherFeeApp + ", publisherFeePercent=" + publisherFeePercent + ", country=" + country + "]";
+    }
+    
+    public void addSpeedStep(String message) {
+        speedLog.put(message, new Date());
+    }
+    
+    public String getSpeedLog() {
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss.SSS");
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Date> entry : speedLog.entrySet()) {
+            sb.append(entry.getKey()).append(": ").append(formatter.format(entry.getValue())).append('\n');
+        }
+        return sb.toString();
     }
 }
