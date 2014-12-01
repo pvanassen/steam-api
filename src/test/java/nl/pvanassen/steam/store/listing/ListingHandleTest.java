@@ -37,6 +37,22 @@ public class ListingHandleTest {
         assertEquals(4, listings.get(9).getSubTotal());
     }
 
+
+    @Test
+    public void testHandleListingPage() throws IOException {
+        handle.handle(getClass().getResourceAsStream("/listing-page.json"));
+        List<Listing> listings = new ArrayList<>(listingQueue.getDeque());
+        assertEquals(10, listings.size());
+        assertEquals(730, listings.get(9).getAppId());
+        assertEquals("M4A1-S%20%7C%20Atomic%20Alloy%20%28Minimal%20Wear%29", listings.get(9).getUrlName());
+        assertEquals(64, listings.get(9).getFee());
+        assertEquals(43, listings.get(9).getPublisherFee());
+        assertEquals(730, listings.get(9).getPublisherFeeApp());
+        assertEquals("433799027041528860", listings.get(9).getListingId());
+        assertEquals(21, listings.get(9).getSteamFee());
+        assertEquals(438, listings.get(9).getSubTotal());
+    }
+
     public void testPerformance() throws IOException {
         for (int i = 0; i != 5000; i++) {
             handle.handle(getClass().getResourceAsStream("/listing.json"));

@@ -70,7 +70,7 @@ public class SteamItemService implements ItemService {
             throw new SteamException("Error getting data for url: " + url, e);
         }
         if (handle.isError()) {
-            throw new SteamException("Error getting data for url: " + url);
+            throw new SteamException("Error getting data for url: " + url + " error code was not 200");
         }
         buyOrders.handle(handle.isBuyOrders());
         JsonNode priceHistoryInfo = handle.getPriceHistoryInfo();

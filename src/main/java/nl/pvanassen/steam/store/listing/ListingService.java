@@ -5,6 +5,8 @@ package nl.pvanassen.steam.store.listing;
 
 import java.util.List;
 
+import nl.pvanassen.steam.store.GenericHandle;
+import nl.pvanassen.steam.store.common.Item;
 import nl.pvanassen.steam.store.common.Listing;
 
 /**
@@ -29,6 +31,29 @@ public interface ListingService {
      * @param queue Queue to add the items to
      */
     void getAsyncNewlyListed(int currency, String country, ListingDeque queue);
+
+    /**
+     * Retrieve all newly listed
+     * 
+     * @param item Item to get the listings for
+     * @param currency Currency to retrieve
+     * @param country Country to get listings for
+     * @param start Start of the first item
+     * @param listingHandle Queue to add the items to
+     */
+    void getAsyncListed(Item item, int currency, String country, int start, GenericHandle<Listing> listingHandle);
+
+    /**
+     * Retrieve all newly listed
+     * 
+     * @param item Item to get the listings for
+     * @param currency Currency to retrieve
+     * @param host Host to connect
+     * @param country Country to get listings for
+     * @param start Start of the first item
+     * @param listingHandle Queue to add the items to
+     */
+    void getAsyncListed(String host, Item item, int currency, String country, int start, GenericHandle<Listing> listingHandle);
 
     /**
      * Retrieve the newly listed
