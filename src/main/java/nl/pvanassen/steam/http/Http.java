@@ -6,7 +6,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
@@ -14,7 +13,10 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.cookie.Cookie;
@@ -35,13 +37,8 @@ import org.slf4j.LoggerFactory;
  * @author Paul van Assen
  */
 public class Http {
-
-    private static final int TIMEOUT = 15000;
-    private final Map<AbstractExecutionAwareRequest, Long> connectionsToWatch = new HashMap<>();
-    private static final PoolingHttpClientConnectionManager CM_HIGH = new PoolingHttpClientConnectionManager();
-    private static final PoolingHttpClientConnectionManager CM_LOW = new PoolingHttpClientConnectionManager();
-    private final CloseableHttpClient httpclientHigh;
-    private final CloseableHttpClient httpclientLow;
+    private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
+    private final CloseableHttpClient httpclient;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final RequestConfig globalConfig;
     private final HttpClientContext context;
@@ -49,8 +46,7 @@ public class Http {
     private final String username;
 
     static {
-        CM_HIGH.setDefaultMaxPerRoute(4);
-        CM_LOW.setDefaultMaxPerRoute(3);
+        CONNECTION_MANAGER.setDefaultMaxPerRoute(4);
     }
 
     /**
@@ -68,14 +64,8 @@ public class Http {
         globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BEST_MATCH).setSocketTimeout(10000).build();
         context = HttpClientContext.create();
         this.username = username;
-        this.httpclientHigh = HttpClients.custom().setDefaultRequestConfig(globalConfig).setConnectionManager(CM_HIGH).build();
-        this.httpclientLow = HttpClients.custom().setDefaultRequestConfig(globalConfig).setConnectionManager(CM_LOW).build();
+        this.httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setConnectionManager(CONNECTION_MANAGER).build();
         init();
-        WatchDog watchDog = new WatchDog(connectionsToWatch);
-        Thread watchDogThread = new Thread(watchDog, "watchDog-Thread-" + username);
-        watchDogThread.setPriority(Thread.MIN_PRIORITY);
-        watchDogThread.setDaemon(true);
-        watchDogThread.start();
     }
 
     private void addHeaders(AbstractHttpMessage httpMessage, String referer, boolean ajax) {
@@ -160,13 +150,7 @@ public class Http {
         if (logger.isDebugEnabled()) {
             logger.debug("Executing request with cookies: " + getCookies());
         }
-        connectionsToWatch.put(httpget, System.currentTimeMillis() + TIMEOUT);
-        CloseableHttpClient httpclient = httpclientLow;
-        if (highPrio) {
-            httpclient = httpclientHigh;
-        }
         try (CloseableHttpResponse response = httpclient.execute(httpget, context)) {
-            connectionsToWatch.remove(httpget);
             HttpEntity entity = response.getEntity();
             if (entity == null) {
                 return;
