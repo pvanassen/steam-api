@@ -2,6 +2,7 @@ package nl.pvanassen.steam.http;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Calendar;
@@ -46,7 +47,8 @@ public class Http {
     private final String username;
 
     static {
-        CONNECTION_MANAGER.setDefaultMaxPerRoute(4);
+        CONNECTION_MANAGER.setDefaultMaxPerRoute(6);
+        CONNECTION_MANAGER.setMaxTotal(8);
     }
 
     /**
@@ -165,7 +167,7 @@ public class Http {
                 }
             }
         }
-        catch (HttpHostConnectException e) {
+        catch (HttpHostConnectException | InterruptedIOException e) {
             logger.warn("Steam doesn't like me. Slowing down and sleeping a bit");
             try {
                 Thread.sleep(30000);
