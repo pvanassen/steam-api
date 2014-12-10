@@ -42,6 +42,7 @@ public class SteamBuyService implements BuyService {
         params.put("fee", Integer.toString(fee));
         params.put("subtotal", Integer.toString(subTotal));
         params.put("total", Integer.toString(fee + subTotal));
+        params.put("quantity", "1");
         try {
             BuyHandle handle = new BuyHandle(objectMapper);
             http.post("https://steamcommunity.com/market/buylisting/" + listingId, params, handle, "http://steamcommunity.com/id/" + username + "/inventory/", true, false, true);
