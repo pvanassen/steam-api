@@ -45,6 +45,7 @@ public class SteamTradeofferService implements TradeofferService {
             Map<String, String> params = new HashMap<>();
             params.put("partner", tradeoffer.getPartnerId());
             params.put("tradeofferid", id);
+            params.put("serverid", "1");
             http.post("https://steamcommunity.com/tradeoffer/" + id + "/accept", params, new DefaultHandle(), "http://steamcommunity.com/tradeoffer/" + id);
         }
         catch (IOException e) {

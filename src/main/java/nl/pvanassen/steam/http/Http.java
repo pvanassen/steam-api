@@ -47,7 +47,7 @@ public class Http {
     private final String username;
 
     static {
-        CONNECTION_MANAGER.setDefaultMaxPerRoute(6);
+        CONNECTION_MANAGER.setDefaultMaxPerRoute(4);
         CONNECTION_MANAGER.setMaxTotal(8);
     }
 
