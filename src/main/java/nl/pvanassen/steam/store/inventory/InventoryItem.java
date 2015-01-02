@@ -1,5 +1,7 @@
 package nl.pvanassen.steam.store.inventory;
 
+import java.util.Date;
+
 import nl.pvanassen.steam.store.common.Item;
 
 /**
@@ -8,18 +10,21 @@ import nl.pvanassen.steam.store.common.Item;
  * @author Paul van Assen
  */
 public class InventoryItem extends Item {
-
     private final String assetId;
     private final int contextId;
     private final String instanceId;
     private final boolean marketable;
+    private final boolean tradable;
+    private final Date blockedUntil;
 
-    InventoryItem(String assetId, int contextId, String instanceId, int appId, String urlName, boolean marketable) {
+    InventoryItem(String assetId, int contextId, String instanceId, int appId, String urlName, boolean marketable, boolean tradable, Date blockedUntil) {
         super(appId, urlName);
         this.assetId = assetId;
         this.contextId = contextId;
         this.instanceId = instanceId;
         this.marketable = marketable;
+        this.tradable = tradable;
+        this.blockedUntil = blockedUntil;
     }
 
     /**
@@ -50,6 +55,20 @@ public class InventoryItem extends Item {
      */
     public boolean isMarketable() {
         return marketable;
+    }
+    
+    /**
+     * @return Can this item be traded
+     */
+    public boolean isTradable() {
+        return tradable;
+    }
+    
+    /**
+     * @return Item can be traded or marketed from this day onward
+     */
+    public Date getBlockedUntil() {
+        return blockedUntil;
     }
 
     @Override
