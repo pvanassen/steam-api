@@ -28,6 +28,21 @@ public class InventoryItem extends Item {
     }
 
     /**
+     * Protected copy constructor for extending the object
+     * 
+     * @param inventoryItem Item to copy
+     */
+    protected InventoryItem(InventoryItem inventoryItem) {
+        super(inventoryItem.getAppId(), inventoryItem.getUrlName());
+        this.assetId = inventoryItem.assetId;
+        this.contextId = inventoryItem.contextId;
+        this.instanceId = inventoryItem.instanceId;
+        this.marketable = inventoryItem.marketable;
+        this.tradable = inventoryItem.tradable;
+        this.blockedUntil = inventoryItem.blockedUntil;
+    }
+
+    /**
      * @return the assetId
      */
     public String getAssetId() {
@@ -56,14 +71,14 @@ public class InventoryItem extends Item {
     public boolean isMarketable() {
         return marketable;
     }
-    
+
     /**
      * @return Can this item be traded
      */
     public boolean isTradable() {
         return tradable;
     }
-    
+
     /**
      * @return Item can be traded or marketed from this day onward
      */
