@@ -23,11 +23,13 @@ public class ListingPageScriptHandle extends DefaultHandle {
     private JsonNode priceHistoryInfo;
     private boolean error;
     private boolean buyOrders;
+    private boolean immediateSale;
 
     ListingPageScriptHandle(ObjectMapper om) {
         this.om = om;
         error = false;
         buyOrders = false;
+        immediateSale = true;
     }
 
     JsonNode getListingInfo() {
@@ -44,12 +46,19 @@ public class ListingPageScriptHandle extends DefaultHandle {
         boolean listingFound = false;
         boolean salesFound = false;
         boolean buyOrdersFound = false;
+        boolean immediateSaleFound = false;
         String line;
         while ((line = reader.readLine()) != null) {
             if (!buyOrdersFound) {
                 if (line.indexOf("market_commodity_order_block") > -1) {
                     buyOrders = true;
                     buyOrdersFound = true;
+                }
+            }
+            if (!immediateSaleFound) {
+                if (line.indexOf("either in-game or on the Steam Community Market") > -1) {
+                    immediateSaleFound = true;
+                    immediateSale = line.indexOf("Note: Items purchased for") == -1;
                 }
             }
             if (!listingFound) {
@@ -90,5 +99,9 @@ public class ListingPageScriptHandle extends DefaultHandle {
      */
     boolean isBuyOrders() {
         return buyOrders;
+    }
+    
+    boolean isImmediateSale() {
+        return immediateSale;
     }
 }

@@ -7,7 +7,7 @@ import java.io.StringReader;
 import javax.xml.xpath.*;
 
 import nl.pvanassen.steam.http.DefaultHandle;
-import nl.pvanassen.steam.store.GenericHandle;
+import nl.pvanassen.steam.store.common.GenericHandle;
 import nl.pvanassen.steam.store.helper.AmountHelper;
 import nl.pvanassen.steam.store.xpath.XPathHelper;
 
@@ -97,7 +97,7 @@ class OverviewHandle extends DefaultHandle {
                 String name = nameSpan.getTextContent();
                 Node gameNameSpan = (Node) GAMENAME_XPATH.evaluate(node, XPathConstants.NODE);
                 String gameName = gameNameSpan.getTextContent();
-                genericHandle.handle(new OverviewItem(appId, name, urlName, currentOffers, currentPrice, gameName, steamId, false));
+                genericHandle.handle(new OverviewItem(appId, name, urlName, currentOffers, currentPrice, gameName, steamId));
             }
 
         }

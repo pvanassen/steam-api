@@ -9,9 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 import nl.pvanassen.steam.http.Http;
-import nl.pvanassen.steam.store.GenericHandle;
-import nl.pvanassen.steam.store.common.Item;
-import nl.pvanassen.steam.store.common.Listing;
+import nl.pvanassen.steam.store.common.*;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -63,7 +61,7 @@ public class SteamListingService implements ListingService {
     /**
      * {@inheritDoc}
      *
-     * @see nl.pvanassen.steam.store.listing.ListingService#getAsyncListed(nl.pvanassen.steam.store.common.Item, int, java.lang.String, int, nl.pvanassen.steam.store.GenericHandle)
+     * @see nl.pvanassen.steam.store.listing.ListingService#getAsyncListed(nl.pvanassen.steam.store.common.Item, int, java.lang.String, int, nl.pvanassen.steam.store.common.GenericHandle)
      */
     @Override
     public void getAsyncListed(Item item, int currency, String country, int start, GenericHandle<Listing> listingHandle) {
@@ -73,7 +71,7 @@ public class SteamListingService implements ListingService {
     /**
      * {@inheritDoc}
      *
-     * @see nl.pvanassen.steam.store.listing.ListingService#getAsyncListed(java.lang.String, nl.pvanassen.steam.store.common.Item, int, java.lang.String, int, nl.pvanassen.steam.store.GenericHandle)
+     * @see nl.pvanassen.steam.store.listing.ListingService#getAsyncListed(java.lang.String, nl.pvanassen.steam.store.common.Item, int, java.lang.String, int, nl.pvanassen.steam.store.common.GenericHandle)
      */
     @Override
     public void getAsyncListed(String host, Item item, int currency, String country, int start, GenericHandle<Listing> listingHandle) {

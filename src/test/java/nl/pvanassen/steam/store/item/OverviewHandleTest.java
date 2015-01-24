@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import nl.pvanassen.steam.store.GenericHandle;
+import nl.pvanassen.steam.store.common.GenericHandle;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;

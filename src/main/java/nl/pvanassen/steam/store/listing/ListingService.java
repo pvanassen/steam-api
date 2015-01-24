@@ -5,9 +5,7 @@ package nl.pvanassen.steam.store.listing;
 
 import java.util.List;
 
-import nl.pvanassen.steam.store.GenericHandle;
-import nl.pvanassen.steam.store.common.Item;
-import nl.pvanassen.steam.store.common.Listing;
+import nl.pvanassen.steam.store.common.*;
 
 /**
  * @author Paul van Assen

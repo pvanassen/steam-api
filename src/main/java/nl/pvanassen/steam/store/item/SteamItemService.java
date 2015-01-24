@@ -7,8 +7,7 @@ import java.io.IOException;
 
 import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.http.Http;
-import nl.pvanassen.steam.store.GenericHandle;
-import nl.pvanassen.steam.store.common.Listing;
+import nl.pvanassen.steam.store.common.*;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -33,7 +32,7 @@ public class SteamItemService implements ItemService {
     /**
      * {@inheritDoc}
      *
-     * @see nl.pvanassen.steam.store.item.ItemService#getAllItems(nl.pvanassen.steam.store.GenericHandle)
+     * @see nl.pvanassen.steam.store.item.ItemService#getAllItems(nl.pvanassen.steam.store.common.GenericHandle)
      */
     @Override
     public void getAllItems(GenericHandle<OverviewItem> genericHandle) {
@@ -59,7 +58,7 @@ public class SteamItemService implements ItemService {
     }
     
     @Override
-    public void getItem(String host, int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle, GenericHandle<Boolean> buyOrders) {
+    public void getItem(String host, int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle, GenericHandle<Boolean> buyOrders, GenericHandle<Boolean> immediateSale) {
         String url = "http://" + host + "/market/listings/" + appId + "/" + urlName;
         ListingPageScriptHandle handle = new ListingPageScriptHandle(objectMapper);
         try {
@@ -73,6 +72,7 @@ public class SteamItemService implements ItemService {
             throw new SteamException("Error getting data for url: " + url + " error code was not 200");
         }
         buyOrders.handle(handle.isBuyOrders());
+        immediateSale.handle(handle.isImmediateSale());
         JsonNode priceHistoryInfo = handle.getPriceHistoryInfo();
         for (StatDataPoint point : new ListingStatDataPointIterator(priceHistoryInfo)) {
             dataPointHandle.handle(point);
@@ -90,12 +90,12 @@ public class SteamItemService implements ItemService {
      * {@inheritDoc}
      *
      * @see nl.pvanassen.steam.store.item.ItemService#getItem(int,
-     *      java.lang.String, nl.pvanassen.steam.store.GenericHandle,
-     *      nl.pvanassen.steam.store.GenericHandle,
-     *      nl.pvanassen.steam.store.GenericHandle)
+     *      java.lang.String, nl.pvanassen.steam.store.common.GenericHandle,
+     *      nl.pvanassen.steam.store.common.GenericHandle,
+     *      nl.pvanassen.steam.store.common.GenericHandle)
      */
     @Override
-    public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle, GenericHandle<Boolean> buyOrders) {
-        getItem("steamcommunity.com", appId, urlName, dataPointHandle, listingHandle, buyOrders);
+    public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle, GenericHandle<Boolean> buyOrders, GenericHandle<Boolean> immediateSale) {
+        getItem("steamcommunity.com", appId, urlName, dataPointHandle, listingHandle, buyOrders, immediateSale);
     }
 }

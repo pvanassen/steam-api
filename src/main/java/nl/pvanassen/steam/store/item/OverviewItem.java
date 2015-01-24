@@ -14,16 +14,14 @@ public class OverviewItem extends Item {
     private final int currentPrice;
     private final String gameName;
     private final String steamId;
-    private final boolean buyOrders;
-
-    OverviewItem(int appId, String itemName, String urlName, int currentOffers, int currentPrice, String gameName, String steamId, boolean buyOrders) {
+    
+    OverviewItem(int appId, String itemName, String urlName, int currentOffers, int currentPrice, String gameName, String steamId) {
         super(appId, urlName);
         this.itemName = itemName;
         this.currentOffers = currentOffers;
         this.currentPrice = currentPrice;
         this.gameName = gameName;
         this.steamId = steamId;
-        this.buyOrders = buyOrders;
     }
 
     /**
@@ -60,14 +58,6 @@ public class OverviewItem extends Item {
     public String getSteamId() {
         return steamId;
     }
-    
-    /**
-     * 
-     * @return Does this item support buy orders?
-     */
-    public boolean isBuyOrders() {
-        return buyOrders;
-    }
 
     /**
      * {@inheritDoc}
@@ -78,7 +68,6 @@ public class OverviewItem extends Item {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + (buyOrders ? 1231 : 1237);
         result = prime * result + currentOffers;
         result = prime * result + currentPrice;
         result = prime * result + ((gameName == null) ? 0 : gameName.hashCode());
@@ -104,9 +93,6 @@ public class OverviewItem extends Item {
             return false;
         }
         OverviewItem other = (OverviewItem) obj;
-        if (buyOrders != other.buyOrders) {
-            return false;
-        }
         if (currentOffers != other.currentOffers) {
             return false;
         }
@@ -148,6 +134,6 @@ public class OverviewItem extends Item {
     @Override
     public String toString() {
         return "OverviewItem [itemName=" + itemName + ", currentOffers=" + currentOffers + ", currentPrice=" + currentPrice + ", gameName=" + gameName + ", steamId=" + steamId
-                + ", buyOrders=" + buyOrders + "]";
+                + "]";
     }
 }

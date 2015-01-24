@@ -6,8 +6,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 
 import nl.pvanassen.steam.http.DefaultHandle;
-import nl.pvanassen.steam.store.GenericHandle;
-import nl.pvanassen.steam.store.common.Listing;
+import nl.pvanassen.steam.store.common.*;
 import nl.pvanassen.steam.store.helper.UrlNameHelper;
 
 import org.codehaus.jackson.JsonNode;
