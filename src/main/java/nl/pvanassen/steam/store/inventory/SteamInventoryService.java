@@ -10,6 +10,7 @@ import java.util.Set;
 
 import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.http.Http;
+import nl.pvanassen.steam.store.common.InventoryItem;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;

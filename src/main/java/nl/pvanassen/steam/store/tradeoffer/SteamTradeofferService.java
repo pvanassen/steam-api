@@ -11,7 +11,7 @@ import java.util.Map;
 import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.http.Http;
-import nl.pvanassen.steam.store.inventory.InventoryItem;
+import nl.pvanassen.steam.store.common.InventoryItem;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;

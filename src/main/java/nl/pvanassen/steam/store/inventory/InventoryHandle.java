@@ -5,6 +5,7 @@ import java.text.*;
 import java.util.*;
 
 import nl.pvanassen.steam.http.DefaultHandle;
+import nl.pvanassen.steam.store.common.InventoryItem;
 import nl.pvanassen.steam.store.helper.UrlNameHelper;
 
 import org.codehaus.jackson.JsonNode;

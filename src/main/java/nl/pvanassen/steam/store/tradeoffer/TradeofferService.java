@@ -5,7 +5,7 @@ package nl.pvanassen.steam.store.tradeoffer;
 
 import java.util.List;
 
-import nl.pvanassen.steam.store.inventory.InventoryItem;
+import nl.pvanassen.steam.store.common.InventoryItem;
 
 import com.google.common.base.Optional;
 

@@ -1,8 +1,6 @@
-package nl.pvanassen.steam.store.inventory;
+package nl.pvanassen.steam.store.common;
 
 import java.util.Date;
-
-import nl.pvanassen.steam.store.common.Item;
 
 /**
  * Representation of an item in the inventory
@@ -17,7 +15,18 @@ public class InventoryItem extends Item {
     private final boolean tradable;
     private final Date blockedUntil;
 
-    InventoryItem(String assetId, int contextId, String instanceId, int appId, String urlName, boolean marketable, boolean tradable, Date blockedUntil) {
+    /**
+     * An item from the inventory
+     * @param assetId Asset id
+     * @param contextId Context id
+     * @param instanceId Instance id
+     * @param appId App id
+     * @param urlName Url name
+     * @param marketable Is this item marketable?
+     * @param tradable Is this item tradable?
+     * @param blockedUntil Blocked until when?
+     */
+    public InventoryItem(String assetId, int contextId, String instanceId, int appId, String urlName, boolean marketable, boolean tradable, Date blockedUntil) {
         super(appId, urlName);
         this.assetId = assetId;
         this.contextId = contextId;

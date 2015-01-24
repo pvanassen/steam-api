@@ -5,6 +5,8 @@ package nl.pvanassen.steam.store.inventory;
 
 import java.util.List;
 
+import nl.pvanassen.steam.store.common.InventoryItem;
+
 /**
  * @author Paul van Assen
  */
