@@ -61,7 +61,7 @@ class ListingHandle extends DefaultHandle {
             String urlName = UrlNameHelper.getUrlName(assets.get(Integer.toString(appId)).get(contextId).get(id).get("market_hash_name").asText());
             try {
                 if (listing.get("price").asInt() == 0) {
-                    logger.warn("Sometimes Steam send 0 price. Skipping");
+                    logger.info("Item already sold");
                     continue;
                 }
                 Listing listingObj = new Listing(appId, urlName, listing.get("listingid").asText(), listing.get("converted_price").asInt(),
