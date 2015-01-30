@@ -19,7 +19,7 @@ public final class UrlNameHelper {
      */
     public static String getUrlName(String urlName) {
         try {
-            return URLEncoder.encode(urlName, "UTF-8").replace("+", "%20");
+            return URLEncoder.encode(urlName.trim(), "UTF-8").replace("+", "%20");
         }
         catch (UnsupportedEncodingException e) {
             throw new SteamException("Encoding not present", e);
