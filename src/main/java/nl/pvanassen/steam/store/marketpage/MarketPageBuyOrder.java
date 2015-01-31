@@ -7,7 +7,7 @@ import nl.pvanassen.steam.store.common.Item;
  * @author Paul van Assen
  *
  */
-public class MarketPageBuyOrder extends Item{
+public class MarketPageBuyOrder extends Item {
     private final String steamId;
     private final int quantity;
     private final int price;
@@ -96,7 +96,7 @@ public class MarketPageBuyOrder extends Item{
      */
     @Override
     public String toString() {
-        return "MarketPageBuyOrder [steamId=" + steamId + ", quantity=" + quantity + ", price=" + price + "]";
+        return "MarketPageBuyOrder [steamId=" + steamId + ", quantity=" + quantity + ", price=" + price + ", toString()=" + super.toString() + "]";
     }
     
     
