@@ -2,6 +2,7 @@ package nl.pvanassen.steam.store;
 
 import java.util.Set;
 
+import nl.pvanassen.steam.community.friends.*;
 import nl.pvanassen.steam.http.Http;
 import nl.pvanassen.steam.store.buy.BuyService;
 import nl.pvanassen.steam.store.buy.SteamBuyService;
@@ -45,7 +46,7 @@ class SteamService implements StoreService {
     private final MarketPageService marketPageService;
     private final SellService sellService;
     private final TradeofferService tradeofferService;
-
+    private final FriendService friendService;
     /**
      * @param http For mocking
      */
@@ -62,6 +63,7 @@ class SteamService implements StoreService {
         sellService = new SteamSellService(http, username);
         tradeofferService = new SteamTradeofferService(http);
         inventoryService = new SteamInventoryService(http, username, appIds);
+        friendService = new SteamFriendService(http, username);
     }
 
     SteamService(String cookies, String username) {
@@ -176,6 +178,16 @@ class SteamService implements StoreService {
     @Override
     public TradeofferService getTradeofferService() {
         return tradeofferService;
+    }
+    
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.StoreService#getFriendService()
+     */
+    @Override
+    public FriendService getFriendService() {
+        return friendService;
     }
 
     /**

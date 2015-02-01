@@ -2,6 +2,7 @@ package nl.pvanassen.steam.store;
 
 import java.util.Set;
 
+import nl.pvanassen.steam.community.friends.FriendService;
 import nl.pvanassen.steam.store.buy.BuyService;
 import nl.pvanassen.steam.store.buyorder.BuyOrderService;
 import nl.pvanassen.steam.store.history.HistoryService;
@@ -74,6 +75,11 @@ public interface StoreService {
      * @return Handles trade offers
      */
     TradeofferService getTradeofferService();
+    
+    /**
+     * @return Service for handling friends
+     */
+    FriendService getFriendService();
 
     /**
      * Retrieve the current cookies from the HTTP session
