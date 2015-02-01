@@ -1,6 +1,7 @@
 package nl.pvanassen.steam.store.helper;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import nl.pvanassen.steam.error.SteamException;
@@ -19,7 +20,8 @@ public final class UrlNameHelper {
      */
     public static String getUrlName(String urlName) {
         try {
-            return URLEncoder.encode(urlName.trim(), "UTF-8").replace("+", "%20");
+            String decodedUrlName = URLDecoder.decode(urlName, "UTF-8").trim();
+            return URLEncoder.encode(decodedUrlName, "UTF-8").replace("+", "%20");
         }
         catch (UnsupportedEncodingException e) {
             throw new SteamException("Encoding not present", e);
