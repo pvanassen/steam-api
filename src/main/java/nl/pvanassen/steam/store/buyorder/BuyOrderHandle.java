@@ -38,7 +38,7 @@ class BuyOrderHandle extends DefaultHandle {
     public void handle(InputStream stream) throws IOException {
         JsonNode node = objectMapper.readTree(stream);
         logger.info(node.toString());
-        if (node.get("error").asText() != null && !node.get("error").asText().equals("null")) {
+        if (node.get("error") != null && !node.get("error").asText().equals("null")) {
             error = true;
             message = "Unknown: " + node.toString();
         }
