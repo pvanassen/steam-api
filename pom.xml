@@ -81,7 +81,7 @@
 	</parent>
 	<artifactId>steam-api</artifactId>
 	<groupId>nl.pvanassen.steam</groupId>
-	<version>2.0.5</version>
+	<version>2.0.7</version>
 	<description>A Java API to access the Steam community market through the HTTP interface. This may be against the TOS so be careful using it!</description>
 	<url>http://www.pvanassen.nl</url>
 	<organization>
