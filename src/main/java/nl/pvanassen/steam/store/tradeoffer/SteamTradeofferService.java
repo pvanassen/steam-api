@@ -4,20 +4,15 @@
 package nl.pvanassen.steam.store.tradeoffer;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import nl.pvanassen.steam.error.SteamException;
-import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.http.Http;
 import nl.pvanassen.steam.store.common.InventoryItem;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.codehaus.jackson.node.*;
+import org.slf4j.*;
 
 import com.google.common.base.Optional;
 
@@ -46,7 +41,11 @@ public class SteamTradeofferService implements TradeofferService {
             params.put("partner", tradeoffer.getPartnerId());
             params.put("tradeofferid", id);
             params.put("serverid", "1");
-            http.post("https://steamcommunity.com/tradeoffer/" + id + "/accept", params, new DefaultHandle(), "http://steamcommunity.com/tradeoffer/" + id);
+            TradeofferHandle handle = new TradeofferHandle(objectMapper);
+            http.post("https://steamcommunity.com/tradeoffer/" + id + "/accept", params, handle, "http://steamcommunity.com/tradeoffer/" + id);
+            if (handle.isError()) {
+                throw new SteamException(handle.getMessage());
+            }
         }
         catch (IOException e) {
             logger.error("Error getting trade offers", e);
@@ -97,6 +96,9 @@ public class SteamTradeofferService implements TradeofferService {
         try {
             TradeofferHandle handle = new TradeofferHandle(objectMapper);
             http.post("https://steamcommunity.com/tradeoffer/new/send", params, handle, "http://steamcommunity.com/tradeoffer/new/?partner=" + Long.toString(steamId & 0xFFFFFFFFL));
+            if (handle.isError()) {
+                throw new SteamException(handle.getMessage());
+            }
             return handle.getTradeOfferId();
         }
         catch (IOException e) {

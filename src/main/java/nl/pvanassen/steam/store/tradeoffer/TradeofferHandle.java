@@ -11,7 +11,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 class TradeofferHandle extends DefaultHandle {
     private final ObjectMapper om;
     private int tradeOfferId;
-
+    private boolean error = false;
+    private String message;
+    
     TradeofferHandle(ObjectMapper om) {
         this.om = om;
     }
@@ -24,5 +26,20 @@ class TradeofferHandle extends DefaultHandle {
     public void handle(InputStream stream) throws IOException {
         JsonNode jsonNode = om.readTree(stream);
         tradeOfferId = jsonNode.get("tradeofferid").asInt();
+    }
+    
+    @Override
+    public void handleError(InputStream stream) throws IOException {
+        error = true;
+        JsonNode jsonNode = om.readTree(stream);
+        message = jsonNode.get("strError").asText(); 
+    }
+    
+    public String getMessage() {
+        return message;
+    }
+    
+    public boolean isError() {
+        return error;
     }
 }
