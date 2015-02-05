@@ -87,7 +87,7 @@ class OverviewHandle extends DefaultHandle {
                     steamId = urlName.substring(0, idx);
                 }
                 int appId = Integer.valueOf(href.substring(startAppId + 1, startName));
-                logger.info("Found: " + urlName + ", appid: " + appId);
+                logger.trace("Found: " + urlName + ", appid: " + appId);
                 Node priceSpan = (Node) PRICE_XPATH.evaluate(node, XPathConstants.NODE);
                 int currentPrice = AmountHelper.getAmount(priceSpan.getTextContent().trim().substring(1));
                 Node offersSpan = (Node) OFFERINGS_XPATH.evaluate(node, XPathConstants.NODE);
