@@ -12,18 +12,18 @@ import com.google.common.base.Optional;
 /**
  * @author Paul van Assen
  */
-public interface TradeofferService {
+public interface TradeOfferService {
     /**
      * Call to accept a trade offer
      * 
-     * @param tradeoffer Trade offer to accept
+     * @param tradeOffer Trade offer to accept
      */
-    void acceptTradeOffer(Tradeoffer tradeoffer);
+    void acceptTradeOffer(TradeOffer tradeOffer);
 
     /**
      * @return A list of trade offers
      */
-    List<Tradeoffer> getTradeOffers();
+    List<TradeOffer> getTradeOffers();
 
     /**
      * Make a trade offer of items to a user

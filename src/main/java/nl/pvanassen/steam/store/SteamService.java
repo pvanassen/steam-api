@@ -23,8 +23,8 @@ import nl.pvanassen.steam.store.marketpage.MarketPageService;
 import nl.pvanassen.steam.store.marketpage.SteamMarketPageService;
 import nl.pvanassen.steam.store.sell.SellService;
 import nl.pvanassen.steam.store.sell.SteamSellService;
-import nl.pvanassen.steam.store.tradeoffer.SteamTradeofferService;
-import nl.pvanassen.steam.store.tradeoffer.TradeofferService;
+import nl.pvanassen.steam.store.tradeoffer.SteamTradeOfferService;
+import nl.pvanassen.steam.store.tradeoffer.TradeOfferService;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -45,7 +45,7 @@ class SteamService implements StoreService {
     private final LoginService loginService;
     private final MarketPageService marketPageService;
     private final SellService sellService;
-    private final TradeofferService tradeofferService;
+    private final TradeOfferService tradeofferService;
     private final FriendService friendService;
     /**
      * @param http For mocking
@@ -61,7 +61,7 @@ class SteamService implements StoreService {
         listingService = new SteamListingService(http);
         itemService = new SteamItemService(http);
         sellService = new SteamSellService(http, username);
-        tradeofferService = new SteamTradeofferService(http);
+        tradeofferService = new SteamTradeOfferService(http);
         inventoryService = new SteamInventoryService(http, username, appIds);
         friendService = new SteamFriendService(http, username);
     }
@@ -176,7 +176,7 @@ class SteamService implements StoreService {
      * @see nl.pvanassen.steam.store.StoreService#getTradeofferService()
      */
     @Override
-    public TradeofferService getTradeofferService() {
+    public TradeOfferService getTradeofferService() {
         return tradeofferService;
     }
     

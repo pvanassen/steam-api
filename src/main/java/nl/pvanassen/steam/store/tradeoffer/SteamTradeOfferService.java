@@ -19,7 +19,7 @@ import com.google.common.base.Optional;
 /**
  * @author Paul van Assen
  */
-public class SteamTradeofferService implements TradeofferService {
+public class SteamTradeOfferService implements TradeOfferService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -29,19 +29,19 @@ public class SteamTradeofferService implements TradeofferService {
     /**
      * @param http For mocking
      */
-    public SteamTradeofferService(Http http) {
+    public SteamTradeOfferService(Http http) {
         this.http = http;
     }
 
     @Override
-    public void acceptTradeOffer(Tradeoffer tradeoffer) {
+    public void acceptTradeOffer(TradeOffer tradeoffer) {
         String id = tradeoffer.getOfferId();
         try {
             Map<String, String> params = new HashMap<>();
             params.put("partner", tradeoffer.getPartnerId());
             params.put("tradeofferid", id);
             params.put("serverid", "1");
-            TradeofferHandle handle = new TradeofferHandle(objectMapper);
+            TradeOfferHandle handle = new TradeOfferHandle(objectMapper);
             http.post("https://steamcommunity.com/tradeoffer/" + id + "/accept", params, handle, "http://steamcommunity.com/tradeoffer/" + id);
             if (handle.isError()) {
                 throw new SteamException(handle.getMessage());
@@ -66,7 +66,7 @@ public class SteamTradeofferService implements TradeofferService {
     }
 
     @Override
-    public List<Tradeoffer> getTradeOffers() {
+    public List<TradeOffer> getTradeOffers() {
         ListTradeoffersHandle handle = new ListTradeoffersHandle();
         try {
             http.get("https://steamcommunity.com/id/mantorch/tradeoffers/", handle);
@@ -94,7 +94,7 @@ public class SteamTradeofferService implements TradeofferService {
         params.put("serverid", "1");
         logger.info("Sending: " + params.toString());
         try {
-            TradeofferHandle handle = new TradeofferHandle(objectMapper);
+            TradeOfferHandle handle = new TradeOfferHandle(objectMapper);
             http.post("https://steamcommunity.com/tradeoffer/new/send", params, handle, "http://steamcommunity.com/tradeoffer/new/?partner=" + Long.toString(steamId & 0xFFFFFFFFL));
             if (handle.isError()) {
                 throw new SteamException(handle.getMessage());

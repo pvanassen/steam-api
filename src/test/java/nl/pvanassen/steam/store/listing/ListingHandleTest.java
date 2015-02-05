@@ -53,6 +53,21 @@ public class ListingHandleTest {
         assertEquals(438, listings.get(9).getSubTotal());
     }
 
+    @Test
+    public void testHandleNewListingPage() throws IOException {
+        handle.handle(getClass().getResourceAsStream("/new-listing.json"));
+        List<Listing> listings = new ArrayList<>(listingQueue.getDeque());
+        assertEquals(10, listings.size());
+        assertEquals(730, listings.get(9).getAppId());
+        assertEquals("Nova%20%7C%20Bloomstick%20%28Minimal%20Wear%29", listings.get(9).getUrlName());
+        assertEquals(27, listings.get(9).getFee());
+        assertEquals(18, listings.get(9).getPublisherFee());
+        assertEquals(730, listings.get(9).getPublisherFeeApp());
+        assertEquals("433805375084121848", listings.get(9).getListingId());
+        assertEquals(9, listings.get(9).getSteamFee());
+        assertEquals(186, listings.get(9).getSubTotal());
+    }
+
     public void testPerformance() throws IOException {
         for (int i = 0; i != 5000; i++) {
             handle.handle(getClass().getResourceAsStream("/listing.json"));

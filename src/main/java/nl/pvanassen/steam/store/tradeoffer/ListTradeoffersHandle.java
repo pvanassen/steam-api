@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
 
 class ListTradeoffersHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final List<Tradeoffer> tradeoffers = new LinkedList<>();
+    private final List<TradeOffer> tradeoffers = new LinkedList<>();
     private final Map<String, Item> imageToItemMapping = new HashMap<>();
     private static final XPathExpression TRADE_OFFERS_XPATH = XPathHelper.getXpathExpression("//DIV[@class='tradeoffer']");
     private static final XPathExpression PARTNERID_XPATH = XPathHelper.getXpathExpression("//DIV[@class='tradeoffer_partner']/DIV");
@@ -39,7 +39,7 @@ class ListTradeoffersHandle extends DefaultHandle {
         return imageToItemMapping;
     }
 
-    List<Tradeoffer> getTradeoffers() {
+    List<TradeOffer> getTradeoffers() {
         return tradeoffers;
     }
 
@@ -65,7 +65,7 @@ class ListTradeoffersHandle extends DefaultHandle {
                 int quoteEnd = onClick.indexOf('\'', quoteStart);
                 String offerId = onClick.substring(quoteStart, quoteEnd);
                 String quote = ((Node) QUOTE_XPATH.evaluate(tradeofferNode, XPathConstants.NODE)).getFirstChild().getTextContent().trim();
-                tradeoffers.add(new Tradeoffer(partnerId, offerId, quote));
+                tradeoffers.add(new TradeOffer(partnerId, offerId, quote));
             }
         }
         catch (SAXException | XPathExpressionException e) {

@@ -5,12 +5,12 @@ package nl.pvanassen.steam.store.tradeoffer;
  * 
  * @author Paul van Assen
  */
-public class Tradeoffer {
+public class TradeOffer {
     private final String partnerId;
     private final String offerId;
     private final String comment;
 
-    Tradeoffer(String partnerId, String offerId, String comment) {
+    TradeOffer(String partnerId, String offerId, String comment) {
         super();
         this.partnerId = partnerId;
         this.offerId = offerId;

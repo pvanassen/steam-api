@@ -12,7 +12,7 @@ import nl.pvanassen.steam.store.listing.ListingService;
 import nl.pvanassen.steam.store.login.LoginService;
 import nl.pvanassen.steam.store.marketpage.MarketPageService;
 import nl.pvanassen.steam.store.sell.SellService;
-import nl.pvanassen.steam.store.tradeoffer.TradeofferService;
+import nl.pvanassen.steam.store.tradeoffer.TradeOfferService;
 
 /**
  * Interface defining a connecion to the steam store
@@ -74,7 +74,7 @@ public interface StoreService {
     /**
      * @return Handles trade offers
      */
-    TradeofferService getTradeofferService();
+    TradeOfferService getTradeofferService();
     
     /**
      * @return Service for handling friends

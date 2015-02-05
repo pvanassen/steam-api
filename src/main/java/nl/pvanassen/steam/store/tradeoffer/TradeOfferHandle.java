@@ -8,13 +8,13 @@ import nl.pvanassen.steam.http.DefaultHandle;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
-class TradeofferHandle extends DefaultHandle {
+class TradeOfferHandle extends DefaultHandle {
     private final ObjectMapper om;
     private int tradeOfferId;
     private boolean error = false;
     private String message;
     
-    TradeofferHandle(ObjectMapper om) {
+    TradeOfferHandle(ObjectMapper om) {
         this.om = om;
     }
 
