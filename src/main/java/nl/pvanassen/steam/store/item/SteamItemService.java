@@ -56,9 +56,10 @@ public class SteamItemService implements ItemService {
             logger.error("Error handling item", e);
         }
     }
-    
+
     @Override
-    public void getItem(String host, int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle, GenericHandle<Boolean> buyOrders, GenericHandle<Boolean> immediateSale) {
+    public void getItem(String host, int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle,
+            GenericHandle<Boolean> buyOrders, GenericHandle<Boolean> immediateSale) {
         String url = "http://" + host + "/market/listings/" + appId + "/" + urlName;
         ListingPageScriptHandle handle = new ListingPageScriptHandle(objectMapper);
         try {
@@ -70,6 +71,15 @@ public class SteamItemService implements ItemService {
         }
         if (handle.isError()) {
             throw new SteamException("Error getting data for url: " + url + " error code was not 200");
+        }
+        if (handle.isNoListingForThisItem()) {
+            throw new NoListingFoundException();
+        }
+        if (handle.isNoPricingHistoryForThisItem()) {
+            throw new NoPricingHistoryFoundException();
+        }
+        if (handle.isNoLongerSold()) {
+            throw new NoLongerSoldException();
         }
         buyOrders.handle(handle.isBuyOrders());
         immediateSale.handle(handle.isImmediateSale());
@@ -83,7 +93,7 @@ public class SteamItemService implements ItemService {
         JsonNode listingInfo = handle.getListingInfo();
         for (Listing item : new ListingItemIterator(appId, urlName, listingInfo)) {
             listingHandle.handle(item);
-        }        
+        }
     }
 
     /**
@@ -92,10 +102,12 @@ public class SteamItemService implements ItemService {
      * @see nl.pvanassen.steam.store.item.ItemService#getItem(int,
      *      java.lang.String, nl.pvanassen.steam.store.common.GenericHandle,
      *      nl.pvanassen.steam.store.common.GenericHandle,
+     *      nl.pvanassen.steam.store.common.GenericHandle,
      *      nl.pvanassen.steam.store.common.GenericHandle)
      */
     @Override
-    public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle, GenericHandle<Boolean> buyOrders, GenericHandle<Boolean> immediateSale) {
+    public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle, GenericHandle<Boolean> buyOrders,
+            GenericHandle<Boolean> immediateSale) {
         getItem("steamcommunity.com", appId, urlName, dataPointHandle, listingHandle, buyOrders, immediateSale);
     }
 }

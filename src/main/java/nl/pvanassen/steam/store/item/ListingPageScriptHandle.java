@@ -1,15 +1,15 @@
 package nl.pvanassen.steam.store.item;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
+import java.util.Random;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handler to parse the listing page
@@ -17,6 +17,7 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @author Paul van Assen
  */
 public class ListingPageScriptHandle extends DefaultHandle {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Charset charset = Charset.forName("UTF-8");
     private final ObjectMapper om;
     private JsonNode listingInfo;
@@ -24,7 +25,10 @@ public class ListingPageScriptHandle extends DefaultHandle {
     private boolean error;
     private boolean buyOrders;
     private boolean immediateSale;
-
+    private boolean noListingForThisItem;
+    private boolean noPricingHistoryForThisItem;
+    private boolean noLongerSold;
+    
     ListingPageScriptHandle(ObjectMapper om) {
         this.om = om;
         error = false;
@@ -47,13 +51,29 @@ public class ListingPageScriptHandle extends DefaultHandle {
         boolean salesFound = false;
         boolean buyOrdersFound = false;
         boolean immediateSaleFound = false;
+        StringBuilder stringBuilder = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
+            if (logger.isDebugEnabled()) {
+                stringBuilder.append(line).append('\n');
+            }
             if (!buyOrdersFound) {
                 if (line.indexOf("market_commodity_order_block") > -1) {
                     buyOrders = true;
                     buyOrdersFound = true;
                 }
+            }
+            if (line.indexOf("There are no listings for this item") > -1) {
+                noListingForThisItem = true;
+                return;
+            }
+            if (line.indexOf("There is no price history available") > -1) {
+                noPricingHistoryForThisItem = true;
+                return;
+            }
+            if (line.indexOf("This item may no longer be bought or sold on the market") > -1) {
+                noLongerSold = true;
+                return;
             }
             if (!immediateSaleFound) {
                 if (line.indexOf("either in-game or on the Steam Community Market") > -1) {
@@ -83,6 +103,19 @@ public class ListingPageScriptHandle extends DefaultHandle {
                 }
             }
         }
+        if (!salesFound) {
+            logger.warn("No sales info found!");
+        }
+        if (!listingFound) {
+            logger.warn("No listing info found!");
+        }
+        if (!(salesFound && listingFound) && logger.isDebugEnabled()) {
+            logger.debug("Content: " + stringBuilder.toString());
+            try (PrintWriter printWriter = new PrintWriter(new File("listing-page-" + new Random().nextLong() + ".html"))) {
+                printWriter.print(stringBuilder.toString());
+                printWriter.flush();
+            }
+        }
     }
 
     @Override
@@ -103,5 +136,17 @@ public class ListingPageScriptHandle extends DefaultHandle {
     
     boolean isImmediateSale() {
         return immediateSale;
+    }
+    
+    boolean isNoListingForThisItem() {
+        return noListingForThisItem;
+    }
+    
+    boolean isNoPricingHistoryForThisItem() {
+        return noPricingHistoryForThisItem;
+    }
+
+    boolean isNoLongerSold() {
+        return noLongerSold;
     }
 }
