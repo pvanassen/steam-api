@@ -9,8 +9,17 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 
+/**
+ * Test retrieval of listing points
+ * @author Paul van Assen
+ *
+ */
 public class ListingStatDataPointIteratorTest {
 
+    /**
+     * Test broken list
+     * @throws IOException
+     */
     @Test
     public void testBrokenListing() throws IOException {
         ListingPageScriptHandle handle = new ListingPageScriptHandle(new ObjectMapper());
