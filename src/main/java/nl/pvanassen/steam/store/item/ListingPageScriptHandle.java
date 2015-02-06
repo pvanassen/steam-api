@@ -20,6 +20,7 @@ public class ListingPageScriptHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Charset charset = Charset.forName("UTF-8");
     private final ObjectMapper om;
+    private final Random random = new Random();
     private JsonNode listingInfo;
     private JsonNode priceHistoryInfo;
     private boolean error;
@@ -111,7 +112,7 @@ public class ListingPageScriptHandle extends DefaultHandle {
         }
         if (!(salesFound && listingFound) && logger.isDebugEnabled()) {
             logger.debug("Content: " + stringBuilder.toString());
-            try (PrintWriter printWriter = new PrintWriter(new File("listing-page-" + new Random().nextLong() + ".html"))) {
+            try (PrintWriter printWriter = new PrintWriter(new File("listing-page-" + random.nextLong() + ".html"))) {
                 printWriter.print(stringBuilder.toString());
                 printWriter.flush();
             }
