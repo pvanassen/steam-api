@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store.sell;
+package nl.pvanassen.steam.store.listing;
 
 import nl.pvanassen.steam.error.SteamException;
 

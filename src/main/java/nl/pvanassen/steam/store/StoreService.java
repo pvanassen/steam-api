@@ -11,7 +11,6 @@ import nl.pvanassen.steam.store.item.ItemService;
 import nl.pvanassen.steam.store.listing.ListingService;
 import nl.pvanassen.steam.store.login.LoginService;
 import nl.pvanassen.steam.store.marketpage.MarketPageService;
-import nl.pvanassen.steam.store.sell.SellService;
 import nl.pvanassen.steam.store.tradeoffer.TradeOfferService;
 
 /**
@@ -65,11 +64,6 @@ public interface StoreService {
      * @return All information about the market page
      */
     MarketPageService getMarketPageService();
-
-    /**
-     * @return Service for selling stuff
-     */
-    SellService getSellService();
 
     /**
      * @return Handles trade offers

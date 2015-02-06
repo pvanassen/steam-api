@@ -2,7 +2,8 @@ package nl.pvanassen.steam.store;
 
 import java.util.Set;
 
-import nl.pvanassen.steam.community.friends.*;
+import nl.pvanassen.steam.community.friends.FriendService;
+import nl.pvanassen.steam.community.friends.SteamFriendService;
 import nl.pvanassen.steam.http.Http;
 import nl.pvanassen.steam.store.buy.BuyService;
 import nl.pvanassen.steam.store.buy.SteamBuyService;
@@ -21,8 +22,6 @@ import nl.pvanassen.steam.store.login.SteamLoginService;
 import nl.pvanassen.steam.store.marketpage.AppIds;
 import nl.pvanassen.steam.store.marketpage.MarketPageService;
 import nl.pvanassen.steam.store.marketpage.SteamMarketPageService;
-import nl.pvanassen.steam.store.sell.SellService;
-import nl.pvanassen.steam.store.sell.SteamSellService;
 import nl.pvanassen.steam.store.tradeoffer.SteamTradeOfferService;
 import nl.pvanassen.steam.store.tradeoffer.TradeOfferService;
 
@@ -44,7 +43,6 @@ class SteamService implements StoreService {
     private final ItemService itemService;
     private final LoginService loginService;
     private final MarketPageService marketPageService;
-    private final SellService sellService;
     private final TradeOfferService tradeofferService;
     private final FriendService friendService;
     /**
@@ -58,9 +56,8 @@ class SteamService implements StoreService {
         buyService = new SteamBuyService(http, username);
         buyOrderService = new SteamBuyOrderService(http, username);
         historyService = new SteamHistoryService(http);
-        listingService = new SteamListingService(http);
+        listingService = new SteamListingService(http, username);
         itemService = new SteamItemService(http);
-        sellService = new SteamSellService(http, username);
         tradeofferService = new SteamTradeOfferService(http);
         inventoryService = new SteamInventoryService(http, username, appIds);
         friendService = new SteamFriendService(http, username);
@@ -158,16 +155,6 @@ class SteamService implements StoreService {
     @Override
     public MarketPageService getMarketPageService() {
         return marketPageService;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see nl.pvanassen.steam.store.StoreService#getSellService()
-     */
-    @Override
-    public SellService getSellService() {
-        return sellService;
     }
 
     /**

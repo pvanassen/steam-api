@@ -1,4 +1,4 @@
-package nl.pvanassen.steam.store.marketpage;
+package nl.pvanassen.steam.store.listing;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +10,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class RemoveHandle extends DefaultHandle {
+class ListingMutationHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private boolean error = false;
     private String message;

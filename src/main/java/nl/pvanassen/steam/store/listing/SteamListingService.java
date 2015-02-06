@@ -4,12 +4,12 @@
 package nl.pvanassen.steam.store.listing;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import nl.pvanassen.steam.http.Http;
-import nl.pvanassen.steam.store.common.*;
+import nl.pvanassen.steam.store.common.GenericHandle;
+import nl.pvanassen.steam.store.common.Item;
+import nl.pvanassen.steam.store.common.Listing;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -22,13 +22,16 @@ public class SteamListingService implements ListingService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Http http;
+    private final String username;
     private final Random random = new Random();
 
     /**
      * @param http For mocking
+     * @param username For creating new listings
      */
-    public SteamListingService(Http http) {
+    public SteamListingService(Http http, String username) {
         this.http = http;
+        this.username = username;
     }
     
     /**
@@ -104,5 +107,54 @@ public class SteamListingService implements ListingService {
             logger.error("Error getting newly listed", e);
         }
         return Collections.emptyList();
+    }
+    
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.listing.ListingService#removeListing(java.lang.String)
+     */
+    @Override
+    public boolean removeListing(String listingId) {
+        try {
+            ListingMutationHandle removeHandle = new ListingMutationHandle();
+            http.post("http://steamcommunity.com/market/removelisting/" + listingId, new HashMap<String, String>(), removeHandle, "http://steamcommunity.com/id/" + username
+                    + "/inventory/");
+            return !removeHandle.isError();
+        }
+        catch (IOException | RuntimeException e) {
+            logger.error("Error posting data", e);
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.listing.ListingService#createListing(java.lang.String, int, java.lang.String, int, int)
+     */
+    @Override
+    public void createListing(String assetId, int appId, String urlName, int contextId, int price) {
+        try {
+            if (price < 1) {
+                throw new SellException("Error, price is too low: " + price);
+            }
+            Map<String, String> params = new HashMap<>();
+            params.put("amount", "1");
+            params.put("appid", Integer.toString(appId));
+            params.put("assetid", assetId);
+            params.put("contextid", Integer.toString(contextId));
+            params.put("price", Integer.toString(price));
+            logger.info(params.toString());
+            ListingMutationHandle sellHandle = new ListingMutationHandle();
+            http.post("https://steamcommunity.com/market/sellitem/", params, sellHandle, "http://steamcommunity.com/id/" + username + "/inventory/");
+            if (sellHandle.isError()) {
+                throw new SellException(sellHandle.getMessage());
+            }
+        }
+        catch (IOException e) {
+            logger.error("Error posting data", e);
+            throw new SellException("Error posting data", e);
+        }
     }
 }

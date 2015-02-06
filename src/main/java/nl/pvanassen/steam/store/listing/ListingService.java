@@ -62,4 +62,25 @@ public interface ListingService {
      */
     List<Listing> getNewlyListed(int currency, String country);
 
+
+    /**
+     * Remove an active listing
+     *
+     * @param listingId Listing to remove
+     * @return True if succesful removed
+     */
+    boolean removeListing(String listingId);
+    
+    /**
+     * Create a listing from an item in the inventory
+     *
+     * @param assetId Asset id to sell
+     * @param appId App id to sell
+     * @param urlName Url name to sell
+     * @param contextId Context id to sell
+     * @param price Price to use
+     * @throws SellException In case of an error
+     */
+    void createListing(String assetId, int appId, String urlName, int contextId, int price) throws SellException;
+
 }
