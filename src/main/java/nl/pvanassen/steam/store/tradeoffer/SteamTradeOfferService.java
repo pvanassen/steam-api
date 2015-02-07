@@ -81,7 +81,7 @@ public class SteamTradeOfferService implements TradeOfferService {
     public int makeTradeOffer(long steamId, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message) {
         ObjectNode tradeOffer = objectMapper.createObjectNode();
         tradeOffer.put("newversion", true);
-        tradeOffer.put("version", 2);
+        tradeOffer.put("version", 18);
         ObjectNode meNode = tradeOffer.putObject("me");
         fillTradeNode(me, meNode);
         ObjectNode themNode = tradeOffer.putObject("them");
