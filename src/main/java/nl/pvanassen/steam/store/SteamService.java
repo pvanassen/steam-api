@@ -4,6 +4,7 @@ import java.util.Set;
 
 import nl.pvanassen.steam.community.friends.FriendService;
 import nl.pvanassen.steam.community.friends.SteamFriendService;
+import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.http.Http;
 import nl.pvanassen.steam.store.buy.BuyService;
 import nl.pvanassen.steam.store.buy.SteamBuyService;
@@ -50,6 +51,9 @@ class SteamService implements StoreService {
      */
     private SteamService(Http http, String username) {
         appIds = ImmutableSet.copyOf(AppIds.getAppids());
+        if (appIds.isEmpty()) {
+            throw new SteamException("Error initializing Steam library, app ids empty");
+        }
         this.http = http;
         loginService = new SteamLoginService(http);
         marketPageService = new SteamMarketPageService(http, username);
