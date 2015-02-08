@@ -57,7 +57,7 @@ public class SteamTradeOfferService implements TradeOfferService {
         for (InventoryItem item : me) {
             ObjectNode itemNode = assetsNode.addObject();
             itemNode.put("appid", item.getAppId());
-            itemNode.put("contextid", item.getContextId());
+            itemNode.put("contextid", Integer.toString(item.getContextId()));
             itemNode.put("amount", 1);
             itemNode.put("assetid", item.getAssetId());
         }
@@ -77,11 +77,16 @@ public class SteamTradeOfferService implements TradeOfferService {
         return handle.getTradeoffers();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see nl.pvanassen.steam.store.tradeoffer.TradeOfferService#makeTradeOffer(long, java.util.List, java.util.List, com.google.common.base.Optional)
+     */
     @Override
     public int makeTradeOffer(long steamId, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message) {
         ObjectNode tradeOffer = objectMapper.createObjectNode();
         tradeOffer.put("newversion", true);
-        tradeOffer.put("version", 18);
+        tradeOffer.put("version", me.size() + them.size() + 1);
         ObjectNode meNode = tradeOffer.putObject("me");
         fillTradeNode(me, meNode);
         ObjectNode themNode = tradeOffer.putObject("them");
