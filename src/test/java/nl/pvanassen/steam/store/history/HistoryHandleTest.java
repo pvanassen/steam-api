@@ -12,8 +12,18 @@ import nl.pvanassen.steam.store.common.Item;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Test the history handler
+ * 
+ * @author Paul van Assen
+ *
+ */
 public class HistoryHandleTest {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    
     static class Action {
         private final String action;
         private final int price;
@@ -37,9 +47,12 @@ public class HistoryHandleTest {
         int getPrice() {
             return price;
         }
-
     }
-
+    
+    /**
+     * Test the handle
+     * @throws IOException
+     */
     @Test
     public void testHandle() throws IOException {
         HistoryHandle handle = new HistoryHandle(null, new ObjectMapper());
@@ -67,23 +80,23 @@ public class HistoryHandleTest {
         for (ListingCreated row : listingsCreated) {
             for (Sale sale : sales) {
                 if (row.getSteamId1().equals(sale.getSteamId1())) {
-                    System.out.println("Sale match id1");
+                    logger.info("Sale match id1");
                 }
                 if (row.getSteamId1().equals(sale.getSteamId2())) {
-                    System.out.println("Sale match id2");
+                    logger.info("Sale match id2");
                 }
             }
             for (ListingRemoved listingRemoved : listingsRemoved) {
                 if (row.getSteamId1().equals(listingRemoved.getSteamId1())) {
-                    System.out.println("ListingRemoved match id1");
+                    logger.info("ListingRemoved match id1");
                 }
             }
             for (Purchase purchase : purchases) {
                 if (row.getSteamId1().equals(purchase.getSteamId1())) {
-                    System.out.println("Purchase match id1");
+                    logger.info("Purchase match id1");
                 }
                 if (row.getSteamId1().equals(purchase.getSteamId2())) {
-                    System.out.println("Purchase match id2");
+                    logger.info("Purchase match id2");
                 }
             }
         }
