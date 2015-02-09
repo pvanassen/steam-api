@@ -8,6 +8,7 @@ import java.util.*;
 
 import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.http.Http;
+import nl.pvanassen.steam.http.NullHandle;
 import nl.pvanassen.steam.store.common.InventoryItem;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -84,6 +85,13 @@ public class SteamTradeOfferService implements TradeOfferService {
      */
     @Override
     public int makeTradeOffer(long steamId, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message) {
+        try {
+            http.get("https://steamcommunity.com/tradeoffer/new/?partner=" + Long.toString(steamId & 0xFFFFFFFFL), new NullHandle());
+        }
+        catch (IOException e) {
+            logger.error("Error making trade offer", e);
+            throw new SteamException("Error making trade offer", e);
+        }
         ObjectNode tradeOffer = objectMapper.createObjectNode();
         tradeOffer.put("newversion", true);
         tradeOffer.put("version", me.size() + them.size() + 1);
@@ -96,6 +104,7 @@ public class SteamTradeOfferService implements TradeOfferService {
         params.put("partner", Long.toString(steamId));
         params.put("trade_offer_create_params", "{}");
         params.put("tradeoffermessage", message.or(""));
+        params.put("captcha", "");
         params.put("serverid", "1");
         logger.info("Sending: " + params.toString());
         try {
