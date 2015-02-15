@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import org.slf4j.LoggerFactory;
+
 import nl.pvanassen.steam.error.SteamException;
 
 /**
@@ -25,6 +27,10 @@ public final class UrlNameHelper {
         }
         catch (UnsupportedEncodingException e) {
             throw new SteamException("Encoding not present", e);
+        }
+        catch (IllegalArgumentException e) {
+            LoggerFactory.getLogger(UrlNameHelper.class).error("Error getting url name for '" + urlName + "'", e);
+            throw new SteamException("Error getting url name for '" + urlName + "'", e);
         }
     }
 
