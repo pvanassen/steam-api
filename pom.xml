@@ -80,7 +80,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
+			<artifactId>jcl-over-slf4j</artifactId>
 			<version>1.7.10</version>
 			<scope>test</scope>
 		</dependency>
