@@ -27,17 +27,17 @@ public class InventoryHandleTest {
         InventoryHandle handle = new InventoryHandle(new ObjectMapper(), 1, items);
         handle.handle(getClass().getResourceAsStream("/inventory-with-block.json"));
 
-        assertEquals(1, items.size());
-        InventoryItem item = items.get(0);
+        assertEquals(28, items.size());
+        InventoryItem item = items.get(14);
         assertNotNull(item);
         assertNotNull(item.getBlockedUntil());
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, 2014);
-        calendar.set(Calendar.MONTH, Calendar.DECEMBER);
-        calendar.set(Calendar.DATE, 27);
-        calendar.set(Calendar.HOUR_OF_DAY, 7);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 22);
+        calendar.set(Calendar.YEAR, 2015);
+        calendar.set(Calendar.MONTH, Calendar.MARCH);
+        calendar.set(Calendar.DATE, 6);
+        calendar.set(Calendar.HOUR_OF_DAY, 3);
+        calendar.set(Calendar.MINUTE, 34);
+        calendar.set(Calendar.SECOND, 31);
         calendar.set(Calendar.MILLISECOND, 0);
         assertEquals(calendar.getTime(), item.getBlockedUntil());
     }

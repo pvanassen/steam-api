@@ -13,7 +13,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.*;
 
 class InventoryHandle extends DefaultHandle {
-    private static final String TRADING_BLOCKED = "This item can be traded after ";
+    private static final String TRADING_BLOCKED = "Tradable After: ";
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
     private static final class Description {
@@ -66,13 +66,13 @@ class InventoryHandle extends DefaultHandle {
                 urlName = UrlNameHelper.getUrlName(item.get("market_hash_name").asText());
             }
             Date blockedUntil = new Date();
-            JsonNode ownerDescriptions = item.get("owner_descriptions");
+            JsonNode ownerDescriptions = item.get("descriptions");
             if (ownerDescriptions != null && ownerDescriptions.isArray()) {
                 for (JsonNode ownerDescription : ownerDescriptions) {
-                    String text = ownerDescription.get("value").asText();
+                    String text = ownerDescription.get("value").asText().trim();
                     if (text.startsWith(TRADING_BLOCKED)) {
                         String date = text.substring(TRADING_BLOCKED.length());
-                        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
+                        SimpleDateFormat format = new SimpleDateFormat("EEE, MMM dd, yyyy (HH:mm:ss)", Locale.ENGLISH);
                         try {
                             blockedUntil = format.parse(date);
                         } catch (ParseException e) {
