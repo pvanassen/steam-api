@@ -65,7 +65,7 @@ class InventoryHandle extends DefaultHandle {
             else {
                 urlName = UrlNameHelper.getUrlName(item.get("market_hash_name").asText());
             }
-            Date blockedUntil = new Date();
+            Date blockedUntil = new Date(0);
             JsonNode ownerDescriptions = item.get("descriptions");
             if (ownerDescriptions != null && ownerDescriptions.isArray()) {
                 for (JsonNode ownerDescription : ownerDescriptions) {
