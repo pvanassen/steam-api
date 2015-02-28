@@ -30,6 +30,8 @@ public class InventoryHandleTest {
         assertEquals(28, items.size());
         InventoryItem item = items.get(14);
         assertNotNull(item);
+        assertFalse(item.isMarketable());
+        assertFalse(item.isTradable());
         assertNotNull(item.getBlockedUntil());
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, 2015);
