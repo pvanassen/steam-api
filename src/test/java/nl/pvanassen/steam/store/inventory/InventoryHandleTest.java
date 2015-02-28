@@ -41,4 +41,50 @@ public class InventoryHandleTest {
         calendar.set(Calendar.MILLISECOND, 0);
         assertEquals(calendar.getTime(), item.getBlockedUntil());
     }
+    
+    @Test
+    public void testHandleWithBlock570() throws IOException {
+        List<InventoryItem> items = new LinkedList<>();
+        InventoryHandle handle = new InventoryHandle(new ObjectMapper(), 1, items);
+        handle.handle(getClass().getResourceAsStream("/inventory-570.json"));
+
+        assertEquals(48, items.size());
+        InventoryItem item = items.get(1);
+        assertNotNull(item);
+        assertNotNull(item.getBlockedUntil());
+        assertFalse(item.isMarketable());
+        assertFalse(item.isTradable());
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, 2015);
+        calendar.set(Calendar.MONTH, Calendar.MARCH);
+        calendar.set(Calendar.DATE, 6);
+        calendar.set(Calendar.HOUR_OF_DAY, 11);
+        calendar.set(Calendar.MINUTE, 23);
+        calendar.set(Calendar.SECOND, 35);
+        calendar.set(Calendar.MILLISECOND, 0);
+        assertEquals(calendar.getTime(), item.getBlockedUntil());
+    }
+    
+    @Test
+    public void testHandleWithBlock730() throws IOException {
+        List<InventoryItem> items = new LinkedList<>();
+        InventoryHandle handle = new InventoryHandle(new ObjectMapper(), 1, items);
+        handle.handle(getClass().getResourceAsStream("/inventory-730.json"));
+
+        assertEquals(10, items.size());
+        InventoryItem item = items.get(0);
+        assertNotNull(item);
+        assertNotNull(item.getBlockedUntil());
+        assertTrue(item.isMarketable());
+        assertFalse(item.isTradable());
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, 2015);
+        calendar.set(Calendar.MONTH, Calendar.MARCH);
+        calendar.set(Calendar.DATE, 7);
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        assertEquals(calendar.getTime(), item.getBlockedUntil());
+    }
 }

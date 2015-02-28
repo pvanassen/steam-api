@@ -14,6 +14,8 @@ import org.slf4j.*;
 
 class InventoryHandle extends DefaultHandle {
     private static final String TRADING_BLOCKED = "Tradable After: ";
+    private static final String TRADING_BLOCKED_570 = "Tradable & Marketable After: ";
+    private static final String TRADING_BLOCKED_730 = "Tradable After ";
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
     private static final class Description {
@@ -65,12 +67,37 @@ class InventoryHandle extends DefaultHandle {
             else {
                 urlName = UrlNameHelper.getUrlName(item.get("market_hash_name").asText());
             }
+            int appId = item.get("appid").asInt();
             Date blockedUntil = new Date(0);
-            JsonNode ownerDescriptions = item.get("descriptions");
+            JsonNode ownerDescriptions;
+            if (appId == 730) {
+                ownerDescriptions = item.get("owner_descriptions");
+            }
+            else {
+                ownerDescriptions = item.get("descriptions");
+            }
             if (ownerDescriptions != null && ownerDescriptions.isArray()) {
                 for (JsonNode ownerDescription : ownerDescriptions) {
                     String text = ownerDescription.get("value").asText().trim();
-                    if (text.startsWith(TRADING_BLOCKED)) {
+                    if (appId == 570 && text.startsWith(TRADING_BLOCKED_570)) {
+                        String date = text.substring(TRADING_BLOCKED_570.length());
+                        SimpleDateFormat format = new SimpleDateFormat("MMM dd, yyyy (HH:mm:ss)", Locale.ENGLISH);
+                        try {
+                            blockedUntil = format.parse(date);
+                        } catch (ParseException e) {
+                            logger.error("Error parsing blocked text: " + date, e);
+                        }
+                    }
+                    else if (appId == 730 && text.startsWith(TRADING_BLOCKED_730)) {
+                        String date = text.substring(TRADING_BLOCKED_730.length());
+                        SimpleDateFormat format = new SimpleDateFormat("MMM dd, yyyy (HH:mm:ss)", Locale.ENGLISH);
+                        try {
+                            blockedUntil = format.parse(date);
+                        } catch (ParseException e) {
+                            logger.error("Error parsing blocked text: " + date, e);
+                        }
+                    }
+                    else if (text.startsWith(TRADING_BLOCKED)) {
                         String date = text.substring(TRADING_BLOCKED.length());
                         SimpleDateFormat format = new SimpleDateFormat("EEE, MMM dd, yyyy (HH:mm:ss)", Locale.ENGLISH);
                         try {
@@ -81,7 +108,7 @@ class InventoryHandle extends DefaultHandle {
                     }
                 }
             }
-            Description description = new Description(item.get("appid").asInt(), urlName, item.get("marketable").asBoolean(), item.get("tradable").asBoolean(), blockedUntil);
+            Description description = new Description(appId, urlName, item.get("marketable").asBoolean(), item.get("tradable").asBoolean(), blockedUntil);
             descriptionMap.put(item.get("classid").asText() + "-" + item.get("instanceid").asText(), description);
         }
 
