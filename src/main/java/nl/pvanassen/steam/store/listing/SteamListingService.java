@@ -117,7 +117,7 @@ public class SteamListingService implements ListingService {
     @Override
     public boolean removeListing(String listingId) {
         try {
-            ListingMutationHandle removeHandle = new ListingMutationHandle();
+            ListingMutationHandle removeHandle = new ListingMutationHandle("remove");
             http.post("http://steamcommunity.com/market/removelisting/" + listingId, new HashMap<String, String>(), removeHandle, "http://steamcommunity.com/id/" + username
                     + "/inventory/");
             return !removeHandle.isError();
@@ -146,7 +146,7 @@ public class SteamListingService implements ListingService {
             params.put("contextid", Integer.toString(contextId));
             params.put("price", Integer.toString(price));
             logger.info(params.toString());
-            ListingMutationHandle sellHandle = new ListingMutationHandle();
+            ListingMutationHandle sellHandle = new ListingMutationHandle("create");
             http.post("https://steamcommunity.com/market/sellitem/", params, sellHandle, "http://steamcommunity.com/id/" + username + "/inventory/");
             if (sellHandle.isError()) {
                 throw new SellException(sellHandle.getMessage());

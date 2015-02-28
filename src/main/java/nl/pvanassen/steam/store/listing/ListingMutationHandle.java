@@ -14,6 +14,11 @@ class ListingMutationHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private boolean error = false;
     private String message;
+    private final String mutationType;
+    
+    ListingMutationHandle(String mutationType) {
+        this.mutationType = mutationType;
+    }
 
     String getMessage() {
         return message;
@@ -25,12 +30,12 @@ class ListingMutationHandle extends DefaultHandle {
         ObjectMapper om = new ObjectMapper();
         JsonNode node = om.readTree(stream);
         if ((node == null) || (node.get("message") == null)) {
-            logger.error("Error could not remove item: unknown error");
+            logger.error("Error could not " + mutationType + " item: unknown error");
             message = "unknown error";
             return;
         }
         message = node.get("message").asText();
-        logger.error("Error could not remove item: " + message);
+        logger.error("Error could not " + mutationType + " item: " + message);
     }
 
     boolean isError() {
