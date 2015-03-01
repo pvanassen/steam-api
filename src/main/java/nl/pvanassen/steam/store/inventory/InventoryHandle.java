@@ -90,7 +90,7 @@ class InventoryHandle extends DefaultHandle {
                     }
                     else if (appId == 730 && text.startsWith(TRADING_BLOCKED_730)) {
                         String date = text.substring(TRADING_BLOCKED_730.length());
-                        SimpleDateFormat format = new SimpleDateFormat("MMM dd, yyyy (HH:mm:ss)", Locale.ENGLISH);
+                        SimpleDateFormat format = new SimpleDateFormat("MMM dd, yyyy (HH:mm:ss) z", Locale.ENGLISH);
                         try {
                             blockedUntil = format.parse(date);
                         } catch (ParseException e) {
@@ -99,7 +99,7 @@ class InventoryHandle extends DefaultHandle {
                     }
                     else if (text.startsWith(TRADING_BLOCKED)) {
                         String date = text.substring(TRADING_BLOCKED.length());
-                        SimpleDateFormat format = new SimpleDateFormat("EEE, MMM dd, yyyy (HH:mm:ss)", Locale.ENGLISH);
+                        SimpleDateFormat format = new SimpleDateFormat("EEE, MMM dd, yyyy (HH:mm:ss) z", Locale.ENGLISH);
                         try {
                             blockedUntil = format.parse(date);
                         } catch (ParseException e) {

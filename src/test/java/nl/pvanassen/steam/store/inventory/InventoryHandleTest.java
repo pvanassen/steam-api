@@ -41,6 +41,7 @@ public class InventoryHandleTest {
         calendar.set(Calendar.MINUTE, 34);
         calendar.set(Calendar.SECOND, 31);
         calendar.set(Calendar.MILLISECOND, 0);
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
         assertEquals(calendar.getTime(), item.getBlockedUntil());
     }
     
@@ -87,6 +88,7 @@ public class InventoryHandleTest {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
         assertEquals(calendar.getTime(), item.getBlockedUntil());
     }
 }
