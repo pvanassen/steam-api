@@ -108,7 +108,15 @@ class InventoryHandle extends DefaultHandle {
                     }
                 }
             }
-            Description description = new Description(appId, urlName, item.get("marketable").asBoolean(), item.get("tradable").asBoolean(), blockedUntil);
+            boolean marketable = false;
+            if (item.get("marketable") != null) {
+                marketable = item.get("marketable").asBoolean();
+            }
+            boolean tradable = false;
+            if (item.get("tradable") != null) {
+                tradable = item.get("tradable").asBoolean();
+            }
+            Description description = new Description(appId, urlName, marketable, tradable, blockedUntil);
             descriptionMap.put(item.get("classid").asText() + "-" + item.get("instanceid").asText(), description);
         }
 
