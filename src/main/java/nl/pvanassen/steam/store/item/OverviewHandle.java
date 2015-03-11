@@ -9,6 +9,7 @@ import javax.xml.xpath.*;
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.common.GenericHandle;
 import nl.pvanassen.steam.store.helper.AmountHelper;
+import nl.pvanassen.steam.store.helper.UrlNameHelper;
 import nl.pvanassen.steam.store.xpath.XPathHelper;
 
 import org.apache.html.dom.HTMLDocumentImpl;
@@ -87,6 +88,8 @@ class OverviewHandle extends DefaultHandle {
                     steamId = urlName.substring(0, idx);
                 }
                 int appId = Integer.valueOf(href.substring(startAppId + 1, startName));
+                // Cleanup of the name
+                urlName = UrlNameHelper.getUrlName(urlName);
                 logger.trace("Found: " + urlName + ", appid: " + appId);
                 Node priceSpan = (Node) PRICE_XPATH.evaluate(node, XPathConstants.NODE);
                 int currentPrice = AmountHelper.getAmount(priceSpan.getTextContent().trim().substring(1));
