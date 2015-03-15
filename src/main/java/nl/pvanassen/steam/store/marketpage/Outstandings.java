@@ -2,9 +2,7 @@ package nl.pvanassen.steam.store.marketpage;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -30,6 +28,7 @@ final class Outstandings {
         Node node = (Node) ITEMS_DIV_XPATH.evaluate(document, XPathConstants.NODE);
         SimpleDateFormat formatter = new SimpleDateFormat("d MMM", Locale.US);
         List<OutstandingItem> items = new ArrayList<>(node.getChildNodes().getLength());
+        int year = Calendar.getInstance().get(Calendar.YEAR);
         for (int i = 0; i < node.getChildNodes().getLength(); i++) {
             Node outstandingRow = node.getChildNodes().item(i);
             if (outstandingRow.getAttributes() == null) {
@@ -53,8 +52,10 @@ final class Outstandings {
             String link = ((Node) LINK_XPATH.evaluate(outstandingRow, XPathConstants.NODE)).getAttributes().getNamedItem("href").getTextContent();
             String urlName = link.substring(link.lastIndexOf('/') + 1).trim();
             String date = ((Node) DATE_XPATH.evaluate(outstandingRow, XPathConstants.NODE)).getTextContent().trim();
-
-            items.add(new OutstandingItem(appId, urlName, listingId, scriptParts[4].trim(), contextId, price, formatter.parse(date)));
+            Calendar itemDate = Calendar.getInstance();
+            itemDate.setTime(formatter.parse(date));
+            itemDate.set(Calendar.YEAR, year);
+            items.add(new OutstandingItem(appId, urlName, listingId, scriptParts[4].trim(), contextId, price, itemDate.getTime()));
         }
         return items;
     }
