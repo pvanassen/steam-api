@@ -22,7 +22,7 @@ public final class UrlNameHelper {
      */
     public static String getUrlName(String urlName) {
         try {
-            String decodedUrlName = URLDecoder.decode(urlName, "UTF-8").trim();
+            String decodedUrlName = URLDecoder.decode(urlName, "UTF-8");
             return URLEncoder.encode(decodedUrlName, "UTF-8").replace("+", "%20");
         }
         catch (UnsupportedEncodingException e) {
