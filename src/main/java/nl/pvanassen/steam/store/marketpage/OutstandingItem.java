@@ -12,15 +12,15 @@ import nl.pvanassen.steam.store.common.Item;
 public class OutstandingItem extends Item {
 
     private final String listingId;
-    private final String itemId;
+    private final String assetId;
     private final int contextId;
     private final int price;
     private final Date listedSince;
 
-    OutstandingItem(int appId, String urlName, String listingId, String itemId, int contextId, int price, Date listedSince) {
+    OutstandingItem(int appId, String urlName, String listingId, String assetId, int contextId, int price, Date listedSince) {
         super(appId, urlName);
         this.listingId = listingId;
-        this.itemId = itemId;
+        this.assetId = assetId;
         this.contextId = contextId;
         this.price = price;
         this.listedSince = listedSince;
@@ -34,10 +34,10 @@ public class OutstandingItem extends Item {
     }
 
     /**
-     * @return The item id
+     * @return The asset id
      */
-    public String getItemId() {
-        return itemId;
+    public String getAssetId() {
+        return assetId;
     }
 
     /**
@@ -71,7 +71,7 @@ public class OutstandingItem extends Item {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + contextId;
-        result = prime * result + ((itemId == null) ? 0 : itemId.hashCode());
+        result = prime * result + ((assetId == null) ? 0 : assetId.hashCode());
         result = prime * result + ((listedSince == null) ? 0 : listedSince.hashCode());
         result = prime * result + ((listingId == null) ? 0 : listingId.hashCode());
         result = prime * result + price;
@@ -98,12 +98,12 @@ public class OutstandingItem extends Item {
         if (contextId != other.contextId) {
             return false;
         }
-        if (itemId == null) {
-            if (other.itemId != null) {
+        if (assetId == null) {
+            if (other.assetId != null) {
                 return false;
             }
         }
-        else if (!itemId.equals(other.itemId)) {
+        else if (!assetId.equals(other.assetId)) {
             return false;
         }
         if (listedSince == null) {
@@ -135,6 +135,6 @@ public class OutstandingItem extends Item {
      */
     @Override
     public String toString() {
-        return "OutstandingItem [listingId=" + listingId + ", itemId=" + itemId + ", contextId=" + contextId + ", price=" + price + ", listedSince=" + listedSince + "]";
+        return "OutstandingItem [listingId=" + listingId + ", itemId=" + assetId + ", contextId=" + contextId + ", price=" + price + ", listedSince=" + listedSince + "]";
     }
 }
