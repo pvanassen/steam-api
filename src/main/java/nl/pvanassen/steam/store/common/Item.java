@@ -100,4 +100,8 @@ public class Item {
     public String toString() {
         return "Item [appId=" + appId + ", urlName=" + urlName + "]";
     }
+    
+    public Item getItem() {
+        return new Item(appId, urlName);
+    }
 }
