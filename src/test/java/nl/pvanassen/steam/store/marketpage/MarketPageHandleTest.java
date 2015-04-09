@@ -1,6 +1,7 @@
 package nl.pvanassen.steam.store.marketpage;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ public class MarketPageHandleTest {
         assertEquals("Expected 1", 1, handle.getOutstandings().getItems());
         assertNotNull(handle.getOutstandings().getItemList());
         assertEquals(1, handle.getOutstandings().getItemList().size());
+        assertFalse("Last char should not be a )", handle.getOutstandings().getItemList().get(0).getAssetId().endsWith(")"));
     }
 
     @Test
