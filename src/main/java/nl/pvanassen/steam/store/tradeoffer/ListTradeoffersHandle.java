@@ -2,12 +2,11 @@ package nl.pvanassen.steam.store.tradeoffer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import javax.xml.xpath.*;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.common.Item;
@@ -22,13 +21,14 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.google.common.collect.ImmutableList;
+
 class ListTradeoffersHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final List<TradeOffer> tradeoffers = new LinkedList<>();
+    private final Set<TradeOffer> tradeoffers = new LinkedHashSet<>();
     private final Map<String, Item> imageToItemMapping = new HashMap<>();
     private static final XPathExpression TRADE_OFFERS_XPATH = XPathHelper.getXpathExpression("//DIV[@class='tradeoffer']");
     private static final XPathExpression PARTNERID_XPATH = XPathHelper.getXpathExpression("//DIV[@class='tradeoffer_partner']/DIV");
-    private static final XPathExpression OFFER_XPATH = XPathHelper.getXpathExpression("//DIV[@class='link_overlay']");
     private static final XPathExpression QUOTE_XPATH = XPathHelper.getXpathExpression("//DIV[@class='quote']");
 
     ListTradeoffersHandle() {
@@ -40,7 +40,7 @@ class ListTradeoffersHandle extends DefaultHandle {
     }
 
     List<TradeOffer> getTradeoffers() {
-        return tradeoffers;
+        return ImmutableList.copyOf(tradeoffers);
     }
 
     /**
@@ -60,11 +60,7 @@ class ListTradeoffersHandle extends DefaultHandle {
                 Node partnerNode = (Node) PARTNERID_XPATH.evaluate(tradeofferNode, XPathConstants.NODE);
                 String partnerId = partnerNode.getAttributes().getNamedItem("data-miniprofile").getNodeValue();
                 String offerId = tradeofferNode.getAttributes().getNamedItem("id").getTextContent().replace("tradeofferid_", "");
-                Node linkOverlay = (Node) OFFER_XPATH.evaluate(tradeofferNode, XPathConstants.NODE);
-                String onClick = linkOverlay.getAttributes().getNamedItem("onclick").getTextContent();
-                int quoteStart = onClick.indexOf('\'') + 1;
-                int quoteEnd = onClick.indexOf('\'', quoteStart);
-                String quote = ((Node) QUOTE_XPATH.evaluate(tradeofferNode, XPathConstants.NODE)).getFirstChild().getTextContent().trim();
+                String quote = ((Node) QUOTE_XPATH.evaluate(tradeofferNode, XPathConstants.NODE)).getFirstChild().getTextContent().replace('\u00A0', ' ').trim();
                 tradeoffers.add(new TradeOffer(partnerId, offerId, quote));
             }
         }

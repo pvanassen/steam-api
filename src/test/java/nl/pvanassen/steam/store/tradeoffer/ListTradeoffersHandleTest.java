@@ -18,6 +18,8 @@ public class ListTradeoffersHandleTest {
         List<TradeOffer> tradeoffers = handle.getTradeoffers();
         assertNotNull(tradeoffers);
         assertEquals(1, tradeoffers.size());
+        // &nbsp; or character code 160 (translates to -62 signed)
+        assertEquals(4, tradeoffers.get(0).getComment().length());
     }
 
 }
