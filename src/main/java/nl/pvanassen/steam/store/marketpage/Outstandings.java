@@ -46,7 +46,7 @@ final class Outstandings {
             int price = AmountHelper.getAmount(priceStr);
             String removeScript = ((Node) REMOVE_XPATH.evaluate(outstandingRow, XPathConstants.NODE)).getAttributes().getNamedItem("href").getTextContent();
             String[] scriptParts = removeScript.replace("'", "").split(",");
-            String listingId = scriptParts[1].trim();
+            String assetId = scriptParts[1].replace(')', ' ').trim();
             int appId = Integer.parseInt(scriptParts[2].trim());
             int contextId = Integer.parseInt(scriptParts[3].trim());
             String link = ((Node) LINK_XPATH.evaluate(outstandingRow, XPathConstants.NODE)).getAttributes().getNamedItem("href").getTextContent();
@@ -55,7 +55,7 @@ final class Outstandings {
             Calendar itemDate = Calendar.getInstance();
             itemDate.setTime(formatter.parse(date));
             itemDate.set(Calendar.YEAR, year);
-            items.add(new OutstandingItem(appId, urlName, listingId, scriptParts[4].trim(), contextId, price, itemDate.getTime()));
+            items.add(new OutstandingItem(appId, urlName, assetId, scriptParts[4].trim(), contextId, price, itemDate.getTime()));
         }
         return items;
     }
