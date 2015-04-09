@@ -1,6 +1,6 @@
 package nl.pvanassen.steam.store.tradeoffer;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ public class ListTradeoffersHandleTest {
         handle.handle(stream);
         List<TradeOffer> tradeoffers = handle.getTradeoffers();
         assertNotNull(tradeoffers);
-        // assertEquals(2, tradeoffers.size());
+        assertEquals(1, tradeoffers.size());
     }
 
 }

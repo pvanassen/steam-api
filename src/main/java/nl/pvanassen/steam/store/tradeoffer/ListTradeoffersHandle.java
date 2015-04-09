@@ -59,11 +59,11 @@ class ListTradeoffersHandle extends DefaultHandle {
                 Node tradeofferNode = tradeoffersNode.item(i);
                 Node partnerNode = (Node) PARTNERID_XPATH.evaluate(tradeofferNode, XPathConstants.NODE);
                 String partnerId = partnerNode.getAttributes().getNamedItem("data-miniprofile").getNodeValue();
+                String offerId = tradeofferNode.getAttributes().getNamedItem("id").getTextContent().replace("tradeofferid_", "");
                 Node linkOverlay = (Node) OFFER_XPATH.evaluate(tradeofferNode, XPathConstants.NODE);
                 String onClick = linkOverlay.getAttributes().getNamedItem("onclick").getTextContent();
                 int quoteStart = onClick.indexOf('\'') + 1;
                 int quoteEnd = onClick.indexOf('\'', quoteStart);
-                String offerId = onClick.substring(quoteStart, quoteEnd);
                 String quote = ((Node) QUOTE_XPATH.evaluate(tradeofferNode, XPathConstants.NODE)).getFirstChild().getTextContent().trim();
                 tradeoffers.add(new TradeOffer(partnerId, offerId, quote));
             }
