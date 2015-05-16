@@ -44,27 +44,36 @@ public class SteamLoginService implements LoginService {
             SteamGuardException {
         Map<String, String> params = new HashMap<>();
         params.put("username", user);
+        params.put("donotcache", Long.toString(System.currentTimeMillis()));
         GetRSAHandle rsaHandle = new GetRSAHandle(objectMapper);
         DoLoginHandle doLoginHandle = new DoLoginHandle(objectMapper);
         try {
-            http.post("https://store.steampowered.com/login/getrsakey/", params, rsaHandle, "http://steamcommunity.com/id/" + user + "/inventory/", false, true, false);
+            http.post("https://store.steampowered.com/login/getrsakey/", params, rsaHandle, "https://steamcommunity.com/login/home/?goto=0", false, true, false);
             if (!rsaHandle.isSuccess()) {
                 throw new VerificationException("Invalid username");
             }
             RSA crypto = new RSA(rsaHandle.getPublicKeyMod(), rsaHandle.getPublicKeyExp());
-
+            // https://steamcommunity-a.akamaihd.net/public/javascript/login.js?v=9oVhjUr54dcb&l=english line 130
             String encryptedPasswordBase64 = crypto.encrypt(password);
-
-            params.put("captcha_text", capchaAnswer);
-            params.put("captchagid", capchaGid);
-            params.put("emailauth", code);
-            params.put("emailsteamid", emailSteamId);
-            params.put("loginfriendlyname", friendlyName);
             params.put("password", encryptedPasswordBase64);
-            params.put("remember_login", "true");
+            params.put("username", user);
+            
+            params.put("twofactorcode", "");
+            params.put("emailauth", code);
+            
+            params.put("loginfriendlyname", friendlyName);
+            
+            params.put("captchagid", capchaGid);
+            params.put("captcha_text", capchaAnswer);
+            
+            params.put("emailsteamid", emailSteamId);
+            
             params.put("rsatimestamp", Long.toString(rsaHandle.getTimestamp()));
+            
+            params.put("remember_login", "true");
+            params.put("donotcache", Long.toString(System.currentTimeMillis()));
 
-            http.post("https://steamcommunity.com/login/dologin/", params, doLoginHandle, "http://steamcommunity.com/id/" + user + "/inventory/", false, true, false);
+            http.post("https://steamcommunity.com/login/dologin/", params, doLoginHandle, "https://steamcommunity.com/login/home/?goto=0", false, true, false);
             if (doLoginHandle.isSuccess()) {
                 // logged in
                 return;
