@@ -107,7 +107,7 @@
 	<parent>
 		<groupId>nl.pvanassen</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.3</version>
+		<version>1.1.0</version>
 	</parent>
 	<artifactId>steam-api</artifactId>
 	<groupId>nl.pvanassen.steam</groupId>
