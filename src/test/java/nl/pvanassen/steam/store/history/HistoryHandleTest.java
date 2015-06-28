@@ -3,11 +3,9 @@ package nl.pvanassen.steam.store.history;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import nl.pvanassen.steam.store.StreamHelper;
 import nl.pvanassen.steam.store.common.Item;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -56,7 +54,7 @@ public class HistoryHandleTest {
     @Test
     public void testHandle() throws IOException {
         HistoryHandle handle = new HistoryHandle(null, new ObjectMapper());
-        handle.handle(getClass().getResourceAsStream("/markethistory.json"));
+        handle.handle(StreamHelper.getStream("/markethistory.json"));
         History history = handle.getHistory();
         List<Purchase> purchases = history.getPurchases();
         List<ListingCreated> listingsCreated = history.getListingsCreated();

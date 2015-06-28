@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.*;
 
+import nl.pvanassen.steam.store.StreamHelper;
 import nl.pvanassen.steam.store.common.InventoryItem;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -16,7 +17,7 @@ public class InventoryHandleTest {
     public void testHandle() throws IOException {
         List<InventoryItem> items = new LinkedList<>();
         InventoryHandle handle = new InventoryHandle(new ObjectMapper(), 1, items);
-        handle.handle(getClass().getResourceAsStream("/inventory.json"));
+        handle.handle(StreamHelper.getStream("/inventory.json"));
 
         assertEquals(2, items.size());
     }
@@ -25,7 +26,7 @@ public class InventoryHandleTest {
     public void testHandleWithBlock() throws IOException {
         List<InventoryItem> items = new LinkedList<>();
         InventoryHandle handle = new InventoryHandle(new ObjectMapper(), 1, items);
-        handle.handle(getClass().getResourceAsStream("/inventory-with-block.json"));
+        handle.handle(StreamHelper.getStream("/inventory-with-block.json"));
 
         assertEquals(28, items.size());
         InventoryItem item = items.get(14);
@@ -49,7 +50,7 @@ public class InventoryHandleTest {
     public void testHandleWithBlock570() throws IOException {
         List<InventoryItem> items = new LinkedList<>();
         InventoryHandle handle = new InventoryHandle(new ObjectMapper(), 1, items);
-        handle.handle(getClass().getResourceAsStream("/inventory-570.json"));
+        handle.handle(StreamHelper.getStream("/inventory-570.json"));
 
         assertEquals(48, items.size());
         InventoryItem item = items.get(1);
@@ -72,7 +73,7 @@ public class InventoryHandleTest {
     public void testHandleWithBlock730() throws IOException {
         List<InventoryItem> items = new LinkedList<>();
         InventoryHandle handle = new InventoryHandle(new ObjectMapper(), 1, items);
-        handle.handle(getClass().getResourceAsStream("/inventory-730.json"));
+        handle.handle(StreamHelper.getStream("/inventory-730.json"));
 
         assertEquals(10, items.size());
         InventoryItem item = items.get(0);

@@ -2,9 +2,7 @@ package nl.pvanassen.steam.store.buy;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
@@ -13,6 +11,7 @@ import java.util.Map;
 import nl.pvanassen.steam.http.Handle;
 import nl.pvanassen.steam.http.Http;
 import nl.pvanassen.steam.store.CookieException;
+import nl.pvanassen.steam.store.StreamHelper;
 import nl.pvanassen.steam.store.common.BuyOrder;
 
 import org.junit.Test;
@@ -31,7 +30,7 @@ public class SteamBuyServiceTest {
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
                 BuyHandle handle = (BuyHandle) args[2];
-                handle.handleError(getClass().getResourceAsStream("/buyhandle-cookie-error.json"));
+                handle.handleError(StreamHelper.getStream("/buyhandle-cookie-error.json"));
                 return null;
             }
         })
@@ -51,7 +50,7 @@ public class SteamBuyServiceTest {
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
                 BuyHandle handle = (BuyHandle) args[2];
-                handle.handle(getClass().getResourceAsStream("/buyhandle-success.json"));
+                handle.handle(StreamHelper.getStream("/buyhandle-success.json"));
                 return null;
             }
         })

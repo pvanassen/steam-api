@@ -1,13 +1,12 @@
 package nl.pvanassen.steam.store.item;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import nl.pvanassen.steam.store.StreamHelper;
 import nl.pvanassen.steam.store.common.GenericHandle;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -26,7 +25,7 @@ public class OverviewHandleTest implements GenericHandle<OverviewItem> {
 
         ObjectMapper objectMapper = new ObjectMapper();
         OverviewHandle handle = new OverviewHandle(this, objectMapper);
-        handle.handle(getClass().getResourceAsStream("/overview-error.json"));
+        handle.handle(StreamHelper.getStream("/overview-error.json"));
         assertTrue("Expected to find an error", handle.isError());
         assertFalse("Expected not last page", handle.isLastPage());
         assertTrue("Expected empty list", itemList.isEmpty());
@@ -36,7 +35,7 @@ public class OverviewHandleTest implements GenericHandle<OverviewItem> {
     public void testLastPage() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         OverviewHandle handle = new OverviewHandle(this, objectMapper);
-        handle.handle(getClass().getResourceAsStream("/overview-lastpage.json"));
+        handle.handle(StreamHelper.getStream("/overview-lastpage.json"));
         assertFalse("Expecting no error", handle.isError());
         assertTrue("Expecting last page", handle.isLastPage());
         assertTrue("Expected empty list", itemList.isEmpty());
@@ -46,7 +45,7 @@ public class OverviewHandleTest implements GenericHandle<OverviewItem> {
     public void testNormalPage() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         OverviewHandle handle = new OverviewHandle(this, objectMapper);
-        handle.handle(getClass().getResourceAsStream("/overview-ok.json"));
+        handle.handle(StreamHelper.getStream("/overview-ok.json"));
         assertFalse("Expecting no error", handle.isError());
         assertFalse("Expecting last page", handle.isLastPage());
         assertFalse("Expected empty list", itemList.isEmpty());
