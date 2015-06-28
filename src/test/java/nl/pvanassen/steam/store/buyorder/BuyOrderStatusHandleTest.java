@@ -1,10 +1,10 @@
 package nl.pvanassen.steam.store.buyorder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
+
+import nl.pvanassen.steam.store.StreamHelper;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
@@ -14,7 +14,7 @@ public class BuyOrderStatusHandleTest {
     @Test
     public void test() throws IOException {
         BuyOrderStatusHandle handle = new BuyOrderStatusHandle(new ObjectMapper());
-        handle.handle(getClass().getResourceAsStream("/buyorder-status.json"));
+        handle.handle(StreamHelper.getStream("/buyorder-status.json"));
         BuyOrderStatus status = handle.getBuyOrderStatus();
         assertNotNull(status);
         assertTrue(status.isActive());

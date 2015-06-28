@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.pvanassen.steam.store.StreamHelper;
 import nl.pvanassen.steam.store.common.Listing;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -24,7 +25,7 @@ public class ListingHandleTest {
 
     @Test
     public void testHandle() throws IOException {
-        handle.handle(getClass().getResourceAsStream("/listing.json"));
+        handle.handle(StreamHelper.getStream("/listing.json"));
         List<Listing> listings = new ArrayList<>(listingQueue.getDeque());
         assertEquals(10, listings.size());
         assertEquals(730, listings.get(9).getAppId());
@@ -40,7 +41,7 @@ public class ListingHandleTest {
 
     @Test
     public void testHandleListingPage() throws IOException {
-        handle.handle(getClass().getResourceAsStream("/listing-page.json"));
+        handle.handle(StreamHelper.getStream("/listing-page.json"));
         List<Listing> listings = new ArrayList<>(listingQueue.getDeque());
         assertEquals(10, listings.size());
         assertEquals(730, listings.get(9).getAppId());
@@ -55,7 +56,7 @@ public class ListingHandleTest {
 
     @Test
     public void testHandleNewListingPage() throws IOException {
-        handle.handle(getClass().getResourceAsStream("/new-listing.json"));
+        handle.handle(StreamHelper.getStream("/new-listing.json"));
         List<Listing> listings = new ArrayList<>(listingQueue.getDeque());
         assertEquals(10, listings.size());
         assertEquals(730, listings.get(9).getAppId());
@@ -70,11 +71,11 @@ public class ListingHandleTest {
 
     public void testPerformance() throws IOException {
         for (int i = 0; i != 5000; i++) {
-            handle.handle(getClass().getResourceAsStream("/listing.json"));
+            handle.handle(StreamHelper.getStream("/listing.json"));
         }
         long start = System.currentTimeMillis();
         for (int i = 0; i != 10000; i++) {
-            handle.handle(getClass().getResourceAsStream("/listing.json"));
+            handle.handle(StreamHelper.getStream("/listing.json"));
         }
         long time = System.currentTimeMillis() - start;
         System.out.println("Took: " + time);
