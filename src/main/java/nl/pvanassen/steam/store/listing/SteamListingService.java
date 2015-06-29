@@ -149,6 +149,9 @@ public class SteamListingService implements ListingService {
             ListingMutationHandle sellHandle = new ListingMutationHandle("create");
             http.post("https://steamcommunity.com/market/sellitem/", params, sellHandle, "http://steamcommunity.com/id/" + username + "/inventory/");
             if (sellHandle.isError()) {
+                if (sellHandle.getMessage().contains("The price entered plus the sum of outstanding listings")) {
+                    // Throw too much outstanding error
+                }
                 throw new SellException(sellHandle.getMessage());
             }
         }
