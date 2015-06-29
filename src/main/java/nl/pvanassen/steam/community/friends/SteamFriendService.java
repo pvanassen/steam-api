@@ -30,7 +30,7 @@ public class SteamFriendService implements FriendService {
     public void ignoreAllFriendRequests() {
         try {
             logger.info("Ignoring all friends");
-            http.get("http://steamcommunity.com/id/" + username + "/home_process?action=ignoreAll&type=friends&sessionID=" + http.getSessionId(), new NullHandle());
+            http.get("http://steamcommunity.com/id/" + username + "/home_process?action=ignoreAll&type=friends&sessionID=" + http.getSessionId(), new NullHandle(), false, false);
         } catch (IOException e) {
             logger.info("Error ignoring friends", e);
             throw new SteamException("IO Error ignoring friend requests", e);

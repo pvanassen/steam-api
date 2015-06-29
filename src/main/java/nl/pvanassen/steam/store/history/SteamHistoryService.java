@@ -39,7 +39,7 @@ public class SteamHistoryService implements HistoryService {
         try {
             logger.info("Getting some data");
             try {
-                http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=1", handle);
+                http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=1", handle, false, false);
             }
             catch (IOException e) {
                 logger.error("IO error", e);
@@ -63,7 +63,7 @@ public class SteamHistoryService implements HistoryService {
                     error = false;
                     logger.info("Getting from " + start + ", with stepsize " + stepSize);
                     try {
-                        http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count=" + stepSize + "&start=" + start, handle);
+                        http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count=" + stepSize + "&start=" + start, handle, false, false);
                         if (handle.isFoundRowId()) {
                             return handle.getHistory();
                         }

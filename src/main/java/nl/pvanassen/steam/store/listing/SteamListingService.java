@@ -119,7 +119,7 @@ public class SteamListingService implements ListingService {
         try {
             ListingMutationHandle removeHandle = new ListingMutationHandle("remove");
             http.post("http://steamcommunity.com/market/removelisting/" + listingId, new HashMap<String, String>(), removeHandle, "http://steamcommunity.com/id/" + username
-                    + "/inventory/");
+                    + "/inventory/", true, false, false);
             return !removeHandle.isError();
         }
         catch (IOException | RuntimeException e) {
@@ -147,7 +147,7 @@ public class SteamListingService implements ListingService {
             params.put("price", Integer.toString(price));
             logger.info(params.toString());
             ListingMutationHandle sellHandle = new ListingMutationHandle("create");
-            http.post("https://steamcommunity.com/market/sellitem/", params, sellHandle, "http://steamcommunity.com/id/" + username + "/inventory/");
+            http.post("https://steamcommunity.com/market/sellitem/", params, sellHandle, "http://steamcommunity.com/id/" + username + "/inventory/", true, false, false);
             if (sellHandle.isError()) {
                 if (sellHandle.getMessage().contains("The price entered plus the sum of outstanding listings")) {
                     // Throw too much outstanding error

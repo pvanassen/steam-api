@@ -35,7 +35,7 @@ public class SteamMarketPageService implements MarketPageService {
         logger.info("Getting market page for app ids");
         AppIdsHandle handle = new AppIdsHandle();
         try {
-            http.get("http://steamcommunity.com/market/", handle);
+            http.get("http://steamcommunity.com/market/", handle, false, false);
         }
         catch (IOException e) {
             logger.error("Error getting outstanding listings", e);
@@ -53,7 +53,7 @@ public class SteamMarketPageService implements MarketPageService {
         logger.info("Getting market page for " + username);
         MarketPageHandle handle = new MarketPageHandle();
         try {
-            http.get("http://steamcommunity.com/market/", handle);
+            http.get("http://steamcommunity.com/market/", handle, false, false);
         }
         catch (IOException e) {
             logger.error("Error getting the market page", e);

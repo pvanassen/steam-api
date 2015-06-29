@@ -103,17 +103,6 @@ public class Http {
         handleConnection(httpget, handle, high);
     }
 
-    /**
-     * Make a get call to the url using the provided handle
-     *
-     * @param url The url to call
-     * @param handle The handle to use
-     * @throws IOException In case of an error
-     */
-    public void get(String url, Handle handle) throws IOException {
-        get(url, handle, false, false);
-    }
-
     private final Cookie getCookie(String name, String value) {
         Calendar expiresCalendar = Calendar.getInstance();
         expiresCalendar.add(Calendar.YEAR, 1000);
@@ -197,17 +186,6 @@ public class Http {
             }
         }
         cookieStore.addCookie(getCookie("Steam_Language", "english"));
-    }
-
-    /**
-     * @param url Url to call
-     * @param params Parameters to send with the request
-     * @param handle Handle to use
-     * @param referer Referer to pass to the server
-     * @throws IOException if a network error occurs
-     */
-    public void post(String url, Map<String, String> params, Handle handle, String referer) throws IOException {
-        post(url, params, handle, referer, true, false, false);
     }
 
     /**

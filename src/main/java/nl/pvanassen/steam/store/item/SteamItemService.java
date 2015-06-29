@@ -42,7 +42,7 @@ public class SteamItemService implements ItemService {
             int totalCount = 5000;
             for (int start = 0; start < totalCount; start += 100) {
                 do {
-                    http.get("http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" + start + "&count=100", handle);
+                    http.get("http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" + start + "&count=100", handle, false, false);
                     totalCount = handle.getTotalCount();
                     // Stop on overrun
                     if (handle.isLastPage()) {
@@ -63,7 +63,7 @@ public class SteamItemService implements ItemService {
         String url = "http://" + host + "/market/listings/" + appId + "/" + urlName;
         ListingPageScriptHandle handle = new ListingPageScriptHandle(objectMapper);
         try {
-            http.get(url, handle);
+            http.get(url, handle, false, false);
         }
         catch (IOException e) {
             logger.error("Error fetching listing page data", e);
