@@ -43,7 +43,7 @@ public class SteamListingService implements ListingService {
     public void getAsyncNewlyListed(String host, int currency, String country, ListingDeque queue) {
         try {
             ListingHandle handle = new ListingHandle(objectMapper, queue, country);
-            http.get("http://" + host + "/market/recent?currency=" + random.nextInt(32) + "&currency=" + currency + "&country=" + country + "&language=english", handle, true, true);
+            http.get("http://" + host + "/market/recent?country=" + country + "&language=english&currency=" + currency, handle, true, true);
         }
         catch (IOException e) {
             logger.error("Error getting newly listed", e);

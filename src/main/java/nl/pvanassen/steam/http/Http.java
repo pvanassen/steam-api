@@ -88,6 +88,64 @@ public class Http {
         }
     }
 
+    private final Cookie getCookie(String name, String value) {
+        Calendar expiresCalendar = Calendar.getInstance();
+        expiresCalendar.add(Calendar.YEAR, 1000);
+        Date expires = expiresCalendar.getTime();
+        BasicClientCookie cookie = new BasicClientCookie(name, value);
+        cookie.setDomain("steamcommunity.com");
+        cookie.setExpiryDate(expires);
+        cookie.setPath("/");
+        return cookie;
+    }
+
+    private void handleConnection(HttpRequestBase httpget, Handle handle, boolean highPrio) throws IOException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Executing request with cookies: " + getCookies());
+        }
+        try (CloseableHttpResponse response = httpclient.execute(httpget, context)) {
+            HttpEntity entity = response.getEntity();
+            if (entity == null) {
+                return;
+            }
+            try (InputStream instream = entity.getContent()) {
+                // Forbidden, 404, invalid request. Stop
+                if (response.getStatusLine().getStatusCode() >= 400) {
+                    handle.handleError(instream);
+                } else {
+                    handle.handle(instream);
+                }
+            }
+        } catch (HttpHostConnectException | InterruptedIOException e) {
+            logger.warn("Steam doesn't like me. Slowing down and sleeping a bit");
+            try {
+                Thread.sleep(30000);
+            } catch (InterruptedException e1) {
+                // No sleep, shutdown
+                return;
+            }
+        } catch (ClientProtocolException e) {
+            logger.error("Error in protocol", e);
+            throw e;
+        }
+    }
+
+    private final void init() {
+        CookieStore cookieStore = new BasicCookieStore();
+        context.setCookieStore(cookieStore);
+        if (!"".equals(cookies)) {
+            for (String cookie : cookies.split("; ")) {
+                int split = cookie.indexOf('=');
+                String parts[] = new String[] { cookie.substring(0, split), cookie.substring(split + 1) };
+                if ("Steam_Language".equals(parts[0])) {
+                    continue;
+                }
+                cookieStore.addCookie(getCookie(parts[0], parts[1]));
+            }
+        }
+        cookieStore.addCookie(getCookie("Steam_Language", "english"));
+    }
+
     /**
      * Make a get call to the url using the provided handle
      *
@@ -101,17 +159,6 @@ public class Http {
         HttpGet httpget = new HttpGet(url);
         addHeaders(httpget, "http://steamcommunity.com/id/" + username + "/inventory/", ajax);
         handleConnection(httpget, handle, high);
-    }
-
-    private final Cookie getCookie(String name, String value) {
-        Calendar expiresCalendar = Calendar.getInstance();
-        expiresCalendar.add(Calendar.YEAR, 1000);
-        Date expires = expiresCalendar.getTime();
-        BasicClientCookie cookie = new BasicClientCookie(name, value);
-        cookie.setDomain("steamcommunity.com");
-        cookie.setExpiryDate(expires);
-        cookie.setPath("/");
-        return cookie;
     }
 
     /**
@@ -137,57 +184,6 @@ public class Http {
         return null;
     }
 
-    private void handleConnection(HttpRequestBase httpget, Handle handle, boolean highPrio) throws IOException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Executing request with cookies: " + getCookies());
-        }
-        try (CloseableHttpResponse response = httpclient.execute(httpget, context)) {
-            HttpEntity entity = response.getEntity();
-            if (entity == null) {
-                return;
-            }
-            try (InputStream instream = entity.getContent()) {
-                // Forbidden, 404, invalid request. Stop
-                if (response.getStatusLine().getStatusCode() >= 400) {
-                    handle.handleError(instream);
-                }
-                else {
-                    handle.handle(instream);
-                }
-            }
-        }
-        catch (HttpHostConnectException | InterruptedIOException e) {
-            logger.warn("Steam doesn't like me. Slowing down and sleeping a bit");
-            try {
-                Thread.sleep(30000);
-            }
-            catch (InterruptedException e1) {
-                // No sleep, shutdown
-                return;
-            }
-        }
-        catch (ClientProtocolException e) {
-            logger.error("Error in protocol", e);
-            throw e;
-        }
-    }
-
-    private final void init() {
-        CookieStore cookieStore = new BasicCookieStore();
-        context.setCookieStore(cookieStore);
-        if (!"".equals(cookies)) {
-            for (String cookie : cookies.split("; ")) {
-                int split = cookie.indexOf('=');
-                String parts[] = new String[] { cookie.substring(0, split), cookie.substring(split + 1) };
-                if ("Steam_Language".equals(parts[0])) {
-                    continue;
-                }
-                cookieStore.addCookie(getCookie(parts[0], parts[1]));
-            }
-        }
-        cookieStore.addCookie(getCookie("Steam_Language", "english"));
-    }
-
     /**
      * @param url Url to call
      * @param params Parameters to send with the request
@@ -207,8 +203,7 @@ public class Http {
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (reencode) {
                 sb.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), "UTF-8")).append("&");
-            }
-            else {
+            } else {
                 sb.append(entry.getKey()).append("=").append(URLDecoder.decode(entry.getValue(), "UTF-8").replaceAll(" ", "+")).append("&");
             }
         }

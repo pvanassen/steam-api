@@ -48,7 +48,7 @@ class ListingHandle extends DefaultHandle {
         String content = new String(baos.toByteArray(), charset);
         int start = content.indexOf("\"listinginfo\"");
         if (start == -1) {
-            logger.error("No listings found: " + content);
+            logger.error("No listings found: " + content, new Exception());
             return;
         }
         String contentToRead = "{".concat(content.substring(start));
