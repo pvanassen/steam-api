@@ -23,7 +23,6 @@ public class SteamListingService implements ListingService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Http http;
     private final String username;
-    private final Random random = new Random();
 
     /**
      * @param http For mocking
@@ -34,33 +33,17 @@ public class SteamListingService implements ListingService {
         this.username = username;
     }
     
-    /**
-     * {@inheritDoc}
-     *
-     * @see nl.pvanassen.steam.store.listing.ListingService#getAsyncNewlyListed(java.lang.String, int, java.lang.String, nl.pvanassen.steam.store.listing.ListingDeque)
-     */
     @Override
-    public void getAsyncNewlyListed(String host, int currency, String country, ListingDeque queue) {
+    public void getAsyncNewlyListed(String host, int currency, String country, GenericHandle<Listing> listingHandle) {
         try {
-            ListingHandle handle = new ListingHandle(objectMapper, queue, country);
-            http.get("http://" + host + "/market/recent?country=" + country + "&language=english&currency=" + currency, handle, true, true);
+            ListingHandle handle = new ListingHandle(objectMapper, listingHandle, country);
+            http.getAsync("http://" + host + "/market/recent?country=" + country + "&language=english&currency=" + currency, handle, true, true);
         }
         catch (IOException e) {
             logger.error("Error getting newly listed", e);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see nl.pvanassen.steam.store.listing.ListingService#getAsyncNewlyListed(int,
-     *      java.lang.String, nl.pvanassen.steam.store.listing.ListingDeque)
-     */
-    @Override
-    public void getAsyncNewlyListed(int currency, String country, ListingDeque queue) {
-        getAsyncNewlyListed("steamcommunity.com", currency, country, queue);
-    }
-    
     /**
      * {@inheritDoc}
      *
@@ -89,26 +72,6 @@ public class SteamListingService implements ListingService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see nl.pvanassen.steam.store.listing.ListingService#getNewlyListed(int,
-     *      java.lang.String)
-     */
-    @Override
-    public List<Listing> getNewlyListed(int currency, String country) {
-        try {
-            ListingDeque listing = new ListingDeque(60000);
-            ListingHandle handle = new ListingHandle(objectMapper, listing, country);
-            http.get("http://steamcommunity.com/market/recent?currency=" + currency + "&country=" + country + "&language=english", handle, true, true);
-            return listing.getDeque();
-        }
-        catch (IOException e) {
-            logger.error("Error getting newly listed", e);
-        }
-        return Collections.emptyList();
-    }
-    
     /**
      * {@inheritDoc}
      *

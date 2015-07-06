@@ -17,18 +17,9 @@ public interface ListingService {
      * @param currency Currency to retrieve
      * @param host Host to connect
      * @param country Country to get listings for
-     * @param queue Queue to add the items to
+     * @param listingHandle Triggered when item is received
      */
-    void getAsyncNewlyListed(String host, int currency, String country, ListingDeque queue);
-
-    /**
-     * Retrieve all newly listed
-     * 
-     * @param currency Currency to retrieve
-     * @param country Country to get listings for
-     * @param queue Queue to add the items to
-     */
-    void getAsyncNewlyListed(int currency, String country, ListingDeque queue);
+    void getAsyncNewlyListed(String host, int currency, String country, GenericHandle<Listing> listingHandle);
 
     /**
      * Retrieve all newly listed
@@ -52,16 +43,6 @@ public interface ListingService {
      * @param listingHandle Queue to add the items to
      */
     void getAsyncListed(String host, Item item, int currency, String country, int start, GenericHandle<Listing> listingHandle);
-
-    /**
-     * Retrieve the newly listed
-     *
-     * @param currency Currency to retrieve
-     * @param country Country to get listings for
-     * @return Listings
-     */
-    List<Listing> getNewlyListed(int currency, String country);
-
 
     /**
      * Remove an active listing

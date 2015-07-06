@@ -1,34 +1,33 @@
 package nl.pvanassen.steam.http;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InterruptedIOException;
+import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.entity.GzipDecompressingEntity;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.*;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClients;
+import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
+import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.message.AbstractHttpMessage;
+import org.apache.http.nio.reactor.IOReactor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +39,7 @@ import org.slf4j.LoggerFactory;
 public class Http {
     private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
     private final CloseableHttpClient httpclient;
+    private final CloseableHttpAsyncClient httpAsyncClient;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final RequestConfig globalConfig;
     private final HttpClientContext context;
@@ -63,10 +63,13 @@ public class Http {
 
     private Http(String cookies, String username) {
         this.cookies = cookies;
-        globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BEST_MATCH).setSocketTimeout(10000).build();
+        globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).setSocketTimeout(10000).build();
         context = HttpClientContext.create();
         this.username = username;
         this.httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setConnectionManager(CONNECTION_MANAGER).build();
+        IOReactorConfig config = IOReactorConfig.custom().setIoThreadCount(2).setSoKeepAlive(true).setTcpNoDelay(true).setSoReuseAddress(true).build();
+        this.httpAsyncClient = HttpAsyncClients.custom().setDefaultRequestConfig(globalConfig).setDefaultIOReactorConfig(config).build();
+        this.httpAsyncClient.start();
         init();
     }
 
@@ -98,7 +101,44 @@ public class Http {
         cookie.setPath("/");
         return cookie;
     }
-
+    private void handleConnectionASync(HttpRequestBase httpget, Handle handle, boolean highPrio) throws IOException {
+        
+        httpAsyncClient.execute(httpget, new FutureCallback<HttpResponse>() {
+            
+            @Override
+            public void failed(Exception ex) {
+                logger.error("Error from async http", ex);
+            }
+            
+            @Override
+            public void completed(HttpResponse result) {
+                HttpEntity entity = result.getEntity();
+                if (entity == null) {
+                    return;
+                }
+                if ("gzip".equals(entity.getContentEncoding().getValue())) {
+                    entity = new GzipDecompressingEntity(entity);
+                }
+                try (InputStream instream = entity.getContent()) {
+                    // Forbidden, 404, invalid request. Stop
+                    if (result.getStatusLine().getStatusCode() >= 400) {
+                        handle.handleError(instream);
+                    } else {
+                        handle.handle(instream);
+                    }
+                }
+                catch (IOException e) {
+                    logger.error("Error from async http", e);
+                }
+            }
+            
+            @Override
+            public void cancelled() {
+                
+            }
+        });
+    }
+    
     private void handleConnection(HttpRequestBase httpget, Handle handle, boolean highPrio) throws IOException {
         if (logger.isDebugEnabled()) {
             logger.debug("Executing request with cookies: " + getCookies());
@@ -159,6 +199,21 @@ public class Http {
         HttpGet httpget = new HttpGet(url);
         addHeaders(httpget, "http://steamcommunity.com/id/" + username + "/inventory/", ajax);
         handleConnection(httpget, handle, high);
+    }
+
+    /**
+     * Make a get call to the url using the provided handle
+     *
+     * @param url The url to call
+     * @param handle The handle to use
+     * @param ajax Is this an ajax call
+     * @param high USe the high prio buffer
+     * @throws IOException In case of an error
+     */
+    public void getAsync(String url, Handle handle, boolean ajax, boolean high) throws IOException {
+        HttpGet httpget = new HttpGet(url);
+        addHeaders(httpget, "http://steamcommunity.com/id/" + username + "/inventory/", ajax);
+        handleConnectionASync(httpget, handle, high);
     }
 
     /**
