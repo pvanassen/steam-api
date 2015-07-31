@@ -31,6 +31,8 @@ import org.xml.sax.SAXException;
 import com.google.common.collect.ImmutableList;
 
 class HistoryHandle extends DefaultHandle {
+    private boolean exceptionThrown = false;
+
     private static class Asset {
         private final int appId;
         private final int contextId;
@@ -55,7 +57,7 @@ class HistoryHandle extends DefaultHandle {
     private static final XPathExpression PRICE_XPATH = XPathHelper.getXpathExpression("./DIV/SPAN/SPAN[@class='market_listing_price']");
     private static final XPathExpression BUYER_XPATH = XPathHelper.getXpathExpression("./DIV/DIV[@class='market_listing_whoactedwith_name_block']");
     private static final XPathExpression ACTED_XPATH = XPathHelper.getXpathExpression("./DIV[@class='market_listing_right_cell market_listing_whoactedwith']");
-    
+
     private final String lastRowId;
     private boolean error = false;
     private boolean foundRowId;
@@ -67,8 +69,7 @@ class HistoryHandle extends DefaultHandle {
         super();
         if (lastRowId == null) {
             this.lastRowId = "";
-        }
-        else {
+        } else {
             this.lastRowId = lastRowId;
         }
         this.om = om;
@@ -157,17 +158,14 @@ class HistoryHandle extends DefaultHandle {
                 HistoryStatus status = null;
                 if ("-".equals(gainLossText)) {
                     status = HistoryStatus.SOLD;
-                }
-                else if ("+".equals(gainLossText)) {
+                } else if ("+".equals(gainLossText)) {
                     status = HistoryStatus.BOUGHT;
-                }
-                else {
+                } else {
                     Node actedNode = (Node) ACTED_XPATH.evaluate(historyRow, XPathConstants.NODE);
                     String acted = actedNode.getTextContent().trim();
                     if ("Listing created".equals(acted)) {
                         status = HistoryStatus.CREATED;
-                    }
-                    else if ("Listing canceled".equals(acted)) {
+                    } else if ("Listing canceled".equals(acted)) {
                         status = HistoryStatus.REMOVED;
                     }
                 }
@@ -220,13 +218,11 @@ class HistoryHandle extends DefaultHandle {
                             sales.add(new Sale(rowName, asset.appId, asset.urlName, asset.contextId, listed, acted, price, buyer));
                             break;
                     }
-                }
-                catch (ParseException e) {
+                } catch (ParseException e) {
                     logger.error("Error parsing date", e);
                 }
             }
-        }
-        catch (SAXException | XPathExpressionException e) {
+        } catch (SAXException | XPathExpressionException e) {
             logger.error("Error parsing html", e);
         }
     }
@@ -242,9 +238,18 @@ class HistoryHandle extends DefaultHandle {
     private void setYear(Calendar now, Calendar dateLess) {
         if (dateLess.get(Calendar.MONTH) > now.get(Calendar.MONTH)) {
             dateLess.set(Calendar.YEAR, now.get(Calendar.YEAR) - 1);
-        }
-        else {
+        } else {
             dateLess.set(Calendar.YEAR, now.get(Calendar.YEAR));
         }
+    }
+
+    @Override
+    public void handleException(Exception exception) {
+        super.handleException(exception);
+        exceptionThrown = true;
+    }
+
+    public boolean isExceptionThrown() {
+        return exceptionThrown;
     }
 }

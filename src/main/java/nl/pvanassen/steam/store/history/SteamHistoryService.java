@@ -38,11 +38,9 @@ public class SteamHistoryService implements HistoryService {
         HistoryHandle handle = new HistoryHandle(lastSteamId, objectMapper);
         try {
             logger.info("Getting some data");
-            try {
-                http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=1", handle, false, false);
-            }
-            catch (IOException e) {
-                logger.error("IO error", e);
+            http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=1", handle, false, false);
+            if (handle.isExceptionThrown()) {
+                logger.error("IO error");
                 return getHistory(lastSteamId);
             }
             int stepSize = optimumStepSize.getStepSize();
@@ -62,32 +60,25 @@ public class SteamHistoryService implements HistoryService {
                     stepSize = optimumStepSize.getStepSize();
                     error = false;
                     logger.info("Getting from " + start + ", with stepsize " + stepSize);
-                    try {
-                        http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count=" + stepSize + "&start=" + start, handle, false, false);
-                        if (handle.isFoundRowId()) {
-                            return handle.getHistory();
-                        }
-                        if (handle.isError()) {
-                            optimumStepSize.error();
-                        }
-                        else {
-                            optimumStepSize.success();
-                        }
-                    }
-                    catch (IOException e) {
+                    http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count=" + stepSize + "&start=" + start, handle, false, false);
+                    if (handle.isExceptionThrown()) {
                         optimumStepSize.error();
                         logger.error("IO Exception. Retrying");
                         Thread.sleep(500);
                         error = true;
+                    } else if (handle.isFoundRowId()) {
+                        return handle.getHistory();
+                    } else if (handle.isError()) {
+                        optimumStepSize.error();
+                    } else {
+                        optimumStepSize.success();
                     }
                     long timePast = System.currentTimeMillis() - startTime;
                     double itemsPerTime = (totalCount - start) / (double) timePast;
                     logger.info("Doing " + itemsPerTime + " per " + timePast + ", expected " + (itemsPerTime * start));
-                }
-                while (handle.isError() || error);
+                } while (handle.isError() || error);
             }
-        }
-        catch (RuntimeException | InterruptedException e) {
+        } catch (RuntimeException | InterruptedException e) {
             logger.error("Error getting data", e);
         }
         return handle.getHistory();

@@ -33,4 +33,8 @@ public class DefaultHandle implements Handle {
         logger.error(new String(baos.toByteArray(), charset), new Exception());
     }
 
+    @Override
+    public void handleException(Exception exception) {
+        logger.error("Exception caught", exception);
+    }
 }

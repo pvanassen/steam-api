@@ -75,13 +75,7 @@ public class SteamBuyOrderService implements BuyOrderService {
     public BuyOrderStatus getBuyOrderStatus(String buyOrderId) {
         String sessionId = http.getSessionId();
         BuyOrderStatusHandle handle = new BuyOrderStatusHandle(objectMapper);
-        try {
-            http.get("http://steamcommunity.com/market/getbuyorderstatus/?sessionid=" + sessionId + "&buy_orderid=" + buyOrderId, handle, false, false);
-        }
-        catch (IOException e) {
-            logger.error("Error getting status of a buy order " + buyOrderId, e);
-            throw new SteamException("Error getting status of a buy order " + buyOrderId, e);
-        }
+        http.get("http://steamcommunity.com/market/getbuyorderstatus/?sessionid=" + sessionId + "&buy_orderid=" + buyOrderId, handle, false, false);
         BuyOrderStatus status = handle.getBuyOrderStatus();
         if (!status.isSuccess()) {
             logger.error("Error getting status of a buy order " + buyOrderId);

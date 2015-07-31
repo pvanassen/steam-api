@@ -34,12 +34,7 @@ public class SteamMarketPageService implements MarketPageService {
     public Set<Integer> getAppIds() {
         logger.info("Getting market page for app ids");
         AppIdsHandle handle = new AppIdsHandle();
-        try {
-            http.get("http://steamcommunity.com/market/", handle, false, false);
-        }
-        catch (IOException e) {
-            logger.error("Error getting outstanding listings", e);
-        }
+        http.get("http://steamcommunity.com/market/", handle, false, false);
         return handle.getAppIds();
     }
 
@@ -52,13 +47,7 @@ public class SteamMarketPageService implements MarketPageService {
     public MarketPage getMarketPage() {
         logger.info("Getting market page for " + username);
         MarketPageHandle handle = new MarketPageHandle();
-        try {
-            http.get("http://steamcommunity.com/market/", handle, false, false);
-        }
-        catch (IOException e) {
-            logger.error("Error getting the market page", e);
-            throw new SteamException("Error getting the market page", e);
-        }
+        http.get("http://steamcommunity.com/market/", handle, false, false);
         if (handle.isError()) {
             throw new SteamException("Error getting the market page, unknown error");
         }

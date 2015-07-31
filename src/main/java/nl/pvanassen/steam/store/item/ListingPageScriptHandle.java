@@ -150,4 +150,10 @@ public class ListingPageScriptHandle extends DefaultHandle {
     boolean isNoLongerSold() {
         return noLongerSold;
     }
+    
+    @Override
+    public void handleException(Exception exception) {
+        super.handleException(exception);
+        error = true;
+    }
 }

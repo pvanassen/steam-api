@@ -6,15 +6,12 @@ import java.net.URLEncoder;
 import java.util.*;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.ContentType;
@@ -22,12 +19,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.*;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
-import org.apache.http.impl.nio.client.HttpAsyncClients;
-import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
-import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.message.AbstractHttpMessage;
-import org.apache.http.nio.reactor.IOReactor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +31,6 @@ import org.slf4j.LoggerFactory;
 public class Http {
     private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
     private final CloseableHttpClient httpclient;
-    private final CloseableHttpAsyncClient httpAsyncClient;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final RequestConfig globalConfig;
     private final HttpClientContext context;
@@ -63,13 +54,11 @@ public class Http {
 
     private Http(String cookies, String username) {
         this.cookies = cookies;
-        globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).setSocketTimeout(10000).build();
+        globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).setSocketTimeout(10000).setConnectionRequestTimeout(2000).setConnectTimeout(2000).build();
         context = HttpClientContext.create();
         this.username = username;
         this.httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setConnectionManager(CONNECTION_MANAGER).build();
-        IOReactorConfig config = IOReactorConfig.custom().setIoThreadCount(2).setSoKeepAlive(true).setTcpNoDelay(true).setSoReuseAddress(true).build();
-        this.httpAsyncClient = HttpAsyncClients.custom().setDefaultRequestConfig(globalConfig).setDefaultIOReactorConfig(config).build();
-        this.httpAsyncClient.start();
+        // IOReactorConfig config = IOReactorConfig.custom().setSoKeepAlive(true).setTcpNoDelay(true).setSoReuseAddress(true).build();
         init();
     }
 
@@ -101,45 +90,8 @@ public class Http {
         cookie.setPath("/");
         return cookie;
     }
-    private void handleConnectionASync(HttpRequestBase httpget, Handle handle, boolean highPrio) throws IOException {
-        
-        httpAsyncClient.execute(httpget, new FutureCallback<HttpResponse>() {
-            
-            @Override
-            public void failed(Exception ex) {
-                logger.error("Error from async http", ex);
-            }
-            
-            @Override
-            public void completed(HttpResponse result) {
-                HttpEntity entity = result.getEntity();
-                if (entity == null) {
-                    return;
-                }
-                if ("gzip".equals(entity.getContentEncoding().getValue())) {
-                    entity = new GzipDecompressingEntity(entity);
-                }
-                try (InputStream instream = entity.getContent()) {
-                    // Forbidden, 404, invalid request. Stop
-                    if (result.getStatusLine().getStatusCode() >= 400) {
-                        handle.handleError(instream);
-                    } else {
-                        handle.handle(instream);
-                    }
-                }
-                catch (IOException e) {
-                    logger.error("Error from async http", e);
-                }
-            }
-            
-            @Override
-            public void cancelled() {
-                
-            }
-        });
-    }
-    
-    private void handleConnection(HttpRequestBase httpget, Handle handle, boolean highPrio) throws IOException {
+
+    private void handleConnection(HttpRequestBase httpget, Handle handle, boolean highPrio) {
         if (logger.isDebugEnabled()) {
             logger.debug("Executing request with cookies: " + getCookies());
         }
@@ -164,9 +116,9 @@ public class Http {
                 // No sleep, shutdown
                 return;
             }
-        } catch (ClientProtocolException e) {
+        } catch (IOException e) {
             logger.error("Error in protocol", e);
-            throw e;
+            handle.handleException(e);
         }
     }
 
@@ -185,20 +137,25 @@ public class Http {
         }
         cookieStore.addCookie(getCookie("Steam_Language", "english"));
     }
-
-    /**
-     * Make a get call to the url using the provided handle
-     *
-     * @param url The url to call
-     * @param handle The handle to use
-     * @param ajax Is this an ajax call
-     * @param high USe the high prio buffer
-     * @throws IOException In case of an error
-     */
-    public void get(String url, Handle handle, boolean ajax, boolean high) throws IOException {
-        HttpGet httpget = new HttpGet(url);
-        addHeaders(httpget, "http://steamcommunity.com/id/" + username + "/inventory/", ajax);
-        handleConnection(httpget, handle, high);
+    
+    private final String encode(String text) {
+        try {
+            return URLEncoder.encode(text, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e) {
+            // Ok, we're screwed. Just stop
+            throw new RuntimeException("Use an OS that does support UTF-8", e);
+        }
+    }
+    
+    private final String decode(String text) {
+        try {
+            return URLDecoder.decode(text, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e) {
+            // Ok, we're screwed. Just stop
+            throw new RuntimeException("Use an OS that does support UTF-8", e);
+        }
     }
 
     /**
@@ -210,10 +167,47 @@ public class Http {
      * @param high USe the high prio buffer
      * @throws IOException In case of an error
      */
-    public void getAsync(String url, Handle handle, boolean ajax, boolean high) throws IOException {
+    public void get(String url, Handle handle, boolean ajax, boolean high) {
         HttpGet httpget = new HttpGet(url);
         addHeaders(httpget, "http://steamcommunity.com/id/" + username + "/inventory/", ajax);
-        handleConnectionASync(httpget, handle, high);
+        handleConnection(httpget, handle, high);
+    }
+
+    /**
+     * @param url Url to call
+     * @param params Parameters to send with the request
+     * @param handle Handle to use
+     * @param referer Referer to pass to the server
+     * @param sessionRequired Does this request require a session? If not, like
+     *            in the case of login, don't fail on it not being present
+     * @param reencode Re-encode the parameter
+     * @param high Use high prio buffer
+     * @throws IOException if a network error occurs
+     */
+    public void post(String url, Map<String, String> params, Handle handle, String referer, boolean sessionRequired, boolean reencode, boolean high) throws IOException {
+        HttpPost httpPost = new HttpPost(url);
+        addHeaders(httpPost, referer, true);
+        String sessionid = getSessionId();
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            if (reencode) {
+                sb.append(entry.getKey()).append("=").append(encode(entry.getValue())).append("&");
+            } else {
+                sb.append(entry.getKey()).append("=").append(decode(entry.getValue()).replaceAll(" ", "+")).append("&");
+            }
+        }
+        if (sessionRequired) {
+            sb.append("sessionid").append("=").append(sessionid);
+            if (sessionid.isEmpty()) {
+                logger.error("Error, sessionid empty");
+                return;
+            }
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("Sending POST to " + url + " with parameters " + sb.toString());
+        }
+        httpPost.setEntity(new StringEntity(sb.toString(), ContentType.create("application/x-www-form-urlencoded", "UTF-8")));
+        handleConnection(httpPost, handle, high);
     }
 
     /**
@@ -237,42 +231,5 @@ public class Http {
             }
         }
         return null;
-    }
-
-    /**
-     * @param url Url to call
-     * @param params Parameters to send with the request
-     * @param handle Handle to use
-     * @param referer Referer to pass to the server
-     * @param sessionRequired Does this request require a session? If not, like
-     *            in the case of login, don't fail on it not being present
-     * @param reencode Re-encode the parameter
-     * @param high Use high prio buffer
-     * @throws IOException if a network error occurs
-     */
-    public void post(String url, Map<String, String> params, Handle handle, String referer, boolean sessionRequired, boolean reencode, boolean high) throws IOException {
-        HttpPost httpPost = new HttpPost(url);
-        addHeaders(httpPost, referer, true);
-        String sessionid = getSessionId();
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            if (reencode) {
-                sb.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), "UTF-8")).append("&");
-            } else {
-                sb.append(entry.getKey()).append("=").append(URLDecoder.decode(entry.getValue(), "UTF-8").replaceAll(" ", "+")).append("&");
-            }
-        }
-        if (sessionRequired) {
-            sb.append("sessionid").append("=").append(sessionid);
-            if (sessionid.isEmpty()) {
-                logger.error("Error, sessionid empty");
-                return;
-            }
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Sending POST to " + url + " with parameters " + sb.toString());
-        }
-        httpPost.setEntity(new StringEntity(sb.toString(), ContentType.create("application/x-www-form-urlencoded", "UTF-8")));
-        handleConnection(httpPost, handle, high);
     }
 }

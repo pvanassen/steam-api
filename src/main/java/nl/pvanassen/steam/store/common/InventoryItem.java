@@ -78,7 +78,7 @@ public class InventoryItem extends Item {
      * @return Is marketable
      */
     public boolean isMarketable() {
-        return marketable && blockedUntil.after(new Date());
+        return marketable;
     }
 
     /**

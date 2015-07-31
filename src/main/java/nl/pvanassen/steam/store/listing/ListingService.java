@@ -3,8 +3,7 @@
  */
 package nl.pvanassen.steam.store.listing;
 
-import java.util.List;
-
+import nl.pvanassen.steam.store.CommandResult;
 import nl.pvanassen.steam.store.common.*;
 
 /**
@@ -48,10 +47,10 @@ public interface ListingService {
      * Remove an active listing
      *
      * @param listingId Listing to remove
-     * @return True if succesful removed
+     * @param result Handle for processing the result
      */
-    boolean removeListing(String listingId);
-    
+    void removeListing(String listingId, GenericHandle<CommandResult> result);
+
     /**
      * Create a listing from an item in the inventory
      *
@@ -60,8 +59,8 @@ public interface ListingService {
      * @param urlName Url name to sell
      * @param contextId Context id to sell
      * @param price Price to use
-     * @throws SellException In case of an error
+     * @param result Handle for processing the result
      */
-    void createListing(String assetId, int appId, String urlName, int contextId, int price) throws SellException;
+    void createListing(String assetId, int appId, String urlName, int contextId, int price, GenericHandle<CommandResult> result);
 
 }
