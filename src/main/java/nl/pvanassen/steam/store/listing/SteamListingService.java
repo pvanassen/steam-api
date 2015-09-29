@@ -3,17 +3,18 @@
  */
 package nl.pvanassen.steam.store.listing;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import nl.pvanassen.steam.http.Http;
 import nl.pvanassen.steam.store.CommandResult;
-import nl.pvanassen.steam.store.common.*;
-
+import nl.pvanassen.steam.store.common.GenericHandle;
+import nl.pvanassen.steam.store.common.Item;
+import nl.pvanassen.steam.store.common.Listing;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Paul van Assen
@@ -68,7 +69,7 @@ public class SteamListingService implements ListingService {
     /**
      * {@inheritDoc}
      *
-     * @see nl.pvanassen.steam.store.listing.ListingService#removeListing(java.lang.String)
+     * @see nl.pvanassen.steam.store.listing.ListingService#removeListing(java.lang.String, nl.pvanassen.steam.store.common.GenericHandle)
      */
     @Override
     public void removeListing(String listingId, GenericHandle<CommandResult> handle) {
@@ -85,7 +86,7 @@ public class SteamListingService implements ListingService {
     /**
      * {@inheritDoc}
      *
-     * @see nl.pvanassen.steam.store.listing.ListingService#createListing(java.lang.String, int, java.lang.String, int, int)
+     * @see nl.pvanassen.steam.store.listing.ListingService#createListing(java.lang.String, int, java.lang.String, int, int, nl.pvanassen.steam.store.common.GenericHandle)
      */
     @Override
     public void createListing(String assetId, int appId, String urlName, int contextId, int price, GenericHandle<CommandResult> handle) {

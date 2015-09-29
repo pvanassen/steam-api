@@ -3,7 +3,8 @@
  */
 package nl.pvanassen.steam.store.item;
 
-import nl.pvanassen.steam.store.common.*;
+import nl.pvanassen.steam.store.common.GenericHandle;
+import nl.pvanassen.steam.store.common.Listing;
 
 /**
  * @author Paul van Assen
@@ -26,6 +27,7 @@ public interface ItemService {
      * @param listingHandle If all datapoints have been processed, the listings
      *            are handled through this call
      * @param buyOrders Callback telling if this item supports buy orders
+     * @param immediateSale Immediate sales callback
      */
     void getItem(String host, int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle, GenericHandle<Boolean> buyOrders, GenericHandle<Boolean> immediateSale);
 
@@ -39,6 +41,7 @@ public interface ItemService {
      * @param listingHandle If all datapoints have been processed, the listings
      *            are handled through this call
      * @param buyOrders Callback telling if this item supports buy orders
+     * @param immediateSale Immediate sales callback
      */
     void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle, GenericHandle<Boolean> buyOrders, GenericHandle<Boolean> immediateSale);
 
