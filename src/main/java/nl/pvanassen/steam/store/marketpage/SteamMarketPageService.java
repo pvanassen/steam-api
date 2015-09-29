@@ -3,7 +3,6 @@
  */
 package nl.pvanassen.steam.store.marketpage;
 
-import java.io.IOException;
 import java.util.Set;
 
 import nl.pvanassen.steam.error.SteamException;

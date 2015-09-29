@@ -32,7 +32,6 @@ public class Http {
     private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
     private final CloseableHttpClient httpclient;
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final RequestConfig globalConfig;
     private final HttpClientContext context;
     private final String cookies;
     private final String username;
@@ -54,7 +53,7 @@ public class Http {
 
     private Http(String cookies, String username) {
         this.cookies = cookies;
-        globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).setSocketTimeout(10000).setConnectionRequestTimeout(2000).setConnectTimeout(2000).build();
+        RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).setSocketTimeout(1000).setConnectionRequestTimeout(2000).setConnectTimeout(2000).build();
         context = HttpClientContext.create();
         this.username = username;
         this.httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setConnectionManager(CONNECTION_MANAGER).build();
@@ -80,7 +79,7 @@ public class Http {
         }
     }
 
-    private final Cookie getCookie(String name, String value) {
+    private Cookie getCookie(String name, String value) {
         Calendar expiresCalendar = Calendar.getInstance();
         expiresCalendar.add(Calendar.YEAR, 1000);
         Date expires = expiresCalendar.getTime();
@@ -114,7 +113,6 @@ public class Http {
                 Thread.sleep(30000);
             } catch (InterruptedException e1) {
                 // No sleep, shutdown
-                return;
             }
         } catch (IOException e) {
             logger.error("Error in protocol", e);
@@ -122,12 +120,15 @@ public class Http {
         }
     }
 
-    private final void init() {
+    private void init() {
         CookieStore cookieStore = new BasicCookieStore();
         context.setCookieStore(cookieStore);
         if (!"".equals(cookies)) {
             for (String cookie : cookies.split("; ")) {
                 int split = cookie.indexOf('=');
+                if (split == -1) {
+                    continue;
+                }
                 String parts[] = new String[] { cookie.substring(0, split), cookie.substring(split + 1) };
                 if ("Steam_Language".equals(parts[0])) {
                     continue;
@@ -138,7 +139,7 @@ public class Http {
         cookieStore.addCookie(getCookie("Steam_Language", "english"));
     }
     
-    private final String encode(String text) {
+    private String encode(String text) {
         try {
             return URLEncoder.encode(text, "UTF-8");
         }
@@ -148,7 +149,7 @@ public class Http {
         }
     }
     
-    private final String decode(String text) {
+    private String decode(String text) {
         try {
             return URLDecoder.decode(text, "UTF-8");
         }

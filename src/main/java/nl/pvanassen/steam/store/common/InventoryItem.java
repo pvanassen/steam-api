@@ -152,9 +152,6 @@ public class InventoryItem extends Item {
         else if (!instanceId.equals(other.instanceId)) {
             return false;
         }
-        if (marketable != other.marketable) {
-            return false;
-        }
-        return true;
+        return marketable == other.marketable;
     }
 }

@@ -122,10 +122,7 @@ public class OutstandingItem extends Item {
         else if (!listingId.equals(other.listingId)) {
             return false;
         }
-        if (price != other.price) {
-            return false;
-        }
-        return true;
+        return price == other.price;
     }
 
     /**

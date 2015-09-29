@@ -21,5 +21,5 @@ enum HistoryStatus {
     /**
      * Item sold
      */
-    SOLD;
+    SOLD
 }

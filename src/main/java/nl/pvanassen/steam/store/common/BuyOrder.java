@@ -117,10 +117,7 @@ public class BuyOrder extends Item {
         else if (!listingId.equals(other.listingId)) {
             return false;
         }
-        if (subTotal != other.subTotal) {
-            return false;
-        }
-        return true;
+        return subTotal == other.subTotal;
     }
 
     /**
