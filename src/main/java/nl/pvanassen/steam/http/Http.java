@@ -1,27 +1,36 @@
 package nl.pvanassen.steam.http;
 
-import java.io.*;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.*;
-
 import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.*;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.AbstractHttpMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InterruptedIOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Http connection helper
@@ -30,15 +39,26 @@ import org.slf4j.LoggerFactory;
  */
 public class Http {
     private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
+
+    static {
+        CONNECTION_MANAGER.setDefaultMaxPerRoute(2);
+        CONNECTION_MANAGER.setMaxTotal(4);
+    }
+
     private final CloseableHttpClient httpclient;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final HttpClientContext context;
     private final String cookies;
     private final String username;
 
-    static {
-        CONNECTION_MANAGER.setDefaultMaxPerRoute(2);
-        CONNECTION_MANAGER.setMaxTotal(4);
+    private Http(String cookies, String username) {
+        this.cookies = cookies;
+        RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).setSocketTimeout(1000).setConnectionRequestTimeout(2000).setConnectTimeout(2000).build();
+        context = HttpClientContext.create();
+        this.username = username;
+        this.httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setConnectionManager(CONNECTION_MANAGER).build();
+        // IOReactorConfig config = IOReactorConfig.custom().setSoKeepAlive(true).setTcpNoDelay(true).setSoReuseAddress(true).build();
+        init();
     }
 
     /**
@@ -49,16 +69,6 @@ public class Http {
      */
     public static Http getInstance(String cookies, String username) {
         return new Http(cookies, username);
-    }
-
-    private Http(String cookies, String username) {
-        this.cookies = cookies;
-        RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).setSocketTimeout(1000).setConnectionRequestTimeout(2000).setConnectTimeout(2000).build();
-        context = HttpClientContext.create();
-        this.username = username;
-        this.httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setConnectionManager(CONNECTION_MANAGER).build();
-        // IOReactorConfig config = IOReactorConfig.custom().setSoKeepAlive(true).setTcpNoDelay(true).setSoReuseAddress(true).build();
-        init();
     }
 
     private void addHeaders(AbstractHttpMessage httpMessage, String referer, boolean ajax) {
@@ -166,7 +176,6 @@ public class Http {
      * @param handle The handle to use
      * @param ajax Is this an ajax call
      * @param high USe the high prio buffer
-     * @throws IOException In case of an error
      */
     public void get(String url, Handle handle, boolean ajax, boolean high) {
         HttpGet httpget = new HttpGet(url);
