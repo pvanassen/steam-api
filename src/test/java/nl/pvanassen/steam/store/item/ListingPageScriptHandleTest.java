@@ -1,8 +1,11 @@
 package nl.pvanassen.steam.store.item;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.io.InputStream;
+
+import nl.pvanassen.steam.store.StreamHelper;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
@@ -22,7 +25,7 @@ public class ListingPageScriptHandleTest {
     @Test
     public void testManco() throws IOException {
         ListingPageScriptHandle handle = new ListingPageScriptHandle(new ObjectMapper());
-        try (InputStream stream = getClass().getResourceAsStream("/manco.html")) {
+        try (InputStream stream = StreamHelper.getStream("/manco.html")) {
             handle.handle(stream);
         }
     }
@@ -35,7 +38,7 @@ public class ListingPageScriptHandleTest {
     @Test
     public void testNoListing() throws IOException {
         ListingPageScriptHandle handle = new ListingPageScriptHandle(new ObjectMapper());
-        try (InputStream stream = getClass().getResourceAsStream("/listing-page-no-listing.html")) {
+        try (InputStream stream = StreamHelper.getStream("/listing-page-no-listing.html")) {
             handle.handle(stream);
             assertTrue("Expected no listings", handle.isNoListingForThisItem());
         }
@@ -49,7 +52,7 @@ public class ListingPageScriptHandleTest {
     @Test
     public void testNoHistoryFound() throws IOException {
         ListingPageScriptHandle handle = new ListingPageScriptHandle(new ObjectMapper());
-        try (InputStream stream = getClass().getResourceAsStream("/listing-page-no-price-history.html")) {
+        try (InputStream stream = StreamHelper.getStream("/listing-page-no-price-history.html")) {
             handle.handle(stream);
             assertTrue("Expected no pricing history", handle.isNoPricingHistoryForThisItem());
         }

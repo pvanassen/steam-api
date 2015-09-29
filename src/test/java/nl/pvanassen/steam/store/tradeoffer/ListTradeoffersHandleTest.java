@@ -1,10 +1,13 @@
 package nl.pvanassen.steam.store.tradeoffer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+
+import nl.pvanassen.steam.store.StreamHelper;
 
 import org.junit.Test;
 
@@ -13,7 +16,7 @@ public class ListTradeoffersHandleTest {
     @Test
     public void testHandle() throws IOException {
         ListTradeoffersHandle handle = new ListTradeoffersHandle();
-        InputStream stream = getClass().getResourceAsStream("/tradeoffers.html");
+        InputStream stream = StreamHelper.getStream("/tradeoffers.html");
         handle.handle(stream);
         List<TradeOffer> tradeoffers = handle.getTradeoffers();
         assertNotNull(tradeoffers);

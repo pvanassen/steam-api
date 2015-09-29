@@ -15,5 +15,7 @@ public class NullHandle implements Handle {
     @Override
     public void handleError(InputStream stream) throws IOException {
     }
-
+    
+    @Override
+    public void handleException(Exception exception) {}
 }

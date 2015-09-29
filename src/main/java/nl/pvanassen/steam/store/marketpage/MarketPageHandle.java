@@ -59,6 +59,12 @@ class MarketPageHandle extends DefaultHandle {
         logger.error("Error getting outstanding items, error unknown");
         error = true;
     }
+    
+    @Override
+    public void handleException(Exception exception) {
+        super.handleException(exception);
+        error = true;
+    }
 
     MarketPage getOutstandings() {
         return outstandings;

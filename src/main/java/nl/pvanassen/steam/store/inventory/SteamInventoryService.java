@@ -3,10 +3,7 @@
  */
 package nl.pvanassen.steam.store.inventory;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.http.Http;
@@ -72,13 +69,7 @@ public class SteamInventoryService implements InventoryService {
         }
         logger.info("Getting inventory for app id " + appId);
         InventoryHandle handle = new InventoryHandle(objectMapper, contextId, inventoryItems);
-        try {
-            http.get("http://steamcommunity.com/id/" + username + "/inventory/json/" + appId + "/" + contextId + "/", handle);
-        }
-        catch (IOException e) {
-            logger.error("Error fetching inventory data", e);
-            throw new SteamException("Error fetching inventory data", e);
-        }
+        http.get("http://steamcommunity.com/id/" + username + "/inventory/json/" + appId + "/" + contextId + "/", handle, false, false);
         if (handle.isError()) {
             logger.error("Error fetching inventory data");
             throw new SteamException("Error fetching inventory data");

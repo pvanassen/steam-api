@@ -36,24 +36,18 @@ public class SteamItemService implements ItemService {
      */
     @Override
     public void getAllItems(GenericHandle<OverviewItem> genericHandle) {
-        try {
-            OverviewHandle handle = new OverviewHandle(genericHandle, objectMapper);
-            // Initial high, will be corrected on first run
-            int totalCount = 5000;
-            for (int start = 0; start < totalCount; start += 100) {
-                do {
-                    http.get("http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" + start + "&count=100", handle);
-                    totalCount = handle.getTotalCount();
-                    // Stop on overrun
-                    if (handle.isLastPage()) {
-                        return;
-                    }
+        OverviewHandle handle = new OverviewHandle(genericHandle, objectMapper);
+        // Initial high, will be corrected on first run
+        int totalCount = 5000;
+        for (int start = 0; start < totalCount; start += 100) {
+            do {
+                http.get("http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" + start + "&count=100", handle, false, false);
+                totalCount = handle.getTotalCount();
+                // Stop on overrun
+                if (handle.isLastPage()) {
+                    return;
                 }
-                while (handle.isError());
-            }
-        }
-        catch (IOException e) {
-            logger.error("Error handling item", e);
+            } while (handle.isError());
         }
     }
 
@@ -62,13 +56,7 @@ public class SteamItemService implements ItemService {
             GenericHandle<Boolean> buyOrders, GenericHandle<Boolean> immediateSale) {
         String url = "http://" + host + "/market/listings/" + appId + "/" + urlName;
         ListingPageScriptHandle handle = new ListingPageScriptHandle(objectMapper);
-        try {
-            http.get(url, handle);
-        }
-        catch (IOException e) {
-            logger.error("Error fetching listing page data", e);
-            throw new SteamException("Error getting data for url: " + url, e);
-        }
+        http.get(url, handle, false, false);
         if (handle.isError()) {
             throw new SteamException("Error getting data for url: " + url + " error code was not 200");
         }
@@ -99,11 +87,8 @@ public class SteamItemService implements ItemService {
     /**
      * {@inheritDoc}
      *
-     * @see nl.pvanassen.steam.store.item.ItemService#getItem(int,
-     *      java.lang.String, nl.pvanassen.steam.store.common.GenericHandle,
-     *      nl.pvanassen.steam.store.common.GenericHandle,
-     *      nl.pvanassen.steam.store.common.GenericHandle,
-     *      nl.pvanassen.steam.store.common.GenericHandle)
+     * @see nl.pvanassen.steam.store.item.ItemService#getItem(int, java.lang.String, nl.pvanassen.steam.store.common.GenericHandle, nl.pvanassen.steam.store.common.GenericHandle,
+     *      nl.pvanassen.steam.store.common.GenericHandle, nl.pvanassen.steam.store.common.GenericHandle)
      */
     @Override
     public void getItem(int appId, String urlName, GenericHandle<StatDataPoint> dataPointHandle, GenericHandle<Listing> listingHandle, GenericHandle<Boolean> buyOrders,

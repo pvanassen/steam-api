@@ -43,12 +43,11 @@ public class SteamTradeOfferService implements TradeOfferService {
             params.put("tradeofferid", id);
             params.put("serverid", "1");
             TradeOfferHandle handle = new TradeOfferHandle(objectMapper);
-            http.post("https://steamcommunity.com/tradeoffer/" + id + "/accept", params, handle, "http://steamcommunity.com/tradeoffer/" + id);
+            http.post("https://steamcommunity.com/tradeoffer/" + id + "/accept", params, handle, "http://steamcommunity.com/tradeoffer/" + id, true, false, false);
             if (handle.isError()) {
                 throw new SteamException(handle.getMessage());
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Error getting trade offers", e);
         }
     }
@@ -69,12 +68,7 @@ public class SteamTradeOfferService implements TradeOfferService {
     @Override
     public List<TradeOffer> getTradeOffers() {
         ListTradeoffersHandle handle = new ListTradeoffersHandle();
-        try {
-            http.get("https://steamcommunity.com/id/mantorch/tradeoffers/", handle);
-        }
-        catch (IOException e) {
-            logger.error("Error getting trade offers", e);
-        }
+        http.get("https://steamcommunity.com/id/mantorch/tradeoffers/", handle, false, false);
         return handle.getTradeoffers();
     }
 
@@ -85,13 +79,7 @@ public class SteamTradeOfferService implements TradeOfferService {
      */
     @Override
     public int makeTradeOffer(long steamId, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message) {
-        try {
-            http.get("https://steamcommunity.com/tradeoffer/new/?partner=" + Long.toString(steamId & 0xFFFFFFFFL), new NullHandle());
-        }
-        catch (IOException e) {
-            logger.error("Error making trade offer", e);
-            throw new SteamException("Error making trade offer", e);
-        }
+        http.get("https://steamcommunity.com/tradeoffer/new/?partner=" + Long.toString(steamId & 0xFFFFFFFFL), new NullHandle(), false, false);
         ObjectNode tradeOffer = objectMapper.createObjectNode();
         tradeOffer.put("newversion", true);
         tradeOffer.put("version", me.size() + them.size() + 1);
@@ -109,13 +97,13 @@ public class SteamTradeOfferService implements TradeOfferService {
         logger.info("Sending: " + params.toString());
         try {
             TradeOfferHandle handle = new TradeOfferHandle(objectMapper);
-            http.post("https://steamcommunity.com/tradeoffer/new/send", params, handle, "http://steamcommunity.com/tradeoffer/new/?partner=" + Long.toString(steamId & 0xFFFFFFFFL));
+            http.post("https://steamcommunity.com/tradeoffer/new/send", params, handle,
+                    "http://steamcommunity.com/tradeoffer/new/?partner=" + Long.toString(steamId & 0xFFFFFFFFL), true, false, false);
             if (handle.isError()) {
                 throw new SteamException(handle.getMessage());
             }
             return handle.getTradeOfferId();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Error making trade offer", e);
             throw new SteamException("Error making trade offer", e);
         }

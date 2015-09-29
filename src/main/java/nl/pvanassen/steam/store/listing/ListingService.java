@@ -3,8 +3,7 @@
  */
 package nl.pvanassen.steam.store.listing;
 
-import java.util.List;
-
+import nl.pvanassen.steam.store.CommandResult;
 import nl.pvanassen.steam.store.common.*;
 
 /**
@@ -17,18 +16,9 @@ public interface ListingService {
      * @param currency Currency to retrieve
      * @param host Host to connect
      * @param country Country to get listings for
-     * @param queue Queue to add the items to
+     * @param listingHandle Triggered when item is received
      */
-    void getAsyncNewlyListed(String host, int currency, String country, ListingDeque queue);
-
-    /**
-     * Retrieve all newly listed
-     * 
-     * @param currency Currency to retrieve
-     * @param country Country to get listings for
-     * @param queue Queue to add the items to
-     */
-    void getAsyncNewlyListed(int currency, String country, ListingDeque queue);
+    void getAsyncNewlyListed(String host, int currency, String country, GenericHandle<Listing> listingHandle);
 
     /**
      * Retrieve all newly listed
@@ -54,23 +44,13 @@ public interface ListingService {
     void getAsyncListed(String host, Item item, int currency, String country, int start, GenericHandle<Listing> listingHandle);
 
     /**
-     * Retrieve the newly listed
-     *
-     * @param currency Currency to retrieve
-     * @param country Country to get listings for
-     * @return Listings
-     */
-    List<Listing> getNewlyListed(int currency, String country);
-
-
-    /**
      * Remove an active listing
      *
      * @param listingId Listing to remove
-     * @return True if succesful removed
+     * @param result Handle for processing the result
      */
-    boolean removeListing(String listingId);
-    
+    void removeListing(String listingId, GenericHandle<CommandResult> result);
+
     /**
      * Create a listing from an item in the inventory
      *
@@ -79,8 +59,8 @@ public interface ListingService {
      * @param urlName Url name to sell
      * @param contextId Context id to sell
      * @param price Price to use
-     * @throws SellException In case of an error
+     * @param result Handle for processing the result
      */
-    void createListing(String assetId, int appId, String urlName, int contextId, int price) throws SellException;
+    void createListing(String assetId, int appId, String urlName, int contextId, int price, GenericHandle<CommandResult> result);
 
 }

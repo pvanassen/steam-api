@@ -8,7 +8,7 @@ package nl.pvanassen.steam.store.common;
 public class Item {
     private final int appId;
     private final String urlName;
-
+    private final String key;
     /**
      * Constructor
      *
@@ -18,6 +18,7 @@ public class Item {
     public Item(int appId, String urlName) {
         this.appId = appId;
         this.urlName = urlName;
+        key = appId + "-" + urlName;
     }
 
     /**
@@ -26,8 +27,7 @@ public class Item {
      * @param item Item to copy
      */
     protected Item(Item item) {
-        this.appId = item.appId;
-        this.urlName = item.urlName;
+        this(item.appId, item.urlName);
     }
 
     /**
@@ -103,5 +103,9 @@ public class Item {
     
     public Item getItem() {
         return new Item(appId, urlName);
+    }
+    
+    public String getKey() {
+        return key; 
     }
 }

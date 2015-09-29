@@ -1,11 +1,10 @@
 package nl.pvanassen.steam.community.friends;
 
-import java.io.IOException;
+import nl.pvanassen.steam.http.Http;
+import nl.pvanassen.steam.http.NullHandle;
 
-import nl.pvanassen.steam.error.SteamException;
-import nl.pvanassen.steam.http.*;
-
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Friends service to handle friend requests    
@@ -28,12 +27,7 @@ public class SteamFriendService implements FriendService {
 
     @Override
     public void ignoreAllFriendRequests() {
-        try {
-            logger.info("Ignoring all friends");
-            http.get("http://steamcommunity.com/id/" + username + "/home_process?action=ignoreAll&type=friends&sessionID=" + http.getSessionId(), new NullHandle());
-        } catch (IOException e) {
-            logger.info("Error ignoring friends", e);
-            throw new SteamException("IO Error ignoring friend requests", e);
-        }
+        logger.info("Ignoring all friends");
+        http.get("http://steamcommunity.com/id/" + username + "/home_process?action=ignoreAll&type=friends&sessionID=" + http.getSessionId(), new NullHandle(), false, false);
     }
 }

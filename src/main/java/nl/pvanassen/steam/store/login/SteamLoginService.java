@@ -72,7 +72,7 @@ public class SteamLoginService implements LoginService {
             
             params.put("remember_login", "true");
             params.put("donotcache", Long.toString(System.currentTimeMillis()));
-
+            logger.info(params.toString());
             http.post("https://steamcommunity.com/login/dologin/", params, doLoginHandle, "https://steamcommunity.com/login/home/?goto=0", false, true, false);
             if (doLoginHandle.isSuccess()) {
                 // logged in

@@ -24,4 +24,10 @@ public interface Handle {
      * @throws IOException IOException is allowed while handling stream
      */
     void handleError(InputStream stream) throws IOException;
+    
+    /**
+     * 
+     * @param exception Exception thrown by http
+     */
+    void handleException(Exception exception);
 }

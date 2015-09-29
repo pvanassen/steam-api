@@ -38,7 +38,7 @@ public class SteamBuyOrderService implements BuyOrderService {
         params.put("buy_orderid", id);
         BuyOrderHandle handle = new BuyOrderHandle(objectMapper);
         try {
-            http.post("http://steamcommunity.com/market/cancelbuyorder/", params, handle, "http://steamcommunity.com/id/" + username + "/inventory/");
+            http.post("http://steamcommunity.com/market/cancelbuyorder/", params, handle, "http://steamcommunity.com/id/" + username + "/inventory/", true, false, false);
         }
         catch (IOException e) {
             logger.error("Error canceling buy order", e);
@@ -75,13 +75,7 @@ public class SteamBuyOrderService implements BuyOrderService {
     public BuyOrderStatus getBuyOrderStatus(String buyOrderId) {
         String sessionId = http.getSessionId();
         BuyOrderStatusHandle handle = new BuyOrderStatusHandle(objectMapper);
-        try {
-            http.get("http://steamcommunity.com/market/getbuyorderstatus/?sessionid=" + sessionId + "&buy_orderid=" + buyOrderId, handle);
-        }
-        catch (IOException e) {
-            logger.error("Error getting status of a buy order " + buyOrderId, e);
-            throw new SteamException("Error getting status of a buy order " + buyOrderId, e);
-        }
+        http.get("http://steamcommunity.com/market/getbuyorderstatus/?sessionid=" + sessionId + "&buy_orderid=" + buyOrderId, handle, false, false);
         BuyOrderStatus status = handle.getBuyOrderStatus();
         if (!status.isSuccess()) {
             logger.error("Error getting status of a buy order " + buyOrderId);
