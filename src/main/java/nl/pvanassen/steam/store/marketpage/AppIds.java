@@ -1,10 +1,9 @@
 package nl.pvanassen.steam.store.marketpage;
 
-import java.util.Set;
-
+import com.google.common.collect.ImmutableSet;
 import nl.pvanassen.steam.http.Http;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
 /**
  * Holder for known app ids

@@ -1,12 +1,11 @@
 package nl.pvanassen.steam.store.helper;
 
+import nl.pvanassen.steam.error.SteamException;
+import org.slf4j.LoggerFactory;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-
-import org.slf4j.LoggerFactory;
-
-import nl.pvanassen.steam.error.SteamException;
 
 /**
  * URL name helper to return a uniform url name

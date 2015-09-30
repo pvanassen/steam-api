@@ -1,22 +1,19 @@
 package nl.pvanassen.steam.store.marketpage;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-
+import com.google.common.collect.ImmutableList;
 import nl.pvanassen.steam.store.helper.AmountHelper;
 import nl.pvanassen.steam.store.helper.UrlNameHelper;
 import nl.pvanassen.steam.store.xpath.XPathHelper;
-
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.google.common.collect.ImmutableList;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import java.util.ArrayList;
+import java.util.List;
 
 class BuyOrder {
     private static final XPathExpression SECTION = XPathHelper.getXpathExpression("//DIV[@class='my_listing_section market_content_block market_home_listing_table']");

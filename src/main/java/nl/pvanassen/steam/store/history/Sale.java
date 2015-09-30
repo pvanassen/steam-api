@@ -1,8 +1,8 @@
 package nl.pvanassen.steam.store.history;
 
-import java.util.Date;
-
 import nl.pvanassen.steam.store.common.Item;
+
+import java.util.Date;
 
 /**
  * Represents a sales row in the steam history

@@ -1,15 +1,14 @@
 package nl.pvanassen.steam.store.marketpage;
 
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-
 import nl.pvanassen.steam.store.helper.AmountHelper;
 import nl.pvanassen.steam.store.xpath.XPathHelper;
-
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 
 class Wallet {
     private static final XPathExpression WALLET_XPATH = XPathHelper.getXpathExpression("//SPAN[@id='marketWalletBalanceAmount']");

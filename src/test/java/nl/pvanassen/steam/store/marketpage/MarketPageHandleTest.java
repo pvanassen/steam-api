@@ -1,12 +1,11 @@
 package nl.pvanassen.steam.store.marketpage;
 
-import static org.junit.Assert.*;
+import nl.pvanassen.steam.store.StreamHelper;
+import org.junit.Test;
 
 import java.io.IOException;
 
-import nl.pvanassen.steam.store.StreamHelper;
-
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class MarketPageHandleTest {
 

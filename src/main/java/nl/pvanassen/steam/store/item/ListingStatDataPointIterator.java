@@ -1,15 +1,15 @@
 package nl.pvanassen.steam.store.item;
 
+import org.codehaus.jackson.JsonNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.NoSuchElementException;
-
-import org.codehaus.jackson.JsonNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class ListingStatDataPointIterator implements Iterator<StatDataPoint>, Iterable<StatDataPoint> {
     private final Logger logger = LoggerFactory.getLogger(getClass());

@@ -1,11 +1,11 @@
 package nl.pvanassen.steam.store.xpath;
 
+import org.slf4j.LoggerFactory;
+
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-import org.slf4j.LoggerFactory;
 
 /**
  * Get xpath expression

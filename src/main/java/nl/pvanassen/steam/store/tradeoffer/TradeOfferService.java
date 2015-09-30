@@ -3,11 +3,10 @@
  */
 package nl.pvanassen.steam.store.tradeoffer;
 
-import java.util.List;
-
+import com.google.common.base.Optional;
 import nl.pvanassen.steam.store.common.InventoryItem;
 
-import com.google.common.base.Optional;
+import java.util.List;
 
 /**
  * @author Paul van Assen

@@ -1,16 +1,15 @@
 package nl.pvanassen.steam.store.item;
 
-import static org.junit.Assert.*;
+import nl.pvanassen.steam.store.StreamHelper;
+import nl.pvanassen.steam.store.common.GenericHandle;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import nl.pvanassen.steam.store.StreamHelper;
-import nl.pvanassen.steam.store.common.GenericHandle;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class OverviewHandleTest implements GenericHandle<OverviewItem> {
     private List<OverviewItem> itemList = new LinkedList<>();

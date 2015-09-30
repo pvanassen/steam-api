@@ -3,19 +3,21 @@
  */
 package nl.pvanassen.steam.store.tradeoffer;
 
-import java.io.IOException;
-import java.util.*;
-
+import com.google.common.base.Optional;
 import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.http.Http;
 import nl.pvanassen.steam.http.NullHandle;
 import nl.pvanassen.steam.store.common.InventoryItem;
-
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.*;
-import org.slf4j.*;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Optional;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Paul van Assen

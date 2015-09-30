@@ -1,15 +1,14 @@
 package nl.pvanassen.steam.store.item;
 
-import java.io.*;
-import java.nio.charset.Charset;
-import java.util.Random;
-
 import nl.pvanassen.steam.http.DefaultHandle;
-
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.Random;
 
 /**
  * Handler to parse the listing page

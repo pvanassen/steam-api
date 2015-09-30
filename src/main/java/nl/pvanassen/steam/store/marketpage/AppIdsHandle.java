@@ -1,14 +1,7 @@
 package nl.pvanassen.steam.store.marketpage;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.xml.xpath.*;
-
+import com.google.common.collect.ImmutableSet;
 import nl.pvanassen.steam.http.DefaultHandle;
-
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +11,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.google.common.collect.ImmutableSet;
+import javax.xml.xpath.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 class AppIdsHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());

@@ -1,18 +1,19 @@
 package nl.pvanassen.steam.store.listing;
 
-import java.io.*;
-import java.nio.charset.Charset;
-
+import com.google.common.io.ByteStreams;
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.CommandResult;
 import nl.pvanassen.steam.store.common.GenericHandle;
-
-import org.codehaus.jackson.*;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.io.ByteStreams;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 
 class ListingMutationHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());

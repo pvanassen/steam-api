@@ -1,9 +1,6 @@
 package nl.pvanassen.steam.store.history;
 
-import java.io.IOException;
-
 import nl.pvanassen.steam.http.Http;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

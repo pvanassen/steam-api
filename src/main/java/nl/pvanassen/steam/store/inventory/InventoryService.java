@@ -3,9 +3,9 @@
  */
 package nl.pvanassen.steam.store.inventory;
 
-import java.util.List;
-
 import nl.pvanassen.steam.store.common.InventoryItem;
+
+import java.util.List;
 
 /**
  * @author Paul van Assen

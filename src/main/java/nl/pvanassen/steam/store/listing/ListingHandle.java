@@ -1,20 +1,19 @@
 package nl.pvanassen.steam.store.listing;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-
+import com.google.common.io.ByteStreams;
 import nl.pvanassen.steam.http.DefaultHandle;
-import nl.pvanassen.steam.store.common.*;
+import nl.pvanassen.steam.store.common.GenericHandle;
+import nl.pvanassen.steam.store.common.Listing;
 import nl.pvanassen.steam.store.helper.UrlNameHelper;
-
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.io.ByteStreams;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 
 class ListingHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());

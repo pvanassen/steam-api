@@ -1,17 +1,9 @@
 package nl.pvanassen.steam.store.tradeoffer;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-
+import com.google.common.collect.ImmutableList;
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.common.Item;
 import nl.pvanassen.steam.store.xpath.XPathHelper;
-
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +13,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.google.common.collect.ImmutableList;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 class ListTradeoffersHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());

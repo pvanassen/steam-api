@@ -1,13 +1,12 @@
 package nl.pvanassen.steam.store.buyorder;
 
-import static org.junit.Assert.*;
+import nl.pvanassen.steam.store.StreamHelper;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Test;
 
 import java.io.IOException;
 
-import nl.pvanassen.steam.store.StreamHelper;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class BuyOrderHandleTest {
 

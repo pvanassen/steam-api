@@ -1,15 +1,17 @@
 package nl.pvanassen.steam.store.inventory;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.util.*;
-
 import nl.pvanassen.steam.store.StreamHelper;
 import nl.pvanassen.steam.store.common.InventoryItem;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TimeZone;
+
+import static org.junit.Assert.*;
 
 public class InventoryHandleTest {
 

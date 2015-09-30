@@ -1,9 +1,9 @@
 package nl.pvanassen.steam.store.login;
 
+import org.apache.commons.codec.binary.Base64;
+
 import java.math.BigInteger;
 import java.nio.charset.Charset;
-
-import org.apache.commons.codec.binary.Base64;
 
 class RSA {
     private final BigInteger modulus;
