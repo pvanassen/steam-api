@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>nl.pvanassen</groupId>
-		<version>1.2.4</version>
+		<version>1.2.5</version>
 	</parent>
 	<groupId>nl.pvanassen.steam</groupId>
 	<artifactId>steam-api</artifactId>
@@ -159,18 +159,6 @@
 				<configuration>
 					<tag>${project.artifactId}-${project.version}</tag>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
