@@ -1,7 +1,6 @@
 package nl.pvanassen.steam.store;
 
-import java.util.Set;
-
+import com.google.common.collect.ImmutableSet;
 import nl.pvanassen.steam.community.friends.FriendService;
 import nl.pvanassen.steam.community.friends.SteamFriendService;
 import nl.pvanassen.steam.error.SteamException;
@@ -26,7 +25,7 @@ import nl.pvanassen.steam.store.marketpage.SteamMarketPageService;
 import nl.pvanassen.steam.store.tradeoffer.SteamTradeOfferService;
 import nl.pvanassen.steam.store.tradeoffer.TradeOfferService;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
 /**
  * Interface to the steam store

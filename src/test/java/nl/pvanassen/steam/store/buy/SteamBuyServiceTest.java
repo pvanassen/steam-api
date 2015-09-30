@@ -1,23 +1,22 @@
 package nl.pvanassen.steam.store.buy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.mock;
-
-import java.io.IOException;
-import java.util.Map;
-
 import nl.pvanassen.steam.http.Handle;
 import nl.pvanassen.steam.http.Http;
 import nl.pvanassen.steam.store.CookieException;
 import nl.pvanassen.steam.store.StreamHelper;
 import nl.pvanassen.steam.store.common.BuyOrder;
-
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+
+import java.io.IOException;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.mock;
 
 public class SteamBuyServiceTest {
 

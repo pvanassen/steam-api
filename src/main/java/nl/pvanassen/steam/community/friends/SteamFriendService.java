@@ -2,7 +2,6 @@ package nl.pvanassen.steam.community.friends;
 
 import nl.pvanassen.steam.http.Http;
 import nl.pvanassen.steam.http.NullHandle;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

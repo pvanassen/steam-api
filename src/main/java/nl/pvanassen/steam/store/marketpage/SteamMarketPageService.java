@@ -3,13 +3,12 @@
  */
 package nl.pvanassen.steam.store.marketpage;
 
-import java.util.Set;
-
 import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.http.Http;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Set;
 
 /**
  * @author Paul van Assen

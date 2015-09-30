@@ -1,12 +1,11 @@
 package nl.pvanassen.steam.store.login;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import nl.pvanassen.steam.http.DefaultHandle;
-
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 class DoLoginHandle extends DefaultHandle {
 

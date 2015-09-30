@@ -1,8 +1,8 @@
 package nl.pvanassen.steam.store.history;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class OptimumStepSizeTest {
 

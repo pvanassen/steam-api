@@ -1,20 +1,10 @@
 package nl.pvanassen.steam.store.history;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.xml.xpath.*;
-
+import com.google.common.collect.ImmutableList;
 import nl.pvanassen.steam.http.DefaultHandle;
 import nl.pvanassen.steam.store.helper.AmountHelper;
 import nl.pvanassen.steam.store.helper.UrlNameHelper;
 import nl.pvanassen.steam.store.xpath.XPathHelper;
-
 import org.apache.html.dom.HTMLDocumentImpl;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -28,7 +18,16 @@ import org.w3c.dom.html.HTMLDocument;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.google.common.collect.ImmutableList;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 class HistoryHandle extends DefaultHandle {
     private boolean exceptionThrown = false;

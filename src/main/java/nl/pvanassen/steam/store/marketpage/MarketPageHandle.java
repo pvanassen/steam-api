@@ -1,20 +1,18 @@
 package nl.pvanassen.steam.store.marketpage;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.ParseException;
-import java.util.List;
-
-import javax.xml.xpath.XPathExpressionException;
-
 import nl.pvanassen.steam.http.DefaultHandle;
-
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.util.List;
 
 class MarketPageHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());

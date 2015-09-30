@@ -3,12 +3,10 @@
  */
 package nl.pvanassen.steam.store.item;
 
-import java.io.IOException;
-
 import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.http.Http;
-import nl.pvanassen.steam.store.common.*;
-
+import nl.pvanassen.steam.store.common.GenericHandle;
+import nl.pvanassen.steam.store.common.Listing;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;

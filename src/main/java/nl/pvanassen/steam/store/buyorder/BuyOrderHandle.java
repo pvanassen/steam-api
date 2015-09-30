@@ -1,14 +1,13 @@
 package nl.pvanassen.steam.store.buyorder;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import nl.pvanassen.steam.http.DefaultHandle;
-
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 class BuyOrderHandle extends DefaultHandle {
     private final Logger logger = LoggerFactory.getLogger(getClass());

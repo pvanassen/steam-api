@@ -1,19 +1,20 @@
 package nl.pvanassen.steam.store.marketpage;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import nl.pvanassen.steam.store.helper.AmountHelper;
+import nl.pvanassen.steam.store.xpath.XPathHelper;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-
-import nl.pvanassen.steam.store.helper.AmountHelper;
-import nl.pvanassen.steam.store.xpath.XPathHelper;
-
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 final class Outstandings {
     private static final XPathExpression ITEMS_DIV_XPATH = XPathHelper.getXpathExpression("//DIV[@class='market_content_block my_listing_section market_home_listing_table']");

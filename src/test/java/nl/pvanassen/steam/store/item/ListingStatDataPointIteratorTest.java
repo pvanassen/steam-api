@@ -1,15 +1,14 @@
 package nl.pvanassen.steam.store.item;
 
-import static org.junit.Assert.assertNotNull;
+import nl.pvanassen.steam.store.StreamHelper;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import nl.pvanassen.steam.store.StreamHelper;
-
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Test retrieval of listing points

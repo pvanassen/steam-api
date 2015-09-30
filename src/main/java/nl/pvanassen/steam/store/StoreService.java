@@ -1,7 +1,5 @@
 package nl.pvanassen.steam.store;
 
-import java.util.Set;
-
 import nl.pvanassen.steam.community.friends.FriendService;
 import nl.pvanassen.steam.store.buy.BuyService;
 import nl.pvanassen.steam.store.buyorder.BuyOrderService;
@@ -12,6 +10,8 @@ import nl.pvanassen.steam.store.listing.ListingService;
 import nl.pvanassen.steam.store.login.LoginService;
 import nl.pvanassen.steam.store.marketpage.MarketPageService;
 import nl.pvanassen.steam.store.tradeoffer.TradeOfferService;
+
+import java.util.Set;
 
 /**
  * Interface defining a connecion to the steam store

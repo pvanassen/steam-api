@@ -1,8 +1,8 @@
 package nl.pvanassen.steam.store.marketpage;
 
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
+
+import java.util.List;
 
 /**
  * Outstanding items

@@ -4,7 +4,9 @@
 package nl.pvanassen.steam.store.listing;
 
 import nl.pvanassen.steam.store.CommandResult;
-import nl.pvanassen.steam.store.common.*;
+import nl.pvanassen.steam.store.common.GenericHandle;
+import nl.pvanassen.steam.store.common.Item;
+import nl.pvanassen.steam.store.common.Listing;
 
 /**
  * @author Paul van Assen

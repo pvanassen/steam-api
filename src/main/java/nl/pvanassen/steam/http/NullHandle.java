@@ -1,6 +1,7 @@
 package nl.pvanassen.steam.http;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Do nothing at all

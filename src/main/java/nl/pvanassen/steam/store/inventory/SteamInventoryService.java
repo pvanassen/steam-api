@@ -3,17 +3,17 @@
  */
 package nl.pvanassen.steam.store.inventory;
 
-import java.util.*;
-
+import com.google.common.collect.ImmutableList;
 import nl.pvanassen.steam.error.SteamException;
 import nl.pvanassen.steam.http.Http;
 import nl.pvanassen.steam.store.common.InventoryItem;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Paul van Assen

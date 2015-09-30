@@ -4,5 +4,6 @@
 .project
 .settings
 .idea
-*.versionsBackup
 *.iml
+*.bak
+*.versionsBackup

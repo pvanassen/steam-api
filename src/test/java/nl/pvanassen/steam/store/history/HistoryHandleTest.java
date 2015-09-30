@@ -1,17 +1,19 @@
 package nl.pvanassen.steam.store.history;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-import java.util.*;
-
 import nl.pvanassen.steam.store.StreamHelper;
 import nl.pvanassen.steam.store.common.Item;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test the history handler

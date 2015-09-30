@@ -1,8 +1,8 @@
 package nl.pvanassen.steam.store.marketpage;
 
-import java.util.Date;
-
 import nl.pvanassen.steam.store.common.Item;
+
+import java.util.Date;
 
 /**
  * Item listed in the market
