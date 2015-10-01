@@ -4,11 +4,11 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>nl.pvanassen</groupId>
-		<version>1.2.5</version>
+		<version>1.2.6</version>
 	</parent>
 	<groupId>nl.pvanassen.steam</groupId>
 	<artifactId>steam-api</artifactId>
-	<version>3.0.1-SNAPSHOT</version>
+	<version>3.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Steam store interface</name>
 	<description>A Java API to access the Steam community market through the HTTP interface. This may be against the TOS so be careful using it!</description>
