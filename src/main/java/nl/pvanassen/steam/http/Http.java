@@ -124,6 +124,7 @@ public class Http {
             } catch (InterruptedException e1) {
                 // No sleep, shutdown
             }
+            handleConnection(httpget, handle, highPrio);
         } catch (IOException e) {
             logger.error("Error in protocol", e);
             handle.handleException(e);
