@@ -45,7 +45,11 @@ class BuyOrder {
                 NodeList priceQuantity = (NodeList)PRICE.evaluate(node, XPathConstants.NODESET);
                 Node priceNode = priceQuantity.item(0);
                 Node quantityNode  = priceQuantity.item(1);
-                int price = AmountHelper.getAmount(priceNode.getTextContent().trim());
+                String priceStr = priceNode.getTextContent().trim();
+                if (priceStr.indexOf('@') != -1) {
+                    priceStr = priceStr.substring(priceStr.indexOf('@') + 1);
+                }
+                int price = AmountHelper.getAmount(priceStr.trim());
                 int quantity = Integer.valueOf(quantityNode.getTextContent().trim());
                 buyOrders.add(new MarketPageBuyOrder(appId, urlName, steamId, quantity, price));
             }
