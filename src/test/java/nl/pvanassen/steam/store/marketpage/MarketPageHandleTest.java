@@ -24,10 +24,10 @@ public class MarketPageHandleTest {
         MarketPageHandle handle = new MarketPageHandle();
         handle.handle(StreamHelper.getStream("/loaded-marketpage.html"));
         assertNotNull("Expected object", handle.getOutstandings());
-        assertEquals("Expected 155", 155, handle.getOutstandings().getAmount());
-        assertEquals("Expected 1", 1, handle.getOutstandings().getItems());
+        assertEquals("Expected 29867", 29867, handle.getOutstandings().getAmount());
+        assertEquals("Expected 249", 249, handle.getOutstandings().getItems());
         assertNotNull(handle.getOutstandings().getItemList());
-        assertEquals(1, handle.getOutstandings().getItemList().size());
+        assertEquals(249, handle.getOutstandings().getItemList().size());
         assertFalse("Last char should not be a )", handle.getOutstandings().getItemList().get(0).getAssetId().endsWith(")"));
     }
 
