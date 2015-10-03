@@ -100,7 +100,11 @@ public class Http {
         return cookie;
     }
 
-    private void handleConnection(HttpRequestBase httpget, Handle handle, boolean highPrio) {
+    private void handleConnection(HttpRequestBase httpget, Handle handle) {
+        handleConnection(httpget, handle, 0);
+    }
+
+    private void handleConnection(HttpRequestBase httpget, Handle handle, int attempt) {
         if (logger.isDebugEnabled()) {
             logger.debug("Executing request with cookies: " + getCookies());
         }
@@ -120,11 +124,14 @@ public class Http {
         } catch (HttpHostConnectException | InterruptedIOException e) {
             logger.warn("Steam doesn't like me. Slowing down and sleeping a bit");
             try {
-                Thread.sleep(30000);
+                Thread.sleep(10000);
             } catch (InterruptedException e1) {
                 // No sleep, shutdown
             }
-            handleConnection(httpget, handle, highPrio);
+            if (attempt == 5) {
+                throw new RuntimeException(e);
+            }
+            handleConnection(httpget, handle, attempt + 1);
         } catch (IOException e) {
             logger.error("Error in protocol", e);
             handle.handleException(e);
