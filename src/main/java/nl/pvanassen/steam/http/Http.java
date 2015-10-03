@@ -188,7 +188,7 @@ public class Http {
     public void get(String url, Handle handle, boolean ajax, boolean high) {
         HttpGet httpget = new HttpGet(url);
         addHeaders(httpget, "http://steamcommunity.com/id/" + username + "/inventory/", ajax);
-        handleConnection(httpget, handle, high);
+        handleConnection(httpget, handle);
     }
 
     /**
@@ -225,7 +225,7 @@ public class Http {
             logger.debug("Sending POST to " + url + " with parameters " + sb.toString());
         }
         httpPost.setEntity(new StringEntity(sb.toString(), ContentType.create("application/x-www-form-urlencoded", "UTF-8")));
-        handleConnection(httpPost, handle, high);
+        handleConnection(httpPost, handle);
     }
 
     /**
