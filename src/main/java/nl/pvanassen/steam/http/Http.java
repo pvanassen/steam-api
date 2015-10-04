@@ -1,5 +1,6 @@
 package nl.pvanassen.steam.http;
 
+import nl.pvanassen.steam.error.SteamException;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
@@ -56,7 +57,7 @@ public class Http {
         RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).setSocketTimeout(1000).setConnectionRequestTimeout(2000).setConnectTimeout(2000).build();
         context = HttpClientContext.create();
         this.username = username;
-        this.httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setConnectionManager(CONNECTION_MANAGER).build();
+        this.httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
         // IOReactorConfig config = IOReactorConfig.custom().setSoKeepAlive(true).setTcpNoDelay(true).setSoReuseAddress(true).build();
         init();
     }
@@ -128,8 +129,8 @@ public class Http {
             } catch (InterruptedException e1) {
                 // No sleep, shutdown
             }
-            if (attempt == 5) {
-                throw new RuntimeException(e);
+            if (attempt == 3) {
+                throw new SteamException("Steam hates me :(", e);
             }
             handleConnection(httpget, handle, attempt + 1);
         } catch (IOException e) {
