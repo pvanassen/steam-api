@@ -35,7 +35,7 @@ public class SteamBuyServiceTest {
         })
                 .when(http)
                 .post(eq("https://steamcommunity.com/market/buylisting/12345"), (Map<String, String>) anyMap(), (Handle) anyObject(),
-                        eq("http://steamcommunity.com/id/testuser/inventory/"), eq(true), eq(false), eq(true));
+                        eq("http://steamcommunity.com/id/testuser/inventory/"), eq(true), eq(false));
         SteamBuyService steamBuyService = new SteamBuyService(http, "testuser");
         steamBuyService.buy(new BuyOrder(1, "test", "12345", 10, 4));
     }
@@ -55,7 +55,7 @@ public class SteamBuyServiceTest {
         })
                 .when(http)
                 .post(eq("https://steamcommunity.com/market/buylisting/12345"), (Map<String, String>) anyMap(), (Handle) anyObject(),
-                        eq("http://steamcommunity.com/id/testuser/inventory/"), eq(true), eq(false), eq(true));
+                        eq("http://steamcommunity.com/id/testuser/inventory/"), eq(true), eq(false));
         SteamBuyService steamBuyService = new SteamBuyService(http, "testuser");
         BuyResult result = steamBuyService.buy(new BuyOrder(1, "test", "12345", 10, 4));
         assertNotNull(result);
