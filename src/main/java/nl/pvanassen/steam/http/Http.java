@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Calendar;
@@ -54,7 +55,7 @@ public class Http {
 
     private Http(String cookies, String username) {
         this.cookies = cookies;
-        RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).setSocketTimeout(2500).setConnectionRequestTimeout(5000).setConnectTimeout(5000).build();
+        RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).setSocketTimeout(10000).setConnectionRequestTimeout(10000).setConnectTimeout(10000).build();
         context = HttpClientContext.create();
         this.username = username;
         this.httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
@@ -124,10 +125,13 @@ public class Http {
             }
         } catch (HttpHostConnectException | InterruptedIOException e) {
             logger.warn("Steam doesn't like me. Slowing down and sleeping a bit", e);
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e1) {
-                // No sleep, shutdown
+            if (!(e instanceof SocketTimeoutException)) {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ignored) {
+                    // No sleep, shutdown
+                    return;
+                }
             }
             if (attempt == 3) {
                 throw new SteamException("Steam hates me :(", e);
