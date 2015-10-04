@@ -37,7 +37,7 @@ public class SteamListingService implements ListingService {
     @Override
     public void getAsyncNewlyListed(String host, int currency, String country, GenericHandle<Listing> listingHandle) {
         ListingHandle handle = new ListingHandle(objectMapper, listingHandle, country);
-        http.get("http://" + host + "/market/recent?country=" + country + "&language=english&currency=" + currency, handle, true, true);
+        http.get("http://" + host + "/market/recent?country=" + country + "&language=english&currency=" + currency, handle, true);
     }
 
     /**
@@ -63,7 +63,7 @@ public class SteamListingService implements ListingService {
         String url = "http://" + host + "/market/listings/" + item.getAppId() + "/" + item.getUrlName() + "/render/?query=&start=" + start + "&count=10&currency=" + currency
                 + "&country=" + country + "&language=english";
         logger.info("Sending get request to " + url);
-        http.get(url, handle, true, true);
+        http.get(url, handle, true);
     }
 
     /**
@@ -75,8 +75,7 @@ public class SteamListingService implements ListingService {
     public void removeListing(String listingId, GenericHandle<CommandResult> handle) {
         ListingMutationHandle removeHandle = new ListingMutationHandle("remove", handle);
         try {
-            http.post("http://steamcommunity.com/market/removelisting/" + listingId, new HashMap<String, String>(), removeHandle, "http://steamcommunity.com/id/" + username
-                    + "/inventory/", true, false, false);
+            http.post("http://steamcommunity.com/market/removelisting/" + listingId, new HashMap<String, String>(), removeHandle, "http://steamcommunity.com/market/", true, false);
         }
         catch (IOException e) {
             logger.error("Error in removing listing", e);
@@ -103,7 +102,7 @@ public class SteamListingService implements ListingService {
         logger.info(params.toString());
         ListingMutationHandle sellHandle = new ListingMutationHandle("create", handle);
         try {
-            http.post("https://steamcommunity.com/market/sellitem/", params, sellHandle, "http://steamcommunity.com/id/" + username + "/inventory/", true, false, false);
+            http.post("https://steamcommunity.com/market/sellitem/", params, sellHandle, "http://steamcommunity.com/id/" + username + "/inventory/", true, false);
         }
         catch (IOException e) {
             logger.error("Error in creating listing", e);

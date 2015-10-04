@@ -32,7 +32,7 @@ public class SteamMarketPageService implements MarketPageService {
     public Set<Integer> getAppIds() {
         logger.info("Getting market page for app ids");
         AppIdsHandle handle = new AppIdsHandle();
-        http.get("http://steamcommunity.com/market/", handle, false, false);
+        http.get("http://steamcommunity.com/market/", handle, false);
         return handle.getAppIds();
     }
 
@@ -45,7 +45,7 @@ public class SteamMarketPageService implements MarketPageService {
     public MarketPage getMarketPage() {
         logger.info("Getting market page for " + username);
         MarketPageHandle handle = new MarketPageHandle();
-        http.get("http://steamcommunity.com/market/", handle, false, false);
+        http.get("http://steamcommunity.com/market/", handle, false);
         if (handle.isError()) {
             throw new SteamException("Error getting the market page, unknown error");
         }

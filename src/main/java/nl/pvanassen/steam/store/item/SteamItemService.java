@@ -39,7 +39,7 @@ public class SteamItemService implements ItemService {
         int totalCount = 5000;
         for (int start = 0; start < totalCount; start += 100) {
             do {
-                http.get("http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" + start + "&count=100", handle, false, false);
+                http.get("http://steamcommunity.com/market/search/render/?query=&search_descriptions=0&start=" + start + "&count=100", handle, false);
                 totalCount = handle.getTotalCount();
                 // Stop on overrun
                 if (handle.isLastPage()) {
@@ -54,7 +54,7 @@ public class SteamItemService implements ItemService {
             GenericHandle<Boolean> buyOrders, GenericHandle<Boolean> immediateSale) {
         String url = "http://" + host + "/market/listings/" + appId + "/" + urlName;
         ListingPageScriptHandle handle = new ListingPageScriptHandle(objectMapper);
-        http.get(url, handle, false, false);
+        http.get(url, handle, false);
         if (handle.isError()) {
             throw new SteamException("Error getting data for url: " + url + " error code was not 200");
         }

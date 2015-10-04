@@ -45,7 +45,7 @@ public class SteamTradeOfferService implements TradeOfferService {
             params.put("tradeofferid", id);
             params.put("serverid", "1");
             TradeOfferHandle handle = new TradeOfferHandle(objectMapper);
-            http.post("https://steamcommunity.com/tradeoffer/" + id + "/accept", params, handle, "http://steamcommunity.com/tradeoffer/" + id, true, false, false);
+            http.post("https://steamcommunity.com/tradeoffer/" + id + "/accept", params, handle, "http://steamcommunity.com/tradeoffer/" + id, true, false);
             if (handle.isError()) {
                 throw new SteamException(handle.getMessage());
             }
@@ -70,7 +70,7 @@ public class SteamTradeOfferService implements TradeOfferService {
     @Override
     public List<TradeOffer> getTradeOffers() {
         ListTradeoffersHandle handle = new ListTradeoffersHandle();
-        http.get("https://steamcommunity.com/id/mantorch/tradeoffers/", handle, false, false);
+        http.get("https://steamcommunity.com/id/mantorch/tradeoffers/", handle, false);
         return handle.getTradeoffers();
     }
 
@@ -81,7 +81,7 @@ public class SteamTradeOfferService implements TradeOfferService {
      */
     @Override
     public int makeTradeOffer(long steamId, List<InventoryItem> me, List<InventoryItem> them, Optional<String> message) {
-        http.get("https://steamcommunity.com/tradeoffer/new/?partner=" + Long.toString(steamId & 0xFFFFFFFFL), new NullHandle(), false, false);
+        http.get("https://steamcommunity.com/tradeoffer/new/?partner=" + Long.toString(steamId & 0xFFFFFFFFL), new NullHandle(), false);
         ObjectNode tradeOffer = objectMapper.createObjectNode();
         tradeOffer.put("newversion", true);
         tradeOffer.put("version", me.size() + them.size() + 1);
@@ -100,7 +100,7 @@ public class SteamTradeOfferService implements TradeOfferService {
         try {
             TradeOfferHandle handle = new TradeOfferHandle(objectMapper);
             http.post("https://steamcommunity.com/tradeoffer/new/send", params, handle,
-                    "http://steamcommunity.com/tradeoffer/new/?partner=" + Long.toString(steamId & 0xFFFFFFFFL), true, false, false);
+                    "http://steamcommunity.com/tradeoffer/new/?partner=" + Long.toString(steamId & 0xFFFFFFFFL), true, false);
             if (handle.isError()) {
                 throw new SteamException(handle.getMessage());
             }

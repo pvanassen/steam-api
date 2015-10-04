@@ -41,8 +41,8 @@ public class Http {
     private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
 
     static {
-        CONNECTION_MANAGER.setDefaultMaxPerRoute(2);
-        CONNECTION_MANAGER.setMaxTotal(4);
+        CONNECTION_MANAGER.setDefaultMaxPerRoute(1);
+        CONNECTION_MANAGER.setMaxTotal(2);
     }
 
     private final CloseableHttpClient httpclient;
@@ -82,7 +82,7 @@ public class Http {
         httpMessage.addHeader("Pragma", "no-cache");
         httpMessage.addHeader("Referer", referer);
         httpMessage.addHeader("If-Modified-Since", "Wed, 1 Jan 2014 12:00:00 GMT");
-        httpMessage.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0");
+        httpMessage.addHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36");
         if (ajax) {
             httpMessage.addHeader("X-Prototype-Version", "1.7");
             httpMessage.addHeader("X-Requested-With", "XMLHttpRequest");
@@ -183,11 +183,21 @@ public class Http {
      * @param url The url to call
      * @param handle The handle to use
      * @param ajax Is this an ajax call
-     * @param high USe the high prio buffer
      */
-    public void get(String url, Handle handle, boolean ajax, boolean high) {
+    public void get(String url, Handle handle, boolean ajax) {
+        get(url, "http://steamcommunity.com/id/" + username + "/inventory/", handle, ajax);
+    }
+
+    /**
+     * Make a get call to the url using the provided handle
+     *
+     * @param url The url to call
+     * @param handle The handle to use
+     * @param ajax Is this an ajax call
+     */
+    public void get(String url, String referer, Handle handle, boolean ajax) {
         HttpGet httpget = new HttpGet(url);
-        addHeaders(httpget, "http://steamcommunity.com/id/" + username + "/inventory/", ajax);
+        addHeaders(httpget, referer, ajax);
         handleConnection(httpget, handle);
     }
 
@@ -199,10 +209,9 @@ public class Http {
      * @param sessionRequired Does this request require a session? If not, like
      *            in the case of login, don't fail on it not being present
      * @param reencode Re-encode the parameter
-     * @param high Use high prio buffer
      * @throws IOException if a network error occurs
      */
-    public void post(String url, Map<String, String> params, Handle handle, String referer, boolean sessionRequired, boolean reencode, boolean high) throws IOException {
+    public void post(String url, Map<String, String> params, Handle handle, String referer, boolean sessionRequired, boolean reencode) throws IOException {
         HttpPost httpPost = new HttpPost(url);
         addHeaders(httpPost, referer, true);
         String sessionid = getSessionId();

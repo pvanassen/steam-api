@@ -27,6 +27,6 @@ public class SteamFriendService implements FriendService {
     @Override
     public void ignoreAllFriendRequests() {
         logger.info("Ignoring all friends");
-        http.get("http://steamcommunity.com/id/" + username + "/home_process?action=ignoreAll&type=friends&sessionID=" + http.getSessionId(), new NullHandle(), false, false);
+        http.get("http://steamcommunity.com/id/" + username + "/home_process?action=ignoreAll&type=friends&sessionID=" + http.getSessionId(), new NullHandle(), false);
     }
 }
