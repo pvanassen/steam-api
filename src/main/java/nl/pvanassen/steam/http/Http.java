@@ -125,7 +125,7 @@ public class Http {
         } catch (HttpHostConnectException | InterruptedIOException e) {
             logger.warn("Steam doesn't like me. Slowing down and sleeping a bit", e);
             try {
-                Thread.sleep(60000);
+                Thread.sleep(10000);
             } catch (InterruptedException e1) {
                 // No sleep, shutdown
             }
