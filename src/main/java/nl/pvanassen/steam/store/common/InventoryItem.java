@@ -1,6 +1,7 @@
 package nl.pvanassen.steam.store.common;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Representation of an item in the inventory
@@ -14,6 +15,7 @@ public class InventoryItem extends Item {
     private final boolean marketable;
     private final boolean tradable;
     private final Date blockedUntil;
+    private final Map<String,String> properties;
 
     /**
      * An item from the inventory
@@ -26,7 +28,7 @@ public class InventoryItem extends Item {
      * @param tradable Is this item tradable?
      * @param blockedUntil Blocked until when?
      */
-    public InventoryItem(String assetId, int contextId, String instanceId, int appId, String urlName, boolean marketable, boolean tradable, Date blockedUntil) {
+    public InventoryItem(String assetId, int contextId, String instanceId, int appId, String urlName, boolean marketable, boolean tradable, Date blockedUntil, Map<String,String> properties) {
         super(appId, urlName);
         this.assetId = assetId;
         this.contextId = contextId;
@@ -34,6 +36,7 @@ public class InventoryItem extends Item {
         this.marketable = marketable;
         this.tradable = tradable;
         this.blockedUntil = blockedUntil;
+        this.properties = properties;
     }
 
     /**
@@ -49,6 +52,7 @@ public class InventoryItem extends Item {
         this.marketable = inventoryItem.marketable;
         this.tradable = inventoryItem.tradable;
         this.blockedUntil = inventoryItem.blockedUntil;
+        this.properties = inventoryItem.properties;
     }
 
     /**
@@ -93,6 +97,10 @@ public class InventoryItem extends Item {
      */
     public Date getBlockedUntil() {
         return blockedUntil;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
     }
 
     @Override

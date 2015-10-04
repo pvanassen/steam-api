@@ -123,7 +123,7 @@ public class Http {
                 }
             }
         } catch (HttpHostConnectException | InterruptedIOException e) {
-            logger.warn("Steam doesn't like me. Slowing down and sleeping a bit");
+            logger.warn("Steam doesn't like me. Slowing down and sleeping a bit", e);
             try {
                 Thread.sleep(60000);
             } catch (InterruptedException e1) {
