@@ -47,7 +47,7 @@ public class SteamLoginService implements LoginService {
         GetRSAHandle rsaHandle = new GetRSAHandle(objectMapper);
         DoLoginHandle doLoginHandle = new DoLoginHandle(objectMapper);
         try {
-            http.post("https://store.steampowered.com/login/getrsakey/", params, rsaHandle, "https://steamcommunity.com/login/home/?goto=0", false, true, false);
+            http.post("https://store.steampowered.com/login/getrsakey/", params, rsaHandle, "https://steamcommunity.com/login/home/?goto=0", false, true);
             if (!rsaHandle.isSuccess()) {
                 throw new VerificationException("Invalid username");
             }
@@ -72,7 +72,7 @@ public class SteamLoginService implements LoginService {
             params.put("remember_login", "true");
             params.put("donotcache", Long.toString(System.currentTimeMillis()));
             logger.info(params.toString());
-            http.post("https://steamcommunity.com/login/dologin/", params, doLoginHandle, "https://steamcommunity.com/login/home/?goto=0", false, true, false);
+            http.post("https://steamcommunity.com/login/dologin/", params, doLoginHandle, "https://steamcommunity.com/login/home/?goto=0", false, true);
             if (doLoginHandle.isSuccess()) {
                 // logged in
                 return;

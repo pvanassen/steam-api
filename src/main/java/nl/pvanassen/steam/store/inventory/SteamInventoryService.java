@@ -69,7 +69,7 @@ public class SteamInventoryService implements InventoryService {
         }
         logger.info("Getting inventory for app id " + appId);
         InventoryHandle handle = new InventoryHandle(objectMapper, contextId, inventoryItems);
-        http.get("http://steamcommunity.com/id/" + username + "/inventory/json/" + appId + "/" + contextId + "/", handle, false, false);
+        http.get("http://steamcommunity.com/id/" + username + "/inventory/json/" + appId + "/" + contextId + "/", handle, false);
         if (handle.isError()) {
             logger.error("Error fetching inventory data");
             throw new SteamException("Error fetching inventory data");

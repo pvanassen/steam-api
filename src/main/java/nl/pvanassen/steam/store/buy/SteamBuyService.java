@@ -44,7 +44,7 @@ public class SteamBuyService implements BuyService {
         params.put("quantity", "1");
         try {
             BuyHandle handle = new BuyHandle(objectMapper);
-            http.post("https://steamcommunity.com/market/buylisting/" + listingId, params, handle, "http://steamcommunity.com/id/" + username + "/inventory/", true, false, true);
+            http.post("https://steamcommunity.com/market/buylisting/" + listingId, params, handle, "http://steamcommunity.com/id/" + username + "/inventory/", true, false);
             if ((handle.getMessage() != null) && handle.getMessage().contains("temporary")) {
                 return buy(buyOrder);
             }

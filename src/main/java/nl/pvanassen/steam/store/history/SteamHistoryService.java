@@ -35,7 +35,7 @@ public class SteamHistoryService implements HistoryService {
         HistoryHandle handle = new HistoryHandle(lastSteamId, objectMapper);
         try {
             logger.info("Getting some data");
-            http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=1", handle, false, false);
+            http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&start=0&count=1", handle, false);
             if (handle.isExceptionThrown()) {
                 logger.error("IO error");
                 return getHistory(lastSteamId);
@@ -57,7 +57,7 @@ public class SteamHistoryService implements HistoryService {
                     stepSize = optimumStepSize.getStepSize();
                     error = false;
                     logger.info("Getting from " + start + ", with stepsize " + stepSize);
-                    http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count=" + stepSize + "&start=" + start, handle, false, false);
+                    http.get("http://steamcommunity.com/market/myhistory/render/?query=&search_descriptions=0&count=" + stepSize + "&start=" + start, handle, false);
                     if (handle.isExceptionThrown()) {
                         optimumStepSize.error();
                         logger.error("IO Exception. Retrying");
