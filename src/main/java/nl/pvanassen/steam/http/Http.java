@@ -54,7 +54,7 @@ public class Http {
 
     private Http(String cookies, String username) {
         this.cookies = cookies;
-        RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).setSocketTimeout(1000).setConnectionRequestTimeout(2000).setConnectTimeout(2000).build();
+        RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).setSocketTimeout(2500).setConnectionRequestTimeout(5000).setConnectTimeout(5000).build();
         context = HttpClientContext.create();
         this.username = username;
         this.httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
