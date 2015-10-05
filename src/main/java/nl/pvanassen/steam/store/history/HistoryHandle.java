@@ -52,7 +52,7 @@ class HistoryHandle extends DefaultHandle {
     private final ObjectMapper om;
     private static final XPathExpression HISTORY_ROW_XPATH = XPathHelper.getXpathExpression("//DIV[@class='market_listing_row market_recent_listing_row']");
     private static final XPathExpression GAIN_LOSS_XPATH = XPathHelper.getXpathExpression("./DIV[@class='market_listing_left_cell market_listing_gainorloss']");
-    private static final XPathExpression DATE_XPATH = XPathHelper.getXpathExpression("./DIV[@class='market_listing_right_cell market_listing_listed_date']");
+    private static final XPathExpression DATE_XPATH = XPathHelper.getXpathExpression("./DIV[@class='market_listing_right_cell market_listing_listed_date can_combine']");
     private static final XPathExpression PRICE_XPATH = XPathHelper.getXpathExpression("./DIV/SPAN/SPAN[@class='market_listing_price']");
     private static final XPathExpression BUYER_XPATH = XPathHelper.getXpathExpression("./DIV/DIV[@class='market_listing_whoactedwith_name_block']");
     private static final XPathExpression ACTED_XPATH = XPathHelper.getXpathExpression("./DIV[@class='market_listing_right_cell market_listing_whoactedwith']");
