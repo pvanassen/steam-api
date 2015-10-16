@@ -26,14 +26,16 @@ class InventoryHandle extends DefaultHandle {
         private final boolean marketable;
         private final boolean tradable;
         private final Date blockedUntil;
+        private final Map<String,String> properties;
 
-        Description(int appId, String urlName, boolean marketable, boolean tradable, Date blockedUntil) {
+        Description(int appId, String urlName, boolean marketable, boolean tradable, Date blockedUntil, Map<String,String> properties) {
             super();
             this.appId = appId;
             this.urlName = urlName;
             this.marketable = marketable;
             this.tradable = tradable;
             this.blockedUntil = blockedUntil;
+            this.properties = properties;
         }
 
     }
@@ -118,7 +120,13 @@ class InventoryHandle extends DefaultHandle {
             if (item.get("tradable") != null) {
                 tradable = item.get("tradable").asBoolean();
             }
-            Description description = new Description(appId, urlName, marketable, tradable, blockedUntil);
+            Map<String,String> properties = new HashMap<>();
+            Iterator<Map.Entry<String,JsonNode>> itr = item.getFields();
+            while (itr.hasNext()) {
+                Map.Entry<String,JsonNode> entry = itr.next();
+                properties.put(entry.getKey(), entry.getValue().asText());
+            }
+            Description description = new Description(appId, urlName, marketable, tradable, blockedUntil, properties);
             descriptionMap.put(item.get("classid").asText() + "-" + item.get("instanceid").asText(), description);
         }
 
@@ -128,8 +136,9 @@ class InventoryHandle extends DefaultHandle {
             if (description == null) {
                 continue;
             }
+
             inventoryItemList.add(new InventoryItem(item.get("id").asText(), contextId, item.get("instanceid").asText(), description.appId, description.urlName,
-                    description.marketable, description.tradable, description.blockedUntil));
+                    description.marketable, description.tradable, description.blockedUntil, description.properties));
         }
         error = false;
     }

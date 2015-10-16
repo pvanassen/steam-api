@@ -1,5 +1,6 @@
 package nl.pvanassen.steam.http;
 
+import nl.pvanassen.steam.error.SteamException;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Calendar;
@@ -53,10 +55,10 @@ public class Http {
 
     private Http(String cookies, String username) {
         this.cookies = cookies;
-        RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).setSocketTimeout(1000).setConnectionRequestTimeout(2000).setConnectTimeout(2000).build();
+        RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).setSocketTimeout(10000).setConnectionRequestTimeout(10000).setConnectTimeout(10000).build();
         context = HttpClientContext.create();
         this.username = username;
-        this.httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setConnectionManager(CONNECTION_MANAGER).build();
+        this.httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
         // IOReactorConfig config = IOReactorConfig.custom().setSoKeepAlive(true).setTcpNoDelay(true).setSoReuseAddress(true).build();
         init();
     }
@@ -122,14 +124,17 @@ public class Http {
                 }
             }
         } catch (HttpHostConnectException | InterruptedIOException e) {
-            logger.warn("Steam doesn't like me. Slowing down and sleeping a bit");
-            try {
-                Thread.sleep(60000);
-            } catch (InterruptedException e1) {
-                // No sleep, shutdown
+            logger.warn("Steam doesn't like me. Slowing down and sleeping a bit", e);
+            if (!(e instanceof SocketTimeoutException)) {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ignored) {
+                    // No sleep, shutdown
+                    return;
+                }
             }
-            if (attempt == 5) {
-                throw new RuntimeException(e);
+            if (attempt == 3) {
+                throw new SteamException("Steam hates me :(", e);
             }
             handleConnection(httpget, handle, attempt + 1);
         } catch (IOException e) {
