@@ -58,7 +58,7 @@ public class Http {
         RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).setSocketTimeout(10000).setConnectionRequestTimeout(10000).setConnectTimeout(10000).build();
         context = HttpClientContext.create();
         this.username = username;
-        this.httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
+        this.httpclient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setConnectionManager(CONNECTION_MANAGER).build();
         // IOReactorConfig config = IOReactorConfig.custom().setSoKeepAlive(true).setTcpNoDelay(true).setSoReuseAddress(true).build();
         init();
     }
@@ -116,8 +116,18 @@ public class Http {
                 return;
             }
             try (InputStream instream = entity.getContent()) {
+                if (response.getStatusLine().getStatusCode() == 429) {
+                    // Rate limiting detected
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException ignored) {
+                        // No sleep, shutdown
+                        return;
+                    }
+                }
                 // Forbidden, 404, invalid request. Stop
                 if (response.getStatusLine().getStatusCode() >= 400) {
+                    logger.info("Status code: " + response.getStatusLine().getStatusCode());
                     handle.handleError(instream);
                 } else {
                     handle.handle(instream);
