@@ -1,5 +1,6 @@
 package nl.pvanassen.steam.http;
 
+import com.google.common.util.concurrent.RateLimiter;
 import nl.pvanassen.steam.error.SteamException;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.CookieStore;
@@ -52,6 +53,7 @@ public class Http {
     private final HttpClientContext context;
     private final String cookies;
     private final String username;
+    private static final RateLimiter RATE_LIMITER = RateLimiter.create(0.16);
 
     private Http(String cookies, String username) {
         this.cookies = cookies;
@@ -107,6 +109,7 @@ public class Http {
     }
 
     private void handleConnection(HttpRequestBase httpget, Handle handle, int attempt) {
+        RATE_LIMITER.acquire();
         if (logger.isDebugEnabled()) {
             logger.debug("Executing request with cookies: " + getCookies());
         }
