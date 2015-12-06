@@ -1,6 +1,5 @@
 package nl.pvanassen.steam.store.buy;
 
-import nl.pvanassen.steam.http.Handle;
 import nl.pvanassen.steam.http.Http;
 import nl.pvanassen.steam.store.CookieException;
 import nl.pvanassen.steam.store.StreamHelper;
@@ -34,8 +33,8 @@ public class SteamBuyServiceTest {
             }
         })
                 .when(http)
-                .post(eq("https://steamcommunity.com/market/buylisting/12345"), (Map<String, String>) anyMap(), (Handle) anyObject(),
-                        eq("http://steamcommunity.com/id/testuser/inventory/"), eq(true), eq(false));
+                .post(eq("https://steamcommunity.com/market/buylisting/12345"), (Map<String, String>) anyMap(), anyObject(),
+                        anyString(), eq(true), eq(false));
         SteamBuyService steamBuyService = new SteamBuyService(http, "testuser");
         steamBuyService.buy(new BuyOrder(1, "test", "12345", 10, 4));
     }
@@ -54,8 +53,8 @@ public class SteamBuyServiceTest {
             }
         })
                 .when(http)
-                .post(eq("https://steamcommunity.com/market/buylisting/12345"), (Map<String, String>) anyMap(), (Handle) anyObject(),
-                        eq("http://steamcommunity.com/id/testuser/inventory/"), eq(true), eq(false));
+                .post(eq("https://steamcommunity.com/market/buylisting/12345"), (Map<String, String>) anyMap(), anyObject(),
+                        anyString(), eq(true), eq(false));
         SteamBuyService steamBuyService = new SteamBuyService(http, "testuser");
         BuyResult result = steamBuyService.buy(new BuyOrder(1, "test", "12345", 10, 4));
         assertNotNull(result);
