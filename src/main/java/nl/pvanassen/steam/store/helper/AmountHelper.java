@@ -10,16 +10,6 @@ import com.google.common.cache.LoadingCache;
  * @author Paul van Assen
  */
 public final class AmountHelper {
-    /**
-     * Convert the html amount string to the amount in cents
-     *
-     * @param html Html text
-     * @return Amount in cents
-     */
-    public static int getAmount(String html) {
-        return fastAmountCache.getUnchecked(html);
-    }
-
     private static final LoadingCache<String, Integer> fastAmountCache = CacheBuilder.newBuilder().concurrencyLevel(32).maximumSize(4096).build(new CacheLoader<String, Integer>() {
         @Override
         public Integer load(String html) throws Exception {
@@ -28,11 +18,21 @@ public final class AmountHelper {
             if (idx != -1) {
                 amount = html.substring(idx + 1, html.indexOf(')') - 1);
             }
-            return Integer.parseInt(amount.replace("&#8364;", "").replace("€", "").replace(",", "").replace("-", "0").trim());
+            return Integer.parseInt(amount.replace("&#8364;", "").replace("€", "").replace(",", "").replace(".","").replace("-", "0").trim());
         }
     });
 
     private AmountHelper() {
         super();
+    }
+
+    /**
+     * Convert the html amount string to the amount in cents
+     *
+     * @param html Html text
+     * @return Amount in cents
+     */
+    public static int getAmount(String html) {
+        return fastAmountCache.getUnchecked(html);
     }
 }
