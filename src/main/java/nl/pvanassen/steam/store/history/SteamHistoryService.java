@@ -61,7 +61,6 @@ public class SteamHistoryService implements HistoryService {
                     if (handle.isExceptionThrown()) {
                         optimumStepSize.error();
                         logger.error("IO Exception. Retrying");
-                        Thread.sleep(500);
                         error = true;
                     } else if (handle.isFoundRowId()) {
                         return handle.getHistory();
@@ -75,7 +74,7 @@ public class SteamHistoryService implements HistoryService {
                     logger.info("Doing " + itemsPerTime + " per " + timePast + ", expected " + (itemsPerTime * start));
                 } while (handle.isError() || error);
             }
-        } catch (RuntimeException | InterruptedException e) {
+        } catch (RuntimeException e) {
             logger.error("Error getting data", e);
         }
         return handle.getHistory();
