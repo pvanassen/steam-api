@@ -28,12 +28,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
-import java.net.SocketTimeoutException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Http connection helper
@@ -42,10 +39,12 @@ import java.util.Map;
  */
 public class Http {
     private static final PoolingHttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
+    private static final RateLimiter RATE_LIMITER = RateLimiter.create(1);
+    private static final Map<Long, Exception> leakDebug = Collections.synchronizedMap(new HashMap<>());
 
     static {
-        CONNECTION_MANAGER.setDefaultMaxPerRoute(1);
-        CONNECTION_MANAGER.setMaxTotal(2);
+        CONNECTION_MANAGER.setDefaultMaxPerRoute(4);
+        CONNECTION_MANAGER.setMaxTotal(4);
     }
 
     private final CloseableHttpClient httpclient;
@@ -53,7 +52,6 @@ public class Http {
     private final HttpClientContext context;
     private final String cookies;
     private final String username;
-    private static final RateLimiter RATE_LIMITER = RateLimiter.create(0.16);
 
     private Http(String cookies, String username) {
         this.cookies = cookies;
@@ -73,6 +71,14 @@ public class Http {
      */
     public static Http getInstance(String cookies, String username) {
         return new Http(cookies, username);
+    }
+
+    private static void down() {
+        RATE_LIMITER.setRate(Math.max(RATE_LIMITER.getRate() * 0.95, 0.10));
+    }
+
+    private static void up() {
+        RATE_LIMITER.setRate(Math.min(RATE_LIMITER.getRate() * 1.05, 4));
     }
 
     private void addHeaders(AbstractHttpMessage httpMessage, String referer, boolean ajax) {
@@ -108,25 +114,29 @@ public class Http {
         handleConnection(httpget, handle, 0);
     }
 
-    private void handleConnection(HttpRequestBase httpget, Handle handle, int attempt) {
-        RATE_LIMITER.acquire();
+    private void handleConnection(HttpRequestBase httpMethod, Handle handle, int attempt) {
+        long key = System.nanoTime();
+        leakDebug.put(key, new Exception("Connection tracking"));
+        logger.info("Http rate set to: " + RATE_LIMITER.getRate());
+        // Immediately execute a POST
+        if (!(httpMethod instanceof HttpPost)) {
+            RATE_LIMITER.acquire();
+        }
         if (logger.isDebugEnabled()) {
             logger.debug("Executing request with cookies: " + getCookies());
         }
-        try (CloseableHttpResponse response = httpclient.execute(httpget, context)) {
+        try (CloseableHttpResponse response = httpclient.execute(httpMethod, context)) {
             HttpEntity entity = response.getEntity();
             if (entity == null) {
                 return;
             }
             try (InputStream instream = entity.getContent()) {
                 if (response.getStatusLine().getStatusCode() == 429) {
-                    // Rate limiting detected
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException ignored) {
-                        // No sleep, shutdown
-                        return;
-                    }
+                    down();
+                    httpMethod.releaseConnection();
+                    leakDebug.remove(key);
+                    handleConnection(httpMethod, handle, attempt + 1);
+                    return;
                 }
                 // Forbidden, 404, invalid request. Stop
                 if (response.getStatusLine().getStatusCode() >= 400) {
@@ -135,24 +145,25 @@ public class Http {
                 } else {
                     handle.handle(instream);
                 }
+                up();
             }
         } catch (HttpHostConnectException | InterruptedIOException e) {
-            logger.warn("Steam doesn't like me. Slowing down and sleeping a bit", e);
-            if (!(e instanceof SocketTimeoutException)) {
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException ignored) {
-                    // No sleep, shutdown
-                    return;
-                }
+            logger.warn("Pooling issues: " + CONNECTION_MANAGER.getTotalStats().toString());
+            for (Exception open : leakDebug.values()) {
+                logger.warn("Open connection: ", open);
             }
-            if (attempt == 3) {
+            if (attempt == 5) {
                 throw new SteamException("Steam hates me :(", e);
             }
-            handleConnection(httpget, handle, attempt + 1);
+            httpMethod.releaseConnection();
+            leakDebug.remove(key);
+            handleConnection(httpMethod, handle, attempt + 1);
         } catch (IOException e) {
             logger.error("Error in protocol", e);
             handle.handleException(e);
+        } finally {
+            httpMethod.releaseConnection();
+            leakDebug.remove(key);
         }
     }
 
