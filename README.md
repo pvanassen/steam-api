@@ -1,7 +1,14 @@
 Steam-api
 =========
 
+WARNING: Deprecated
+-------------
+With recent changes in the Steam API things have changed a lot and I do not have the time available to maintain and update the code. Feel free to fork and continue to expand this code. 
+
+
+
 Java Steam API
+------
 
 How to use: 
 
